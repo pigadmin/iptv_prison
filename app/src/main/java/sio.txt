@@ -1,0 +1,41 @@
+
+
+url:   ip:8000/tv
+
+注册：register
+data:RegistVo json
+    private String mac;
+    private double version;
+    private int voice;
+    private String name;  //可为空
+    private int templateType   1酒店 2医院 3学校 4监狱 5水疗
+错误通知：error
+
+修改终端名称：reName
+data:RegistVo json
+    private String mac;  //不可为空
+    private double version;
+    private int voice;
+    private String name;  //不可为空
+    private int templateType ;
+
+主菜单事件：tmenus
+
+升级：upgrade
+
+天气更新事件:  weather
+
+通知更新事件:  notice
+
+字幕更新事件:  title
+
+即时插播事件 in_play
+
+关机：close   定时关机：close-time
+
+开机：open    定时开机：open-time
+
+计划插播：msgInsert  发送数据，跟之前一样
+
+当天任务：todayCalendar   发送当天所有任务计划，请终端按时间执行
+消息通知事件：nt   string  （String可能是文字内容，可能是图片链接，也可能是视频连接）
