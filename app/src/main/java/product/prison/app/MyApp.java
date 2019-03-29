@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 import product.prison.broadcast.MyAction;
+import product.prison.model.LogoData;
 import product.prison.model.TMenu;
 import product.prison.service.MyService;
 import product.prison.utils.Logs;
@@ -118,6 +119,15 @@ public class MyApp extends Application {
         }
     };
 
+    private LogoData logoData = new LogoData();
+
+    public LogoData getLogoData() {
+        return logoData;
+    }
+
+    public void setLogoData(LogoData logoData) {
+        this.logoData = logoData;
+    }
 
     public List<TMenu> gettMenu() {
         return tMenu;

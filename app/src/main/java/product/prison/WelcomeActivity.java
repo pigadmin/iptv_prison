@@ -3,18 +3,15 @@ package product.prison;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.annotations.Until;
 import com.google.gson.reflect.TypeToken;
 
 import org.xutils.common.Callback;
@@ -24,8 +21,10 @@ import org.xutils.x;
 import java.util.List;
 
 import product.prison.app.MyApp;
+import product.prison.model.LogoData;
 import product.prison.model.TGson;
 import product.prison.model.WelcomeAd;
+import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
 
@@ -120,7 +119,47 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                         return;
                     myApp.setServertime(json.getData());
                     getWelComeAd();
-                    Logs.e(Utils.formatMyTime(json.getData()));
+                    Logs.e(Utils.formatMyTime("yyyy-MM-dd HH:mm:ss", json.getData()));
+
+                    getLogo();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+    private void getLogo() {
+        RequestParams params = new RequestParams(MyApp.apiurl + "getLogo");
+        params.addBodyParameter("mac", MyApp.mac);
+        params.addBodyParameter("templateType", MyApp.templateType + "");
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Logs.e(result);
+                    TGson<LogoData> json = Utils.gson.fromJson(result,
+                            new TypeToken<TGson<LogoData>>() {
+                            }.getType());
+                    if (json.getData() == null)
+                        return;
+                    myApp.setLogoData(json.getData());
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -169,6 +208,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                         boolean r = handler.sendMessageDelayed(msg, totalTime);
                         totalTime = totalTime + (ad.getInter() * 1000L);
                     }
+
                     new CountDownTimer(totalTime, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
@@ -177,10 +217,9 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
 
                         @Override
                         public void onFinish() {
-
+                            toMain();
                         }
                     }.start();
-                    handler.sendEmptyMessageDelayed(2, totalTime);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -205,16 +244,20 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
     }
 
     private void playimg() {
-        if (welcome_video.getVisibility() == View.VISIBLE) {
-            welcome_video.setVisibility(View.GONE);
-            if (welcome_video.isPlaying()) {
-                welcome_video.stopPlayback();
+        try {
+            if (welcome_video.getVisibility() == View.VISIBLE) {
+                welcome_video.setVisibility(View.GONE);
+                if (welcome_video.isPlaying()) {
+                    welcome_video.stopPlayback();
+                }
             }
+            if (welcome_image.getVisibility() == View.GONE) {
+                welcome_image.setVisibility(View.VISIBLE);
+            }
+            ImageUtils.display(welcome_image, currentad.getFilePath());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (welcome_image.getVisibility() == View.GONE) {
-            welcome_image.setVisibility(View.VISIBLE);
-        }
-        x.image().bind(welcome_image, currentad.getFilePath());
     }
 
 
@@ -234,13 +277,17 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
     }
 
     private void playvideo() {
-        if (welcome_image.getVisibility() == View.VISIBLE) {
-            welcome_image.setVisibility(View.GONE);
+        try {
+            if (welcome_image.getVisibility() == View.VISIBLE) {
+                welcome_image.setVisibility(View.GONE);
+            }
+            if (welcome_video.getVisibility() == View.GONE) {
+                welcome_video.setVisibility(View.VISIBLE);
+            }
+            welcome_video.setVideoURI(Uri.parse(currentad.getFilePath()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (welcome_video.getVisibility() == View.GONE) {
-            welcome_video.setVisibility(View.VISIBLE);
-        }
-        welcome_video.setVideoURI(Uri.parse(currentad.getFilePath()));
     }
 
     @Override

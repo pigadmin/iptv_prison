@@ -1,5 +1,7 @@
 package product.prison.utils;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,12 +9,18 @@ import android.content.pm.PackageInfo;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,10 +49,11 @@ public class Utils {
         return format.format(new Date());
     }
 
-    public static String formatMyTime(long time) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static String formatMyTime(String type, long time) {
+        SimpleDateFormat format = new SimpleDateFormat(type);
         return format.format(time);
     }
+
 
     public static <T> T jsonToObject(String json, TypeToken<T> typeToken) {
         //  new TypeToken<AJson<Object>>() {}.getType()   对象参数
@@ -134,4 +143,69 @@ public class Utils {
         }
         return mac;
     }
+
+    private static ProgressDialog mProgressDialog;
+
+    private static void Download(Activity activity, String url) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            mProgressDialog = new ProgressDialog(activity);
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+            // mDownloadUrl为JSON从服务器端解析出来的下载地址
+            RequestParams requestParams = new RequestParams(url);
+            // 为RequestParams设置文件下载后的保存路径
+            requestParams.setSaveFilePath(path);
+            // 下载完成后自动为文件命名
+            requestParams.setAutoRename(true);
+            x.http().get(requestParams, new Callback.ProgressCallback<File>() {
+
+                @Override
+                public void onSuccess(File result) {
+                    Logs.e("下载成功");
+                    mProgressDialog.dismiss();
+                }
+
+                @Override
+                public void onError(Throwable ex, boolean isOnCallback) {
+                    Logs.e("下载失败");
+                    mProgressDialog.dismiss();
+                }
+
+                @Override
+                public void onCancelled(CancelledException cex) {
+                    Logs.e("取消下载");
+                    mProgressDialog.dismiss();
+                }
+
+                @Override
+                public void onFinished() {
+                    Logs.e("结束下载");
+                    mProgressDialog.dismiss();
+                }
+
+                @Override
+                public void onWaiting() {
+                    // 网络请求开始的时候调用
+                    Logs.e("等待下载");
+                }
+
+                @Override
+                public void onStarted() {
+                    // 下载的时候不断回调的方法
+                    Logs.e("开始下载");
+                }
+
+                @Override
+                public void onLoading(long total, long current, boolean isDownloading) {
+                    // 当前的下载进度和文件总大小
+                    Logs.e("正在下载中......");
+                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    mProgressDialog.setMessage("正在下载中......");
+                    mProgressDialog.show();
+                    mProgressDialog.setMax((int) total);
+                    mProgressDialog.setProgress((int) current);
+                }
+            });
+        }
+    }
+
 }

@@ -2,8 +2,6 @@ package product.prison.utils;
 
 import android.util.Log;
 
-import product.prison.app.MyApp;
-
 public class Logs {
 
     private final static String APP_TAG = "iptv";

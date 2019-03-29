@@ -6,5 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <product.prison.view.Head
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></product.prison.view.Head>
+
 
 </android.support.constraint.ConstraintLayout>
