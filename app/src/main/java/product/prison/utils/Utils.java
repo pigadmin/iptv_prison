@@ -126,7 +126,7 @@ public class Utils {
     }
 
     public static String GetMac() {
-        String mac = "test";
+        String mac = "testcode";
         try {
             Process pro = Runtime.getRuntime().exec(
                     "cat /sys/class/net/eth0/address");

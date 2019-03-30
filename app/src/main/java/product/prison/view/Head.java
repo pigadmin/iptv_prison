@@ -42,7 +42,7 @@ public class Head extends LinearLayout {
     private void setvalue() {
         try {
             handler.sendEmptyMessage(0);
-        Logs.e(app.getLogoData().getLogo().getLogoPath());
+//            Logs.e(app.getLogoData().getLogo().getLogoPath());
             ImageUtils.display(logo, app.getLogoData().getLogo().getLogoPath());
         } catch (Exception e) {
             e.printStackTrace();

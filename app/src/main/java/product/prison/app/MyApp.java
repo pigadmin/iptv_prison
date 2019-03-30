@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.google.gson.Gson;
@@ -23,6 +26,7 @@ import java.util.List;
 
 import product.prison.broadcast.MyAction;
 import product.prison.model.LogoData;
+import product.prison.model.MsgData;
 import product.prison.model.TMenu;
 import product.prison.service.MyService;
 import product.prison.utils.Logs;
@@ -36,6 +40,7 @@ public class MyApp extends Application {
 
     private SocketIO socketIO;
     public static String head = "http://";
+    //        public static String ip = "192.168.2.14";
     public static String ip = "192.168.2.25";
     public static String port = "8089";
     public static String sioport = "8000";
@@ -46,7 +51,8 @@ public class MyApp extends Application {
 
     public static String mac = "testcode";
     public static int templateType = 4; // templateType  1酒店 2医院 3学校 4监狱 5水疗
-
+    public static int screenWidth;
+    public static int screenHeight;
 
     @Override
 
@@ -59,12 +65,12 @@ public class MyApp extends Application {
             boolean isFirst = SpUtils.getBoolean(this, "isFirst", false);
             if (!isFirst) {
                 SpUtils.putBoolean(this, "isFirst", true);
-                SpUtils.putString(this, "mac", Utils.GetMac());
+//                SpUtils.putString(this, "mac", Utils.GetMac());
             }
+//            mac = SpUtils.getString(this, "mac", mac);
+            mac = Utils.GetMac();
             apiurl = head + SpUtils.getString(this, "ip", ip) + ":" + port + apiName;
             siourl = head + SpUtils.getString(this, "ip", ip) + ":" + sioport + spaceName;
-
-            mac = SpUtils.getString(this, "mac", mac);
 
 
             IntentFilter filter = new IntentFilter();
@@ -73,38 +79,19 @@ public class MyApp extends Application {
             registerReceiver(receiver, filter);
 
             socketIO = new SocketIO(this);
+
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+
+            screenWidth = metrics.widthPixels;
+            screenHeight = metrics.heightPixels;
+
             startService(new Intent(this, MyService.class));
 
-            sio();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void sio() {
-        socketIO.socket.on("error", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                try {
-                    String json = args[0].toString();
-                    Logs.e("sio-error-事件" + json);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        SocketIO.socket.on("tmenus", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                try {
-                    String json = args[0].toString();
-                    tMenu = Utils.jsonToObject(json, new TypeToken<List<TMenu>>() {
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -112,14 +99,24 @@ public class MyApp extends Application {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
                 setServertime(getServertime() + 60 * 1000);
-                sendBroadcast(new Intent(MyAction.updatetime));
+//                sendBroadcast(new Intent(MyAction.updatetime));
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)) {
 
             }
         }
     };
 
-    private LogoData logoData = new LogoData();
+    public List<MsgData> getMsgData() {
+        return msgData;
+    }
+
+    public void setMsgData(List<MsgData> msgData) {
+        this.msgData = msgData;
+    }
+
+    private List<MsgData> msgData = new ArrayList<>();
+
+    private LogoData logoData = null;
 
     public LogoData getLogoData() {
         return logoData;
@@ -148,4 +145,14 @@ public class MyApp extends Application {
     }
 
     private long servertime = 0;
+
+    private Drawable bg = null;
+
+    public Drawable getBg() {
+        return bg;
+    }
+
+    public void setBg(Drawable bg) {
+        this.bg = bg;
+    }
 }

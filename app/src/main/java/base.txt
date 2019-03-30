@@ -3,6 +3,12 @@
 注：200代表授权正常  400代表授权失败（具体信息看msg）
 http://localhost:8080/wisdom_iptv/remote/checkAuth
 -------------------------------------------------------------------
+获取菜单
+http://localhost:8080/wisdom_iptv/remote/tmenu?mac=00151818a1eb&templateType=1
+参数：mac
+    templateType  1酒店信息  2医院信息  3学校信息 4监狱信息 5 水疗信息
+
+-------------------------------------------------------------------
 信息发布
 
 参数：mac
@@ -231,3 +237,4 @@ http://localhost:8081/wisdom_hotel/remote/getNotice?mac=00:15:18:16:F9:99
 参数 ： noticeId    //消息id
 
 http://localhost:8081/wisdom_hotel/remote/updateNotice?noticeId=1
+

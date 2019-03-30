@@ -13,14 +13,19 @@ data结构：status：整数类型    0 未支付    1 已支付        如未�
        		 "oncePrice": "5",
         	 "status": 0
     	  }
-http://localhost:8080/wisdom_spa/remote/vodispay?vid=17&mac=00:15:18:16:F9:99
+http://localhost:8080/wisdom_iptv/remote/vodispay?vid=17&mac=00:15:18:16:F9:99
 
+-------------------------------------------------------------------
+查询用户信息（开关机时间，声音，密码）
+参数 ：mac
+返回 User user
+http://localhost:8081/wisdom_iptv/remote/getUser?mac=00:15:18:16:F9:99
 -------------------------------------------------------------------
  点播支付
 参数  : mac：mac地址    vid: 资源id  payType: 支付类型   0 包天   1 单次支付
 data结构：
 	   null
-http://localhost:8080/wisdom_spa/remote/vodpay?vid=15&mac=00:15:18:16:F9:99&payType=0
+http://localhost:8080/wisdom_iptv/remote/vodpay?vid=15&mac=00:15:18:16:F9:99&payType=0
 
 -------------------------------------------------------------------
 添加点播 播放记录
@@ -34,12 +39,12 @@ http://localhost:8080/wisdom_iptv/remote/vrecord?mac=00:15:18:16:F9:99&vid=15
 1.续房
 参数  : mac：mac地址   days  天数
 data结构：null
-http://localhost:8080/wisdom_spa/remote/extend_room?mac=00:15:18:16:F9:99&days=3
+http://localhost:8080/wisdom_iptv/remote/extend_room?mac=00:15:18:16:F9:99&days=3
 -------------------------------------------------------------------
 2.退房
 参数  : mac：mac地址
 data结构：null
-http://localhost:8080/wisdom_spa/remote/close_room?mac=00:15:18:16:F9:99
+http://localhost:8080/wisdom_iptv/remote/close_room?mac=00:15:18:16:F9:99
 
 -------------------------------------------------------------------
 3.账单
@@ -57,22 +62,22 @@ data结构：                                                       所有字段
             }
         ]
 }
-http://localhost:8080/wisdom_spa/remote/bill?vid=15&mac=00:15:18:16:F9:99
+http://localhost:8080/wisdom_iptv/remote/bill?vid=15&mac=00:15:18:16:F9:99
 -------------------------------------------------------------------
 查看物品借用信息
 参数 ：mac
-http://localhost:8081/wisdom_hotel/remote/getGoodsLoan?mac=00:15:18:16:F9:99
+http://localhost:8081/wisdom_iptv/remote/getGoodsLoan?mac=00:15:18:16:F9:99
 -------------------------------------------------------------------
 物品借用
 参数 ：mac
     loadId
     loadNum
-http://localhost:8081/wisdom_hotel/remote/goodsLoan?mac=00:15:18:16:F9:99&loadId=1&loadNum=2
+http://localhost:8081/wisdom_iptv/remote/goodsLoan?mac=00:15:18:16:F9:99&loadId=1&loadNum=2
 ---------------------------------------------------------------------
 查看已借物品
 参数 ：mac
 
-http://localhost:8081/wisdom_hotel/remote/getMyLoan?mac=00:15:18:16:F9:99
+http://localhost:8081/wisdom_iptv/remote/getMyLoan?mac=00:15:18:16:F9:99
 ----------------------------------------------------------------------
 欢迎词
 参数：mac
@@ -91,13 +96,18 @@ http://localhost:8080/wisdom_iptv/remote/getWelcomeword?mac=errors
 
 2.医院专属接口
 
-
+-------------------------------------------------------------------
 3.学校专属接口
+
+获取新闻：
+http://localhost:8081/wisdom_iptv/remote/getNews?mac=00:15:18:16:F9:99
+
+获取密码
+
+
 -------------------------------------------------------------------
-
-
 4.监狱专属接口
--------------------------------------------------------------------
+
 
 
 5.水疗专属接口

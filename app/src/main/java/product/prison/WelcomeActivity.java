@@ -106,7 +106,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
 
     private void checkAuth() {
         RequestParams params = new RequestParams(MyApp.apiurl + "checkAuth");
-        Logs.e(MyApp.apiurl + "checkAuth");
+//        Logs.e(MyApp.apiurl + "checkAuth");
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {

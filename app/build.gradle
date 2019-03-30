@@ -30,4 +30,5 @@ dependencies {
     implementation 'org.xutils:xutils:3.3.4'
     implementation 'com.github.nkzawa:socket.io-client:0.3.0'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
 }
