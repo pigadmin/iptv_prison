@@ -10,6 +10,7 @@ import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.gson.reflect.TypeToken;
@@ -106,11 +107,13 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
 
     private void checkAuth() {
         RequestParams params = new RequestParams(MyApp.apiurl + "checkAuth");
+        params.setConnectTimeout(5 * 1000);
 //        Logs.e(MyApp.apiurl + "checkAuth");
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 try {
+                    welcome_tips.setText("");
                     Logs.e(result);
                     TGson<Long> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Long>>() {
@@ -129,7 +132,19 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
+                Toast.makeText(getApplicationContext(), R.string.disconnect, Toast.LENGTH_SHORT).show();
 
+                new CountDownTimer(15 * 1000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        welcome_tips.setText(getString(R.string.disconnect) + "(" + (millisUntilFinished / 1000) + ")");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        checkAuth();
+                    }
+                }.start();
             }
 
             @Override

@@ -9,8 +9,11 @@ import android.content.pm.PackageInfo;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,6 +24,8 @@ import org.xutils.x;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -146,22 +151,26 @@ public class Utils {
 
     private static ProgressDialog mProgressDialog;
 
-    private static void Download(Activity activity, String url) {
+    public  void Download(final Activity activity, final String url, final boolean install) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             mProgressDialog = new ProgressDialog(activity);
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+            final String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
             // mDownloadUrl为JSON从服务器端解析出来的下载地址
-            RequestParams requestParams = new RequestParams(url);
+            final RequestParams requestParams = new RequestParams(url);
             // 为RequestParams设置文件下载后的保存路径
             requestParams.setSaveFilePath(path);
+            final  String fileName = url.substring(url.lastIndexOf("/")+1);
             // 下载完成后自动为文件命名
             requestParams.setAutoRename(true);
             x.http().get(requestParams, new Callback.ProgressCallback<File>() {
 
                 @Override
                 public void onSuccess(File result) {
-                    Logs.e("下载成功");
+                    Logs.e("下载成功"+path + fileName);
                     mProgressDialog.dismiss();
+                    if (install) {
+                        install(activity, path + fileName);
+                    }
                 }
 
                 @Override
@@ -208,4 +217,54 @@ public class Utils {
         }
     }
 
+    private void install(Activity activity, String s) {
+        ShellExecute ex = new ShellExecute();
+        String[] cmd = {"chmod", "607", s};
+        try {
+            ex.execute(cmd, "/");
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse("file://" + s),
+                    "application/vnd.android.package-archive");
+            activity.startActivity(intent);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    private class ShellExecute {
+        public String execute(String[] cmmand, String directory)
+                throws IOException {
+            String result = "";
+            try {
+                ProcessBuilder builder = new ProcessBuilder(cmmand);
+                if (directory != null)
+                    builder.directory(new File(directory));
+                builder.redirectErrorStream(true);
+                Process process = builder.start();
+                InputStream is = process.getInputStream();
+                byte[] buffer = new byte[1024];
+                while (is.read(buffer) != -1) {
+                    result = result + new String(buffer);
+                }
+                is.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+    public static void fullvideo(View view) {
+        // TODO Auto-generated method stub
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        view.setLayoutParams(layoutParams);
+    }
 }

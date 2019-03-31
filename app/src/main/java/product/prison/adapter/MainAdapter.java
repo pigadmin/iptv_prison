@@ -16,12 +16,9 @@ import product.prison.R;
 import product.prison.model.TMenu;
 import product.prison.utils.ImageUtils;
 
-/**
- * Created by zhu on 2017/9/26.
- */
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements View.OnClickListener {
-    List<TMenu> menus;
+    List<TMenu> list;
     Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -38,9 +35,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         }
     }
 
-    public MainAdapter(Context context, List<TMenu> menus) {
+    public MainAdapter(Context context, List<TMenu> list) {
         this.context = context;
-        this.menus = menus;
+        this.list = list;
     }
 
     private OnItemClickListener mOnItemClickListener = null;
@@ -72,18 +69,18 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
-            holder.mTextView.setText(menus.get(position).getName());
+            holder.mTextView.setText(list.get(position).getName());
             holder.itemView.setTag(position);
-            ImageUtils.display(holder.mImageView, menus.get(position).getIcon());
+            ImageUtils.display(holder.mImageView, list.get(position).getIcon());
             if (position % 3 == 0) {
-                holder.menu_linearlayout.setBackgroundResource(R.mipmap.ic_launcher);
+                holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(480, 240);
 
                 lp.setMargins(0, 9, 9, 0);
                 holder.menu_linearlayout.setLayoutParams(lp);
 
             } else {
-                holder.menu_linearlayout.setBackgroundResource(R.mipmap.ic_launcher);
+                holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line2);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(239, 240);
                 lp.setMargins(2, 9, 9, 0);
                 holder.menu_linearlayout.setLayoutParams(lp);
@@ -97,6 +94,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
     @Override
     public int getItemCount() {
-        return menus.size();
+        return list.size();
     }
 }

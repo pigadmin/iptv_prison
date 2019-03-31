@@ -2,25 +2,68 @@ package product.prison.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.reflect.TypeToken;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import product.prison.app.MyApp;
 import product.prison.broadcast.MyAction;
+import product.prison.model.Command;
 import product.prison.model.MsgData;
 import product.prison.model.RegistVo;
 import product.prison.model.TMenu;
+import product.prison.view.ad.NowinsActivity;
 
 
 public class SocketIO {
     public static Socket socket;
     private Context context;
     private MyApp app;
+    private final int openw = 0;
+    private final int closew = 1;
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case openw:
+                    try {
+//                        TvPictureManager.getInstance().enableBacklight();
+                        adb.InputEvent(KeyEvent.KEYCODE_POWER);
+                        Toast.makeText(context, "开机", Toast.LENGTH_SHORT).show();
+                        socket.emit("power", 1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        adb.InputEvent(KeyEvent.KEYCODE_POWER);
+                    }
+                    break;
+                case closew:
+
+                    try {
+                        Toast.makeText(context, "关机", Toast.LENGTH_SHORT).show();
+//                        TvPictureManager.getInstance().disableBacklight();
+                        adb.InputEvent(KeyEvent.KEYCODE_POWER);
+                        socket.emit("power", 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        adb.InputEvent(KeyEvent.KEYCODE_POWER);
+                    }
+
+                    break;
+            }
+        }
+    };
 
     public SocketIO(Context context) {
 
@@ -129,24 +172,16 @@ public class SocketIO {
                 }
             }
         });
+        socket.on("in_play", new Emitter.Listener() {//即时插播事件 in_play
+            @Override
+            public void call(Object... args) {
+                try {
+                    String json = args[0].toString();
+                    Logs.e("sio-in_play-事件" + json);
 
-        socket.on("in_play", new Emitter.Listener() {//即时插播事件 in_play
-            @Override
-            public void call(Object... args) {
-                try {
-                    String json = args[0].toString();
-                    Logs.e("sio-in_play-事件" + json);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        socket.on("in_play", new Emitter.Listener() {//即时插播事件 in_play
-            @Override
-            public void call(Object... args) {
-                try {
-                    String json = args[0].toString();
-                    Logs.e("sio-in_play-事件" + json);
+                    Command cmmond = Utils.gson.fromJson(
+                            json, Command.class);
+                    exec(cmmond);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -158,6 +193,7 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-close-事件" + json);
+                    adb.InputEvent(KeyEvent.KEYCODE_POWER);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -169,6 +205,25 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-close-time-事件" + json);
+                    String head = WZDateUtil.toString(new Date(), "yyyy-MM-dd");
+                    Date date = new Date(Long.valueOf(json));
+                    final String hms = WZDateUtil.toString(date, "HH:mm:ss");
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "系统将在" + hms + "关闭", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+                    long close = dateFormat.parse(head + hms).getTime();
+                    long local = new Date().getTime();
+                    if (close > local) {
+                        handler.sendEmptyMessageDelayed(closew, close - local);
+                    }
+                    if (local > close) {
+                        handler.sendEmptyMessageDelayed(closew, local - close);
+                    }
+                    ;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -180,6 +235,7 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-open-事件" + json);
+                    adb.InputEvent(KeyEvent.KEYCODE_POWER);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -191,6 +247,25 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-open-time-事件" + json);
+
+                    String head = WZDateUtil.toString(new Date(), "yyyy-MM-dd");
+                    Date date = new Date(Long.valueOf(json));
+                    final String hms = WZDateUtil.toString(date, "HH:mm:ss");
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "系统将在" + hms + "开机", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+                    long open = dateFormat.parse(head + hms).getTime();
+                    long local = new Date().getTime();
+                    if (open > local) {
+                        handler.sendEmptyMessageDelayed(openw, open - local);
+                    }
+                    if (local > open) {
+                        handler.sendEmptyMessageDelayed(openw, local - open);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -230,7 +305,20 @@ public class SocketIO {
                 }
             }
         });
+        socket.on("vol", new Emitter.Listener() {
 
+            public void call(Object... arg0) {
+                // TODO Auto-generated method stub
+                try {
+                    String json = arg0[0].toString();
+                    System.out.println("vol@" + json);
+                    MyApp.setStreamVolume(Integer.valueOf(json));
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
+            }
+
+        });
     }
 
     public static void disconnect() {
@@ -288,13 +376,13 @@ public class SocketIO {
     private Emitter.Listener EVENT_RECONNECT_ATTEMPT = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Logs.e("EVENT_RECONNECT_ATTEMPT");
+//            Logs.e("EVENT_RECONNECT_ATTEMPT");
         }
     };
     private Emitter.Listener EVENT_RECONNECT_ERROR = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Logs.e("EVENT_RECONNECT_ERROR");
+//            Logs.e("EVENT_RECONNECT_ERROR");
         }
     };
     private Emitter.Listener EVENT_RECONNECT_FAILED = new Emitter.Listener() {
@@ -306,8 +394,46 @@ public class SocketIO {
     private Emitter.Listener EVENT_RECONNECTING = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Logs.e("EVENT_RECONNECTING");
+//            Logs.e("EVENT_RECONNECTING");
         }
     };
 
+    private void exec(Command cmmond) {
+        // TODO Auto-generated method stub
+        try {
+//            app.setCmmond(cmmond);
+            switch (cmmond.getCommand()) {
+                case 1:
+                    NowinsActivity.exit();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("key", cmmond);
+                    Intent intent = new Intent(context,
+                            NowinsActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                    break;
+                case 2:
+                    context.sendBroadcast(new Intent(MyApp.FORWARD));
+                    break;
+                case 3:
+                    context.sendBroadcast(new Intent(MyApp.REWIND));
+                    break;
+                case 4:
+                    context.sendBroadcast(new Intent(MyApp.Cancle));
+                    break;
+                case 5:
+                case 7:
+                    context.sendBroadcast(new Intent(MyApp.PAUSE));
+                    break;
+                case 6:
+                    context.sendBroadcast(new Intent(MyApp.STOP));
+                    break;
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+    }
 }

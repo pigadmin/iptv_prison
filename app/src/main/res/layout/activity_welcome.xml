@@ -33,7 +33,7 @@
         android:layout_marginRight="50dp"
         android:gravity="center"
         android:singleLine="true"
-        android:textColor="#000"
+        android:textColor="@color/white"
         android:textSize="40sp" />
 
     <TextView
@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
+        android:textColor="@color/white"
         android:textSize="30sp" />
 
 </FrameLayout>

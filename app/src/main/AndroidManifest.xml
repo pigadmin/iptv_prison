@@ -15,7 +15,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.SetActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".view.LiveApkActivity" />
+        <activity android:name=".view.PlayerActivity" />
+        <activity android:name=".view.LiveActivity" />
+        <activity android:name=".view.RecordActivity" />
+        <activity android:name=".view.VideoActivity" />
+        <activity android:name=".view.SetActivity" />
+        <activity android:name=".view.ad.NowinsActivity" />
+        <activity android:name=".view.VideoTypeActivity" />
+
         <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +40,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

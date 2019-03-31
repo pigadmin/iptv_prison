@@ -12,17 +12,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="22dp"
-        android:layout_weight="1"
+        android:layout_marginLeft="164dp"
+        android:layout_marginTop="107dp"
+        android:layout_marginRight="164dp"
+        android:layout_marginBottom="80dp"
         android:orientation="horizontal">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mainrecyle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="154dp"
-            android:layout_marginRight="154dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

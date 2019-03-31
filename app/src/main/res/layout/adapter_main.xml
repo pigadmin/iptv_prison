@@ -29,7 +29,7 @@
             android:gravity="center"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textSize="24sp" />
 
     </LinearLayout>

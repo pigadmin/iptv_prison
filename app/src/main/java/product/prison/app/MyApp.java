@@ -26,6 +26,7 @@ import java.util.List;
 
 import product.prison.broadcast.MyAction;
 import product.prison.model.LogoData;
+import product.prison.model.Mings;
 import product.prison.model.MsgData;
 import product.prison.model.TMenu;
 import product.prison.service.MyService;
@@ -36,12 +37,18 @@ import product.prison.utils.Utils;
 
 
 public class MyApp extends Application {
-
+    public static final String PALY = "PALY";
+    public static final String PAUSE = "PAUSE";
+    public static final String STOP = "STOP";
+    public static final String FORWARD = "FORWARD";
+    public static final String REWIND = "REWIND";
+    public static final String Cancle = "Cancle";
 
     private SocketIO socketIO;
     public static String head = "http://";
     //        public static String ip = "192.168.2.14";
-    public static String ip = "192.168.2.25";
+//    public static String ip = "192.168.2.25";
+    public static String ip = "192.168.1.202";
     public static String port = "8089";
     public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";
@@ -53,6 +60,10 @@ public class MyApp extends Application {
     public static int templateType = 4; // templateType  1酒店 2医院 3学校 4监狱 5水疗
     public static int screenWidth;
     public static int screenHeight;
+
+    private static AudioManager am;
+    private static int maxvolume;
+    private static int defaultvolume;
 
     @Override
 
@@ -69,6 +80,8 @@ public class MyApp extends Application {
             }
 //            mac = SpUtils.getString(this, "mac", mac);
             mac = Utils.GetMac();
+            port = SpUtils.getString(this, "port", port);
+            sioport = SpUtils.getString(this, "sioport", sioport);
             apiurl = head + SpUtils.getString(this, "ip", ip) + ":" + port + apiName;
             siourl = head + SpUtils.getString(this, "ip", ip) + ":" + sioport + spaceName;
 
@@ -80,12 +93,12 @@ public class MyApp extends Application {
 
             socketIO = new SocketIO(this);
 
-            DisplayMetrics metrics = new DisplayMetrics();
-            WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-            windowManager.getDefaultDisplay().getMetrics(metrics);
+            am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            maxvolume = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            defaultvolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
 
-            screenWidth = metrics.widthPixels;
-            screenHeight = metrics.heightPixels;
+            DisplayMetrics dm = getResources().getDisplayMetrics();
+            screenWidth = dm.widthPixels;
 
             startService(new Intent(this, MyService.class));
 
@@ -93,7 +106,11 @@ public class MyApp extends Application {
             e.printStackTrace();
         }
     }
-
+    // 设置音量
+    public static void setStreamVolume(int percent) {
+        int volume = (int) Math.round((double) maxvolume * percent / 100);
+        am.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
+    }
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -155,4 +172,35 @@ public class MyApp extends Application {
     public void setBg(Drawable bg) {
         this.bg = bg;
     }
+
+    //    ----
+    public boolean isWeek() {
+        return week;
+    }
+
+    public void setWeek(boolean week) {
+        this.week = week;
+    }
+
+    public boolean week;
+
+    public boolean isMing() {
+        return ming;
+    }
+
+    public void setMing(boolean ming) {
+        this.ming = ming;
+    }
+
+    public boolean ming;
+
+    public Mings getMings() {
+        return mings;
+    }
+
+    public void setMings(Mings mings) {
+        this.mings = mings;
+    }
+
+    private Mings mings = new Mings();
 }
