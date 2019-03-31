@@ -1,8 +1,9 @@
 package product.prison.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Ad {
+public class Ad implements Serializable {
     private int id;
 
     private String name;

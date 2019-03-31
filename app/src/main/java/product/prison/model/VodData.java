@@ -1,8 +1,9 @@
 package product.prison.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class VodData {
+public class VodData implements Serializable {
     private int id;
 
     private int typeId;

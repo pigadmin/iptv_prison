@@ -5,6 +5,7 @@
     <string name="disable">功能处于停用状态</string>
     <string name="disconnect">连接服务器失败</string>
     <string name="urlerror">url异常</string>
+    <string name="downloadfail">下载失败</string>
 
     <string name="msginsname">计划插播：</string>
     <string name="insname">即时插播：</string>
@@ -13,4 +14,34 @@
     <string name="hot">最 热</string>
     <string name="news">最 新</string>
 
+    <string name="video_time">上一次观看到x,是否继续播放?</string>
+
+
+    <string name="wifi_network">网络设置</string>
+    <string name="wifi_ap">WIFI热点</string>
+    <string name="wifi_ssid">网络\tSSID:</string>
+    <string name="wifi_ssidname">AP</string>
+    <string name="wifi_safe">安\t全\t性:</string>
+    <string name="wifi_safetype">WAP2 PSK</string>
+    <string name="wifi_psw">密\t \t \t码:</string>
+    <string name="wifi_pswd">123456789</string>
+    <string name="wifi_showpsw">显示密码</string>
+    <string name="wifi_showpswd">(密码至少包含8个字符)</string>
+    <string name="wifi_start">开启</string>
+    <string name="wifi_onscuess">开启成功</string>
+    <string name="wifi_onerror">开启失败</string>
+    <string name="wifi_stop">关闭</string>
+    <string name="wifi_oferror">关闭失败</string>
+    <string name="wifi_ofscuess">关闭成功</string>
+    <string name="wifi_fail">开启wifi热点失败，请检查你输入的ssid和密码是否正确!</string>
+
+
+    <string name="usb_1">视频</string>
+    <string name="usb_2">音乐</string>
+    <string name="usb_3">图片</string>
+    <string name="usb_4">文档</string>
+    <string name="usb_5">其他</string>
+    <string name="usb_in">检测到USB设备</string>
+    <string name="usb_out">USB设备已拔出</string>
+    <string name="usb_error">USB路径异常，该功能不适用于此机顶盒</string>
 </resources>

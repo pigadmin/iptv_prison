@@ -1,8 +1,9 @@
 package product.prison.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Vod {
+public class Vod implements Serializable{
     private int pageNo;
 
     private int pageSize;

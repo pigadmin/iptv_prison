@@ -134,9 +134,9 @@ public class MyService extends Service implements Runnable, IScrollState {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        SpUtils.putString(MyService.this, "ip", cm.getServermessage().getServerip());
-                        SpUtils.putString(MyService.this, "port", cm.getServermessage().getServerPort() + "");
-                        SpUtils.putString(MyService.this, "sioport", cm.getServermessage().getSioPort() + "");
+                        SpUtils.putString(getApplicationContext(), "ip", cm.getServermessage().getServerip());
+                        SpUtils.putString(getApplicationContext(), "port", cm.getServermessage().getServerPort() + "");
+                        SpUtils.putString(getApplicationContext(), "sioport", cm.getServermessage().getSioPort() + "");
 
                         Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

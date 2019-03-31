@@ -57,7 +57,14 @@ public class MyApp extends Application {
     public static String siourl = head + ip + sioport + spaceName;
 
     public static String mac = "testcode";
-    public static int templateType = 4; // templateType  1酒店 2医院 3学校 4监狱 5水疗
+//    public static int templateType = 1; // templateType  1酒店 2医院 3学校 4监狱 5水疗
+//    public static int templateType = 2;
+//    public static int templateType = 3;
+    public static int templateType = 4;
+//    public static int templateType = 5;
+    public static String[] info = {"酒店信息", "医院信息", "学校信息", "监狱信息", "水疗信息",};
+    //  1酒店信息  2医院信息  3学校信息 4监狱信息 5 水疗信息
+
     public static int screenWidth;
     public static int screenHeight;
 
@@ -106,11 +113,13 @@ public class MyApp extends Application {
             e.printStackTrace();
         }
     }
+
     // 设置音量
     public static void setStreamVolume(int percent) {
         int volume = (int) Math.round((double) maxvolume * percent / 100);
         am.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
     }
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

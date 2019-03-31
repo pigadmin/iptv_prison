@@ -1,4 +1,4 @@
-package product.prison.view;
+package product.prison.view.video;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import product.prison.BaseActivity;
-import product.prison.MainActivity;
 import product.prison.R;
 import product.prison.adapter.VideoTypeAdapter;
 import product.prison.app.MyApp;

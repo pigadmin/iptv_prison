@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <product.prison.view.Head
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="164dp"
+        android:layout_marginTop="107dp"
+        android:layout_marginRight="164dp"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/right_grid_bg"
+        android:orientation="horizontal">
+
+        <WebView
+            android:id="@+id/fram_web"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></WebView>
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/fram_web_ico" />
+
+</FrameLayout>

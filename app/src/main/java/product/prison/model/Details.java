@@ -1,6 +1,8 @@
 package product.prison.model;
 
-public class Details {
+import java.io.Serializable;
+
+public class Details implements Serializable {
     private int id;
 
     private String name;

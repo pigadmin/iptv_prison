@@ -10,6 +10,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,11 @@ public class LiveApkActivity extends BaseActivity implements LiveAdapter.OnItemC
         if (Utils.isInstall(this, list.get(position).getPackage_name())) {
             Utils.startApk(this, list.get(position).getPackage_name(), "");
         } else {
-          new  Utils().Download(this, list.get(position).getPath(), true);
+            if (!list.get(position).getPath().startsWith("h")) {
+                Toast.makeText(getApplicationContext(), list.get(position).getName() + " " + getString(R.string.urlerror), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            new Utils().Download(this, list.get(position).getPath(), true);
         }
     }
 }

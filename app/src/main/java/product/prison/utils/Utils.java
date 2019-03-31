@@ -11,9 +11,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -29,6 +31,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import product.prison.R;
 
 public class Utils {
     public static Gson gson = new Gson();
@@ -106,6 +110,7 @@ public class Utils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
         return false;
     }
@@ -151,7 +156,7 @@ public class Utils {
 
     private static ProgressDialog mProgressDialog;
 
-    public  void Download(final Activity activity, final String url, final boolean install) {
+    public void Download(final Activity activity, final String url, final boolean install) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             mProgressDialog = new ProgressDialog(activity);
             final String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
@@ -159,14 +164,14 @@ public class Utils {
             final RequestParams requestParams = new RequestParams(url);
             // 为RequestParams设置文件下载后的保存路径
             requestParams.setSaveFilePath(path);
-            final  String fileName = url.substring(url.lastIndexOf("/")+1);
+            final String fileName = url.substring(url.lastIndexOf("/") + 1);
             // 下载完成后自动为文件命名
             requestParams.setAutoRename(true);
             x.http().get(requestParams, new Callback.ProgressCallback<File>() {
 
                 @Override
                 public void onSuccess(File result) {
-                    Logs.e("下载成功"+path + fileName);
+                    Logs.e("下载成功" + path + fileName);
                     mProgressDialog.dismiss();
                     if (install) {
                         install(activity, path + fileName);
@@ -176,6 +181,12 @@ public class Utils {
                 @Override
                 public void onError(Throwable ex, boolean isOnCallback) {
                     Logs.e("下载失败");
+//                    new Handler().post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Toast.makeText(activity, activity.getString(R.string.downloadfail), Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
                     mProgressDialog.dismiss();
                 }
 

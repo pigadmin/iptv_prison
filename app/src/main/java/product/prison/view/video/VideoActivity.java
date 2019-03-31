@@ -1,5 +1,6 @@
-package product.prison.view;
+package product.prison.view.video;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import product.prison.model.VodData;
 import product.prison.model.VodTypeData;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
+import product.prison.view.PlayerActivity;
 
 public class VideoActivity extends BaseActivity implements VideoListAdapter.OnItemClickListener, AdapterView.OnItemClickListener {
 
@@ -60,7 +62,7 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
             vodTypeData = (VodTypeData) getIntent().getExtras().get("key");
             type = vodTypeData.getId();
 
-            listAdapter = new VideoListAdapter(VideoActivity.this, list);
+            listAdapter = new VideoListAdapter(getApplicationContext(), list);
             left_list.setAdapter(listAdapter);
             listAdapter.setOnItemClickListener(VideoActivity.this);
 
@@ -134,6 +136,17 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        try {
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable("key", grid.get(position));
 
+            VodData vodData = grid.get(position);
+            Intent intent = new Intent(VideoActivity.this, PlayerActivity.class);
+            intent.putExtra("key", vodData);
+            startActivity(intent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

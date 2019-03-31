@@ -2,15 +2,12 @@ package product.prison;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -29,15 +26,14 @@ import product.prison.model.Live;
 import product.prison.model.TGson;
 import product.prison.model.TMenu;
 import product.prison.model.TranscribeData;
-import product.prison.model.WelcomeAd;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
 import product.prison.view.LiveActivity;
 import product.prison.view.LiveApkActivity;
 import product.prison.view.RecordActivity;
-import product.prison.view.SetActivity;
-import product.prison.view.VideoActivity;
-import product.prison.view.VideoTypeActivity;
+import product.prison.view.set.SetActivity;
+import product.prison.view.video.VideoApkActivity;
+import product.prison.view.video.VideoTypeActivity;
 
 public class MainActivity extends BaseActivity implements MainAdapter.OnItemClickListener {
     private MyApp app;
@@ -78,6 +74,11 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     list = json.getData();
                     if (list.isEmpty())
                         return;
+                    TMenu tMenu = new TMenu();
+                    tMenu.setId(-1);
+                    tMenu.setName(MyApp.info[MyApp.templateType - 1]);
+                    tMenu.setStatus(1);
+                    list.add(tMenu);
                     app.settMenu(list);
 
                     Logs.e(app.gettMenu().size() + "");
@@ -136,7 +137,10 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     getTranscribe();
                     break;
                 case 64://设置
-                    setting();
+                    startActivity(new Intent(this, SetActivity.class));
+                    break;
+                case -1://介绍
+                    info();
                     break;
             }
         } catch (Exception e) {
@@ -144,9 +148,46 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
         }
     }
 
-    private void setting() {
-        startActivity(new Intent(this, SetActivity.class));
+    private void info() {
+        RequestParams params = new RequestParams(MyApp.apiurl + "getInfo");
+        params.addBodyParameter("mac", MyApp.mac);
+        params.addBodyParameter("templateType", MyApp.templateType + "");
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Logs.e(result);
+//                    TGson<List<TranscribeData>> json = Utils.gson.fromJson(result,
+//                            new TypeToken<TGson<List<TranscribeData>>>() {
+//                            }.getType());
+//
+//                    Logs.e(json.getData().size() + "getTranscribe");
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("key", (Serializable) json.getData());
+//                    startActivity(new Intent(MainActivity.this, RecordActivity.class).putExtras(bundle));
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
+
 
     private void getTranscribe() {
         RequestParams params = new RequestParams(MyApp.apiurl + "getTranscribe");
@@ -205,6 +246,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                             startActivity(new Intent(MainActivity.this, VideoTypeActivity.class));
                             break;
                         case 2:
+                            startActivity(new Intent(MainActivity.this, VideoApkActivity.class));
                             break;
                     }
 //                Logs.e(json.getData() + "");
