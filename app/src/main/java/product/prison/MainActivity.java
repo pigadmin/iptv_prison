@@ -1,3 +1,4 @@
+/**/
 package product.prison;
 
 import android.content.Intent;
@@ -5,11 +6,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import org.xutils.common.Callback;
@@ -22,15 +23,17 @@ import java.util.List;
 
 import product.prison.adapter.MainAdapter;
 import product.prison.app.MyApp;
+import product.prison.model.InfoData;
 import product.prison.model.Live;
 import product.prison.model.TGson;
 import product.prison.model.TMenu;
 import product.prison.model.TranscribeData;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
-import product.prison.view.LiveActivity;
-import product.prison.view.LiveApkActivity;
-import product.prison.view.RecordActivity;
+import product.prison.view.info.InfoActivity;
+import product.prison.view.live.LiveActivity;
+import product.prison.view.live.LiveApkActivity;
+import product.prison.view.record.RecordActivity;
 import product.prison.view.set.SetActivity;
 import product.prison.view.video.VideoApkActivity;
 import product.prison.view.video.VideoTypeActivity;
@@ -43,6 +46,8 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     private ImageView head_logo;
     private ImageView qr_code;
     private List<TMenu> list = new ArrayList<>();
+    private int menusize = 0;
+    private List<InfoData> info = new ArrayList<>();
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -72,20 +77,8 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                             new TypeToken<TGson<List<TMenu>>>() {
                             }.getType());
                     list = json.getData();
-                    if (list.isEmpty())
-                        return;
-                    TMenu tMenu = new TMenu();
-                    tMenu.setId(-1);
-                    tMenu.setName(MyApp.info[MyApp.templateType - 1]);
-                    tMenu.setStatus(1);
-                    list.add(tMenu);
-                    app.settMenu(list);
-
-                    Logs.e(app.gettMenu().size() + "");
-
-                    adapter = new MainAdapter(MainActivity.this, list);
-                    adapter.setOnItemClickListener(MainActivity.this);
-                    mainrecyle.setAdapter(adapter);
+                    menusize = list.size() - 1;
+                    getInfo();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -123,14 +116,23 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 Toast.makeText(getApplicationContext(), R.string.disable, Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (position > menusize) {
+                Logs.e(info.size() + "(position - menusize + 1)" + (position - menusize + 1) + "getDetails" + info.get(position - menusize + 1).getDetails().size());
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("key", (Serializable) info.get(position - menusize + 1).getDetails());
+                startActivity(new Intent(MainActivity.this, InfoActivity.class).putExtras(bundle));
+                return;
+            }
             int id = list.get(position).getId();
             switch (id) {
                 case 60://首页
                     break;
                 case 61://直播
+                case 47:
                     live();
                     break;
                 case 62://点播
+                case 48:
                     vod();
                     break;
                 case 63://录播
@@ -139,8 +141,8 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 case 64://设置
                     startActivity(new Intent(this, SetActivity.class));
                     break;
-                case -1://介绍
-                    info();
+                case 43://新闻通知
+                    startActivity(new Intent(this, SetActivity.class));
                     break;
             }
         } catch (Exception e) {
@@ -148,7 +150,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
         }
     }
 
-    private void info() {
+    private void getInfo() {
         RequestParams params = new RequestParams(MyApp.apiurl + "getInfo");
         params.addBodyParameter("mac", MyApp.mac);
         params.addBodyParameter("templateType", MyApp.templateType + "");
@@ -157,15 +159,22 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             public void onSuccess(String result) {
                 try {
                     Logs.e(result);
-//                    TGson<List<TranscribeData>> json = Utils.gson.fromJson(result,
-//                            new TypeToken<TGson<List<TranscribeData>>>() {
-//                            }.getType());
-//
-//                    Logs.e(json.getData().size() + "getTranscribe");
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("key", (Serializable) json.getData());
-//                    startActivity(new Intent(MainActivity.this, RecordActivity.class).putExtras(bundle));
-                } catch (JsonSyntaxException e) {
+                    TGson<List<InfoData>> json = Utils.gson.fromJson(result,
+                            new TypeToken<TGson<List<InfoData>>>() {
+                            }.getType());
+                    info = json.getData();
+                    for (InfoData infoData : info) {
+                        TMenu tMenu = new TMenu();
+                        tMenu.setId(infoData.getId());
+//                        tMenu.setName(MyApp.info[MyApp.templateType - 1]);
+                        tMenu.setName(infoData.getName());
+                        tMenu.setStatus(1);
+                        list.add(tMenu);
+                    }
+                    adapter = new MainAdapter(MainActivity.this, list);
+                    adapter.setOnItemClickListener(MainActivity.this);
+                    mainrecyle.setAdapter(adapter);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -205,7 +214,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("key", (Serializable) json.getData());
                     startActivity(new Intent(MainActivity.this, RecordActivity.class).putExtras(bundle));
-                } catch (JsonSyntaxException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

@@ -1,4 +1,4 @@
-package product.prison.view;
+package product.prison.view.live;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,22 +25,20 @@ import java.util.List;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.LiveListAdapter;
-import product.prison.adapter.RecordListAdapter;
 import product.prison.app.MyApp;
 import product.prison.model.LiveData;
-import product.prison.model.TranscribeData;
 import product.prison.utils.Logs;
 import product.prison.utils.SpUtils;
 import product.prison.utils.Utils;
 
-public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     private MyApp app;
     private int defaultchannel = 0;
     private int channel = 0;
     private TextView live_no_b;
     private VideoView live_player;
-    private List<TranscribeData> livelist = new ArrayList<>();
+    private List<LiveData> livelist = new ArrayList<>();
     private AudioManager audioManager;
     private ListView live_list;
     private TextView live_count;
@@ -59,7 +57,7 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
 //            if (live_player.isPlaying())
 //                live_player.stopPlayback();
                         String name = livelist.get(channel).getName();
-                        url = livelist.get(channel).getPath();
+                        url = livelist.get(channel).getAddress();
                         Logs.e(channel + ". " + name + " " + url);
 
                         live_no_b.setText((channel + 1) + "");
@@ -114,8 +112,8 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
     @Override
     public void loadData() {
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        channel = SpUtils.getInt(this, "record", defaultchannel);
-        livelist = (List<TranscribeData>) getIntent().getExtras().get("key");
+        channel = SpUtils.getInt(this, "channel", defaultchannel);
+        livelist = (List<LiveData>) getIntent().getExtras().get("key");
 
         handler.sendEmptyMessage(0);
     }
@@ -147,7 +145,7 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
             live_list = view.findViewById(R.id.live_list);
             live_count = view
                     .findViewById(R.id.live_count);
-            live_list.setAdapter(new RecordListAdapter(this, livelist));
+            live_list.setAdapter(new LiveListAdapter(this, livelist));
             live_count.setText("频道总数(" + livelist.size() + ")");
             live_list.setSelectionFromTop(channel, 220);
             popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
@@ -226,7 +224,7 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub
-        SpUtils.putInt(this, "record", channel);
+        SpUtils.putInt(this, "channel", channel);
         super.onStop();
     }
 

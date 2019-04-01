@@ -47,8 +47,8 @@ public class MyApp extends Application {
     private SocketIO socketIO;
     public static String head = "http://";
     //        public static String ip = "192.168.2.14";
-//    public static String ip = "192.168.2.25";
-    public static String ip = "192.168.1.202";
+    public static String ip = "192.168.2.25";
+//    public static String ip = "192.168.1.202";
     public static String port = "8089";
     public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";
@@ -57,16 +57,14 @@ public class MyApp extends Application {
     public static String siourl = head + ip + sioport + spaceName;
 
     public static String mac = "testcode";
-//    public static int templateType = 1; // templateType  1酒店 2医院 3学校 4监狱 5水疗
-//    public static int templateType = 2;
-//    public static int templateType = 3;
-    public static int templateType = 4;
-//    public static int templateType = 5;
-    public static String[] info = {"酒店信息", "医院信息", "学校信息", "监狱信息", "水疗信息",};
-    //  1酒店信息  2医院信息  3学校信息 4监狱信息 5 水疗信息
+//    public static int templateType = 1; //1酒店
+//    public static int templateType = 2;//2医院
+    public static int templateType = 3;//3学校
+//    public static int templateType = 4;//4监狱
+//    public static int templateType = 5;//5水疗
+//    public static String[] info = {"酒店信息", "医院信息", "学校信息", "监狱信息", "水疗信息",};
 
     public static int screenWidth;
-    public static int screenHeight;
 
     private static AudioManager am;
     private static int maxvolume;
@@ -152,15 +150,6 @@ public class MyApp extends Application {
         this.logoData = logoData;
     }
 
-    public List<TMenu> gettMenu() {
-        return tMenu;
-    }
-
-    public void settMenu(List<TMenu> tMenu) {
-        this.tMenu = tMenu;
-    }
-
-    private List<TMenu> tMenu = new ArrayList<>();
 
     public long getServertime() {
         return servertime;

@@ -1,4 +1,4 @@
-package product.prison.view;
+package product.prison.view.video;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -46,6 +46,8 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
     private int vodtime = 0;
     private String url = "";
     private int vid = 0;
+    private int position = 0;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -88,15 +90,17 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
         super.onPause();
     }
 
+
     @Override
     public void loadData() {
         try {
             vodData = (VodData) getIntent().getSerializableExtra("key");
-            res_video_title.setText(vodData.getName());
+            position = getIntent().getIntExtra("position", 0);
+            res_video_title.setText(vodData.getName() + " (" + vodData.getDetails().get(position).getName() + ")");
             res_video_title.setVisibility(View.VISIBLE);
             vodtime = SpUtils.getInt(this, "video" + vodData.getId(), 0);
-            url = vodData.getDetails().get(0).getFilePath();
-            vid = vodData.getDetails().get(0).getId();
+            url = vodData.getDetails().get(position).getFilePath();
+            vid = vodData.getDetails().get(position).getId();
             Logs.e(url);
             if (vodtime > 0) {
                 crt(vodtime);

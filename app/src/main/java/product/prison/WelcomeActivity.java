@@ -1,5 +1,6 @@
 package product.prison;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -7,7 +8,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,9 +28,11 @@ import java.util.List;
 import product.prison.app.MyApp;
 import product.prison.model.LogoData;
 import product.prison.model.TGson;
+import product.prison.model.UserData;
 import product.prison.model.WelcomeAd;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
+import product.prison.utils.SpUtils;
 import product.prison.utils.Utils;
 
 public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener {
@@ -38,6 +44,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
     private VideoView welcome_video;
     private TextView welcome_tips, welcome_time_tips;
     private WelcomeAd currentad;
+    private String password = "940504";
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -52,6 +59,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                         }
                         Logs.e("网络已连接");
                         checkAuth();
+                        getLogo();
                         break;
                     case 1:
                         currentad = (WelcomeAd) msg.getData().getSerializable("key");
@@ -121,10 +129,8 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                     if (json.getData() == null)
                         return;
                     myApp.setServertime(json.getData());
-                    getWelComeAd();
+                    getUser();
                     Logs.e(Utils.formatMyTime("yyyy-MM-dd HH:mm:ss", json.getData()));
-
-                    getLogo();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -145,6 +151,45 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                         checkAuth();
                     }
                 }.start();
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+    private void getUser() {
+        RequestParams params = new RequestParams(MyApp.apiurl + "getUser");
+        params.addBodyParameter("mac", MyApp.mac);
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Logs.e(result);
+                    TGson<UserData> json = Utils.gson.fromJson(result,
+                            new TypeToken<TGson<UserData>>() {
+                            }.getType());
+                    password = json.getData().getPassword();
+                    if (password != null && !password.trim().equals("") && MyApp.templateType == 3) {
+                        inputPassword();
+                        return;
+                    }
+                    getWelComeAd();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
             }
 
             @Override
@@ -338,6 +383,43 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
     public void onPrepared(MediaPlayer mp) {
         mp.setLooping(true);
         mp.start();
+    }
+
+    private AlertDialog dialog;
+
+    private void inputPassword() {
+        // TODO Auto-generated method stub
+        try {
+            dialog = new AlertDialog.Builder(this).create();
+            dialog.setCancelable(false);
+            dialog.setView(new EditText(this));
+            dialog.show();
+            dialog.setContentView(R.layout.serverip_dialog);
+            final EditText pwd = dialog
+                    .findViewById(R.id.serverip);
+            pwd.setHint(R.string.password);
+            pwd.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            pwd.requestFocus();
+            ImageButton serverip_ok = dialog
+                    .findViewById(R.id.serverip_ok);
+            serverip_ok.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    if (!password.equals(pwd.getText().toString().trim())) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    dialog.dismiss();
+                    getWelComeAd();
+                }
+            });
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
     }
+
+
 }

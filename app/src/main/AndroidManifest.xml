@@ -17,10 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-        <activity android:name=".view.LiveApkActivity" />
-        <activity android:name=".view.PlayerActivity" />
-        <activity android:name=".view.LiveActivity" />
-        <activity android:name=".view.RecordActivity" />
+        <activity android:name=".view.live.LiveApkActivity" />
+        <activity android:name=".view.video.PlayerActivity" />
+        <activity android:name=".view.live.LiveActivity" />
+        <activity android:name=".view.record.RecordActivity" />
         <activity android:name=".view.video.VideoActivity" />
         <activity android:name=".view.set.SetActivity" />
         <activity android:name=".view.ad.NowinsActivity" />
@@ -29,6 +29,7 @@
         <activity android:name=".view.set.WebActivity" />
         <activity android:name=".view.set.WifiActivity" />
         <activity android:name=".view.set.UsbActivity" />
+        <activity android:name=".view.info.InfoActivity" />
         <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

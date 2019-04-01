@@ -89,11 +89,11 @@ public class SetActivity extends BaseActivity implements CommonAdapter.OnItemCli
     private void setip() {
         // TODO Auto-generated method stub
         try {
-            serverip_dialog = new AlertDialog.Builder(activity).create();
-            serverip_dialog.setView(new EditText(activity));
+            serverip_dialog = new AlertDialog.Builder(this).create();
+            serverip_dialog.setView(new EditText(this));
             serverip_dialog.show();
             serverip_dialog.setContentView(R.layout.serverip_dialog);
-            final EditText serverip = (EditText) serverip_dialog
+            final EditText serverip = serverip_dialog
                     .findViewById(R.id.serverip);
             serverip.setText(MyApp.ip);
             serverip.requestFocus();

@@ -25,13 +25,17 @@
             android:background="@drawable/left_list_bg"></android.support.v7.widget.RecyclerView>
 
 
-        <LinearLayout
-            android:id="@+id/fragment"
+        <ImageView
+            android:id="@+id/right_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="30dp"
             android:background="@drawable/right_grid_bg"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical"
+            android:paddingLeft="50dp"
+            android:paddingTop="20dp"
+            android:paddingRight="50dp"
+            android:paddingBottom="20dp"></ImageView>
 
     </LinearLayout>
 </FrameLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="600dp"
+        android:layout_height="350dp"
+        android:background="@drawable/teleplay_bg"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <GridView
+            android:id="@+id/teleplay_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:horizontalSpacing="16dp"
+            android:listSelector="@drawable/teleplay_select"
+            android:numColumns="10"
+            android:verticalSpacing="15dp"></GridView>
+    </LinearLayout>
+
+</LinearLayout>

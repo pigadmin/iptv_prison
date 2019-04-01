@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
@@ -37,11 +38,11 @@ public class WifiActivity extends BaseActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.wifi_start:
                 flag = true;
-//                AppTool.toast(context, getString(R.string.wifi_onscuess), 0, Gravity.CENTER, 0, 0);
+                Toast.makeText(getApplicationContext(), getString(R.string.wifi_onscuess), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.wifi_stop:
                 flag = false;
-//                AppTool.toast(context, getString(R.string.wifi_ofscuess), 0, Gravity.CENTER, 0, 0);
+                Toast.makeText(getApplicationContext(), getString(R.string.wifi_ofscuess), Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
@@ -51,7 +52,7 @@ public class WifiActivity extends BaseActivity implements View.OnClickListener {
                     && !wifi_psw.getText().toString().equals("")) {
                 setWifiApEnabled(flag);
             } else {
-//                AppTool.toast(context, getString(R.string.wifi_fail), 0, Gravity.CENTER, 0, 0);
+                Toast.makeText(getApplicationContext(), getString(R.string.wifi_fail), Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             // TODO: handle exception
@@ -76,20 +77,20 @@ public class WifiActivity extends BaseActivity implements View.OnClickListener {
             boolean status = (Boolean) method.invoke(wifiManager, apConfig,
                     enabled);
 
-//            if (enabled && status) {
-//                AppTool.toast(context, getString(R.string.wifi_onscuess), 0, Gravity.CENTER, 0, 0);
-//            } else if (!enabled && status) {
-//                AppTool.toast(context, getString(R.string.wifi_ofscuess), 0, Gravity.CENTER, 0, 0);
-//
-//            }
+            if (enabled && status) {
+                Toast.makeText(getApplicationContext(), getString(R.string.wifi_onscuess), Toast.LENGTH_SHORT).show();
+            } else if (!enabled && status) {
+                Toast.makeText(getApplicationContext(), getString(R.string.wifi_ofscuess), Toast.LENGTH_SHORT).show();
+
+            }
             return status;
         } catch (Exception e) {
 
-//            if (enabled) {
-//                AppTool.toast(context, getString(R.string.wifi_onerror), 0, Gravity.CENTER, 0, 0);
-//            } else {
-//                AppTool.toast(context, getString(R.string.wifi_oferror), 0, Gravity.CENTER, 0, 0);
-//            }
+            if (enabled) {
+                Toast.makeText(getApplicationContext(), getString(R.string.wifi_onerror), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.wifi_oferror), Toast.LENGTH_SHORT).show();
+            }
             return false;
         }
     }

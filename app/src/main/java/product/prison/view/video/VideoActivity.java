@@ -1,5 +1,6 @@
 package product.prison.view.video;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import product.prison.BaseActivity;
 import product.prison.R;
+import product.prison.adapter.TeleplayGridAdapter;
 import product.prison.adapter.VideoGridAdapter;
 import product.prison.adapter.VideoListAdapter;
 import product.prison.app.MyApp;
@@ -28,7 +30,6 @@ import product.prison.model.VodData;
 import product.prison.model.VodTypeData;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
-import product.prison.view.PlayerActivity;
 
 public class VideoActivity extends BaseActivity implements VideoListAdapter.OnItemClickListener, AdapterView.OnItemClickListener {
 
@@ -41,6 +42,11 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
     private List<VodData> grid = new ArrayList<>();
     private GridView right_grid;
     private VideoGridAdapter gridAdapter;
+
+    private AlertDialog teleplay_dialog = null;
+    private GridView teleplay_grid;
+    private TeleplayGridAdapter teleplayadapter;
+    private VodData vodData;
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -134,19 +140,53 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
         });
     }
 
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
 //            Bundle bundle = new Bundle();
 //            bundle.putSerializable("key", grid.get(position));
 
-            VodData vodData = grid.get(position);
-            Intent intent = new Intent(VideoActivity.this, PlayerActivity.class);
-            intent.putExtra("key", vodData);
-            startActivity(intent);
+            vodData = grid.get(position);
+
+            if (vodData.getDetails().size() < 2) {     //电影或其他资源
+                Intent intent = new Intent(VideoActivity.this, PlayerActivity.class);
+                intent.putExtra("position", 0);
+                intent.putExtra("key", vodData);
+                startActivity(intent);
+            } else { //电视剧
+                teledialog();
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+    public void teledialog() {
+        // TODO Auto-generated method stub
+        if (teleplay_dialog != null & teleplay_dialog.isShowing())
+            return;
+        teleplay_dialog = new AlertDialog.Builder(this).create();
+        teleplay_dialog.show();
+
+        teleplay_dialog.setContentView(R.layout.dialog_teleplay);
+
+        teleplay_grid = teleplay_dialog.findViewById(R.id.teleplay_grid);
+        teleplayadapter = new TeleplayGridAdapter(getApplicationContext(), vodData.getDetails());
+        teleplay_grid.setAdapter(teleplayadapter);
+        teleplay_grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(VideoActivity.this, PlayerActivity.class);
+                intent.putExtra("position", 0);
+                intent.putExtra("key", vodData);
+                startActivity(intent);
+            }
+        });
+
+    }
+
 }
