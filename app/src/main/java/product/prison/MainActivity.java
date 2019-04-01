@@ -34,6 +34,7 @@ import product.prison.utils.Utils;
 import product.prison.view.info.InfoActivity;
 import product.prison.view.live.LiveActivity;
 import product.prison.view.live.LiveApkActivity;
+import product.prison.view.news.NewsActivity;
 import product.prison.view.record.RecordActivity;
 import product.prison.view.set.SetActivity;
 import product.prison.view.video.VideoApkActivity;
@@ -118,10 +119,12 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 return;
             }
             if (position > menusize - 1) {
-                Logs.e(info.size() + "(position - menusize )" + (position - menusize) + "getDetails" + info.get(position - menusize).getDetails().size());
+                Logs.e(info.size() + "长度  位置" + (position - menusize) + " getDetails长度" + info.get(position - menusize).getDetails().size());
                 List<Details> details = info.get(position - menusize).getDetails();
-                if (details.isEmpty())
+                if (details.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.noneconnent), Toast.LENGTH_SHORT).show();
                     return;
+                }
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("key", (Serializable) details);
                 startActivity(new Intent(MainActivity.this, InfoActivity.class).putExtras(bundle));
@@ -129,16 +132,13 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             }
             String name = list.get(position).getName();
             int id = list.get(position).getId();
-            if (name.contains("直播") || name.contains("电视") || name.contains("tv")) {
-                live();
-            }
             switch (id) {
                 case 60://首页
                     break;
                 case 61://直播
                 case 47:
                     live();
-                break;
+                    break;
                 case 62://点播
                 case 48:
                     vod();
@@ -149,7 +149,8 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 case 64://设置
                     startActivity(new Intent(this, SetActivity.class));
                     break;
-                case 43://新闻通知
+                case 43://3新闻通知
+                    startActivity(new Intent(this, NewsActivity.class));
                     break;
             }
         } catch (Exception e) {

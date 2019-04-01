@@ -37,6 +37,7 @@ public class WebActivity extends BaseActivity {
     @Override
     public void loadData() {
         try {
+            Home = getIntent().getStringExtra("key");
             WebSettings websettings = fram_web.getSettings();
             websettings.setJavaScriptEnabled(true);
             websettings.setBuiltInZoomControls(true);

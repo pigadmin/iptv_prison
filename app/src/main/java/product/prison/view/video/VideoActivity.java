@@ -52,6 +52,8 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
     public void initView(Bundle savedInstanceState) {
         left_list = f(R.id.left_list);
         right_grid = f(R.id.right_grid);
+        right_grid.setOnItemClickListener(VideoActivity.this);
+
 
         layoutmanager = new LinearLayoutManager(this);
         layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -117,7 +119,7 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
                     Logs.e(grid.size() + "");
                     gridAdapter = new VideoGridAdapter(VideoActivity.this, grid);
                     right_grid.setAdapter(gridAdapter);
-                    right_grid.setOnItemClickListener(VideoActivity.this);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -16,21 +16,54 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
-        <activity android:name=".view.live.LiveApkActivity" />
-        <activity android:name=".view.video.PlayerActivity" />
-        <activity android:name=".view.live.LiveActivity" />
-        <activity android:name=".view.record.RecordActivity" />
-        <activity android:name=".view.video.VideoActivity" />
-        <activity android:name=".view.set.SetActivity" />
-        <activity android:name=".view.ad.NowinsActivity" />
-        <activity android:name=".view.video.VideoTypeActivity" />
-        <activity android:name=".view.video.VideoApkActivity" />
-        <activity android:name=".view.set.WebActivity" />
-        <activity android:name=".view.set.WifiActivity" />
-        <activity android:name=".view.set.UsbActivity" />
-        <activity android:name=".view.info.InfoActivity" />
-        <activity android:name=".WelcomeActivity">
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.live.LiveApkActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.video.PlayerActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.live.LiveActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.record.RecordActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.video.VideoActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.set.SetActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.ad.NowinsActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.video.VideoTypeActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.video.VideoApkActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.set.WebActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.set.WifiActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.set.UsbActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.info.InfoActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.news.NewsActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".WelcomeActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

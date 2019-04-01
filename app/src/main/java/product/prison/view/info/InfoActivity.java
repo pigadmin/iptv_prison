@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -75,7 +76,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
     private void image(int position) {
         if (list.isEmpty())
             return;
-        Logs.e("@@" + list.get(position).getIcon());
+//        Logs.e("@@" + list.get(position).getIcon());
 
         ImageUtils.display(right_image, list.get(position).getIcon());
     }
@@ -83,7 +84,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
 
     @Override
     public int getContentId() {
-        return R.layout.activity_video;
+        return R.layout.activity_info;
     }
 
 

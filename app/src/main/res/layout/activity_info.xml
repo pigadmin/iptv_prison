@@ -32,10 +32,8 @@
             android:layout_marginLeft="30dp"
             android:background="@drawable/right_grid_bg"
             android:orientation="vertical"
-            android:paddingLeft="50dp"
-            android:paddingTop="20dp"
-            android:paddingRight="50dp"
-            android:paddingBottom="20dp"></ImageView>
+            android:padding="5dp"
+            android:scaleType="fitXY"></ImageView>
 
     </LinearLayout>
 </FrameLayout>
