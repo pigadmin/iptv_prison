@@ -23,6 +23,7 @@ import java.util.List;
 
 import product.prison.adapter.MainAdapter;
 import product.prison.app.MyApp;
+import product.prison.model.Details;
 import product.prison.model.InfoData;
 import product.prison.model.Live;
 import product.prison.model.TGson;
@@ -77,7 +78,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                             new TypeToken<TGson<List<TMenu>>>() {
                             }.getType());
                     list = json.getData();
-                    menusize = list.size() - 1;
+                    menusize = list.size();
                     getInfo();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -116,21 +117,28 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 Toast.makeText(getApplicationContext(), R.string.disable, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (position > menusize) {
-                Logs.e(info.size() + "(position - menusize + 1)" + (position - menusize + 1) + "getDetails" + info.get(position - menusize + 1).getDetails().size());
+            if (position > menusize - 1) {
+                Logs.e(info.size() + "(position - menusize )" + (position - menusize) + "getDetails" + info.get(position - menusize).getDetails().size());
+                List<Details> details = info.get(position - menusize).getDetails();
+                if (details.isEmpty())
+                    return;
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("key", (Serializable) info.get(position - menusize + 1).getDetails());
+                bundle.putSerializable("key", (Serializable) details);
                 startActivity(new Intent(MainActivity.this, InfoActivity.class).putExtras(bundle));
                 return;
             }
+            String name = list.get(position).getName();
             int id = list.get(position).getId();
+            if (name.contains("直播") || name.contains("电视") || name.contains("tv")) {
+                live();
+            }
             switch (id) {
                 case 60://首页
                     break;
                 case 61://直播
                 case 47:
                     live();
-                    break;
+                break;
                 case 62://点播
                 case 48:
                     vod();
@@ -142,7 +150,6 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     startActivity(new Intent(this, SetActivity.class));
                     break;
                 case 43://新闻通知
-                    startActivity(new Intent(this, SetActivity.class));
                     break;
             }
         } catch (Exception e) {
@@ -169,6 +176,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
 //                        tMenu.setName(MyApp.info[MyApp.templateType - 1]);
                         tMenu.setName(infoData.getName());
                         tMenu.setStatus(1);
+                        tMenu.setIcon(infoData.getPath());
                         list.add(tMenu);
                     }
                     adapter = new MainAdapter(MainActivity.this, list);

@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.xutils.common.Callback;
+import org.xutils.common.task.PriorityExecutor;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
@@ -102,17 +103,15 @@ public class Utils {
     }
 
     public static boolean isInstall(Context context, String packageName) {
-        try {
-            PackageInfo pin = context.getPackageManager().getPackageInfo(
-                    packageName, 0);
-            if (pin != null) {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (TextUtils.isEmpty(packageName)) {
             return false;
         }
-        return false;
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static boolean startApk(Context context, String pkgNmae, String className) {
@@ -154,39 +153,37 @@ public class Utils {
         return mac;
     }
 
+
     private static ProgressDialog mProgressDialog;
 
     public void Download(final Activity activity, final String url, final boolean install) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             mProgressDialog = new ProgressDialog(activity);
-            final String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
-            // mDownloadUrl为JSON从服务器端解析出来的下载地址
-            final RequestParams requestParams = new RequestParams(url);
-            // 为RequestParams设置文件下载后的保存路径
-            requestParams.setSaveFilePath(path);
-            final String fileName = url.substring(url.lastIndexOf("/") + 1);
-            // 下载完成后自动为文件命名
-            requestParams.setAutoRename(true);
-            x.http().get(requestParams, new Callback.ProgressCallback<File>() {
+
+            final String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "iptv" + File.separator;
+            final RequestParams params = new RequestParams(url);
+            params.setAutoResume(true);//设置是否在下载是自动断点续传
+            params.setAutoRename(false);//设置是否根据头信息自动命名文件
+            final String filepath = path + url.substring(url.lastIndexOf("/") + 1);
+            params.setSaveFilePath(filepath);
+            params.setExecutor(new PriorityExecutor(2, true));//自定义线程池,有效的值范围[1, 3], 设置为3时, 可能阻塞图片加载.
+            params.setCancelFast(true);//是否可以被立即停止.
+            x.http().get(params, new Callback.ProgressCallback<File>() {
 
                 @Override
                 public void onSuccess(File result) {
-                    Logs.e("下载成功" + path + fileName);
+                    Logs.e("下载成功" + url + " " +filepath);
+                    Toast.makeText(activity, activity.getString(R.string.downloadsuccess), Toast.LENGTH_SHORT).show();
                     mProgressDialog.dismiss();
                     if (install) {
-                        install(activity, path + fileName);
+                        install(activity, filepath);
                     }
                 }
 
                 @Override
                 public void onError(Throwable ex, boolean isOnCallback) {
-                    Logs.e("下载失败");
-//                    new Handler().post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Toast.makeText(activity, activity.getString(R.string.downloadfail), Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
+                    Logs.e("下载失败 " + url);
+                    Toast.makeText(activity, activity.getString(R.string.downloadfail), Toast.LENGTH_SHORT).show();
                     mProgressDialog.dismiss();
                 }
 

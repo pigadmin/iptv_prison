@@ -8,7 +8,8 @@
     <string name="disable">功能处于停用状态</string>
     <string name="disconnect">连接服务器失败</string>
     <string name="urlerror">url异常</string>
-    <string name="downloadfail">下载失败</string>
+   <string name="downloadfail">下载失败</string>
+    <string name="downloadsuccess">下载成功</string>
 
     <string name="msginsname">计划插播：</string>
     <string name="insname">即时插播：</string>

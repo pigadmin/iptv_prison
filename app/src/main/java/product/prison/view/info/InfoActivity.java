@@ -61,7 +61,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
     public void loadData() {
         try {
             list = (List<Details>) getIntent().getExtras().get("key");
-            Logs.e(list.size() + "info.size() ");
+//            Logs.e(list.size() + "info.size() ");
             listAdapter = new InfoListAdapter(getApplicationContext(), list);
             left_list.setAdapter(listAdapter);
             listAdapter.setOnItemClickListener(InfoActivity.this);
@@ -75,6 +75,8 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
     private void image(int position) {
         if (list.isEmpty())
             return;
+        Logs.e("@@" + list.get(position).getIcon());
+
         ImageUtils.display(right_image, list.get(position).getIcon());
     }
 

@@ -31,13 +31,16 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="30dp"
             android:background="@drawable/right_grid_bg"
+            android:horizontalSpacing="5dp"
             android:listSelector="@drawable/vod_select_bg"
             android:numColumns="5"
             android:orientation="vertical"
-            android:paddingLeft="50dp"
-            android:paddingTop="20dp"
-            android:paddingRight="50dp"
-            android:paddingBottom="20dp"></GridView>
+            android:paddingLeft="40dp"
+            android:paddingTop="15dp"
+            android:paddingRight="40dp"
+            android:paddingBottom="15dp"
+            android:scrollbars="none"
+            android:verticalSpacing="3dp"></GridView>
 
     </LinearLayout>
 </FrameLayout>

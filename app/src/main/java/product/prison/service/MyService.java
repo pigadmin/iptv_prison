@@ -58,7 +58,14 @@ public class MyService extends Service implements Runnable, IScrollState {
         filter.addAction(MyAction.updatetitle);
         registerReceiver(receiver, filter);
         showMessage();
-        Start();
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Start();
+            }
+        }).start();
     }
 
     private static final int PORT = 9999;
