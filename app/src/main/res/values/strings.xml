@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">iptv_prison</string>
+    <string name="app_name">IPTV</string>
     <string name="title_activity_base">BaseActivity</string>
 
     <string name="password">输入终端密码解锁</string>

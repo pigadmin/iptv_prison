@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -113,6 +114,9 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
                     TGson<Vod> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Vod>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     grid = json.getData().getData();
 //                    if (grid == null || grid.isEmpty())
 //                        return;

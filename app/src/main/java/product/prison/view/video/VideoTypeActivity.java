@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -61,6 +62,9 @@ public class VideoTypeActivity extends BaseActivity implements VideoTypeAdapter.
                     TGson<List<VodTypeData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<VodTypeData>>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     list = json.getData();
                     if (list == null || list.isEmpty())
                         return;

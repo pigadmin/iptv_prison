@@ -156,9 +156,9 @@ public class Utils {
 
     private static ProgressDialog mProgressDialog;
 
-    public void Download(final Activity activity, final String url, final boolean install) {
+    public void Download(final Context context, final String url, final boolean install) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            mProgressDialog = new ProgressDialog(activity);
+            mProgressDialog = new ProgressDialog(context);
 
             final String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "iptv" + File.separator;
             final RequestParams params = new RequestParams(url);
@@ -173,17 +173,17 @@ public class Utils {
                 @Override
                 public void onSuccess(File result) {
                     Logs.e("下载成功" + url + " " +filepath);
-                    Toast.makeText(activity, activity.getString(R.string.downloadsuccess), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.downloadsuccess), Toast.LENGTH_SHORT).show();
                     mProgressDialog.dismiss();
                     if (install) {
-                        install(activity, filepath);
+                        install(context, filepath);
                     }
                 }
 
                 @Override
                 public void onError(Throwable ex, boolean isOnCallback) {
                     Logs.e("下载失败 " + url);
-                    Toast.makeText(activity, activity.getString(R.string.downloadfail), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.downloadfail), Toast.LENGTH_SHORT).show();
                     mProgressDialog.dismiss();
                 }
 
@@ -225,7 +225,7 @@ public class Utils {
         }
     }
 
-    private void install(Activity activity, String s) {
+    private void install(Context context, String s) {
         ShellExecute ex = new ShellExecute();
         String[] cmd = {"chmod", "607", s};
         try {
@@ -234,7 +234,7 @@ public class Utils {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse("file://" + s),
                     "application/vnd.android.package-archive");
-            activity.startActivity(intent);
+            context.startActivity(intent);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

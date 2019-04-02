@@ -58,6 +58,9 @@ public class VideoApkActivity extends BaseActivity implements LiveAdapter.OnItem
                     TGson<List<LiveData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<LiveData>>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     if (json.getData() == null || json.getData().isEmpty())
                         return;
                     list = json.getData();

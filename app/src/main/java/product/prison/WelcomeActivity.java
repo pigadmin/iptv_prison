@@ -126,6 +126,9 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                     TGson<Long> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Long>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     if (json.getData() == null)
                         return;
                     myApp.setServertime(json.getData());
@@ -167,15 +170,30 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
 
     private void getUser() {
         RequestParams params = new RequestParams(MyApp.apiurl + "getUser");
+        params.setConnectTimeout(5 * 1000);
         params.addBodyParameter("mac", MyApp.mac);
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 try {
                     Logs.e(result);
-                    TGson<UserData> json = Utils.gson.fromJson(result,
+                    final TGson<UserData> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<UserData>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                        new CountDownTimer(15 * 1000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                welcome_tips.setText(json.getMsg() + "\n" + MyApp.mac);
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                checkAuth();
+                            }
+                        }.start();
+                    }
                     password = json.getData().getPassword();
                     if (password != null && !password.trim().equals("") && MyApp.templateType == 3) {
                         inputPassword();
@@ -216,6 +234,9 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                     TGson<LogoData> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<LogoData>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     if (json.getData() == null)
                         return;
                     myApp.setLogoData(json.getData());
@@ -256,6 +277,9 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                     TGson<List<WelcomeAd>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<WelcomeAd>>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     if (json.getData() == null || json.getData().isEmpty())
                         return;
                     long totalTime = 0;

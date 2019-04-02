@@ -8,6 +8,7 @@ import android.webkit.WebViewClient;
 
 import product.prison.BaseActivity;
 import product.prison.R;
+import product.prison.utils.Logs;
 
 /**
  * Created by zhu on 2017/9/26.
@@ -21,6 +22,7 @@ public class WebActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        Logs.e(fram_web.canGoBack() + "##");
         if (fram_web.canGoBack()) {
             fram_web.goBack();
         } else {

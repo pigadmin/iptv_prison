@@ -2,6 +2,9 @@
 package product.prison;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.io.Serializable;
@@ -23,6 +27,7 @@ import java.util.List;
 
 import product.prison.adapter.MainAdapter;
 import product.prison.app.MyApp;
+import product.prison.model.Backs;
 import product.prison.model.Details;
 import product.prison.model.InfoData;
 import product.prison.model.Live;
@@ -50,6 +55,27 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     private List<TMenu> list = new ArrayList<>();
     private int menusize = 0;
     private List<InfoData> info = new ArrayList<>();
+    private MediaPlayer mediaPlayer;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.start();
+                mediaPlayer.setLooping(true);
+            }
+        });
+        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                return true;
+            }
+        });
+    }
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -78,6 +104,9 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     TGson<List<TMenu>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<TMenu>>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     list = json.getData();
                     menusize = list.size();
                     getInfo();
@@ -170,6 +199,9 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     TGson<List<InfoData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<InfoData>>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     info = json.getData();
                     for (InfoData infoData : info) {
                         TMenu tMenu = new TMenu();
@@ -218,7 +250,9 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     TGson<List<TranscribeData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<TranscribeData>>>() {
                             }.getType());
-
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     Logs.e(json.getData().size() + "getTranscribe");
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("key", (Serializable) json.getData());
@@ -257,6 +291,9 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     TGson<Integer> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Integer>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     if (json.getData() == null)
                         return;
                     switch (json.getData()) {
@@ -302,6 +339,9 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     TGson<Live> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Live>>() {
                             }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
                     int type = json.getData().getType();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("key", (Serializable) json.getData().getData());
@@ -338,7 +378,8 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
         });
 
     }
-//
+
+    //
 //    private void toActivity(Object o, Class<?> c) {
 //        if (o != null) {
 //        }
@@ -346,6 +387,24 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
 //        bundle.putSerializable("key", (Serializable) o);
 //        startActivity(new Intent(this, c).putExtras(bundle));
 //    }
+    private void setBgMusic() {
+        try {
+            if (app.getLogoData() == null) return;
+            String url = "";
+            for (Backs backs : app.getLogoData().getBacks()) {
+                if (backs.getType() == 1) {
+                    url = backs.getPath();
+                }
+            }
+            Logs.e(url);
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(activity, Uri.parse(url));
+            mediaPlayer.prepareAsync();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

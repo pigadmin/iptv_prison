@@ -46,10 +46,11 @@ public class MyApp extends Application {
 
     private SocketIO socketIO;
     public static String head = "http://";
-    //        public static String ip = "192.168.2.14";
-    public static String ip = "192.168.2.25";
-//    public static String ip = "192.168.1.202";
-    public static String port = "8089";
+    //    public static String ip = "192.168.1.202";
+    //    public static String ip = "192.168.2.25";
+    //    public static String port = "8089";
+    public static String ip = "192.168.2.5";
+    public static String port = "8080";
     public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";
     public static String spaceName = "/tv";
@@ -57,7 +58,7 @@ public class MyApp extends Application {
     public static String siourl = head + ip + sioport + spaceName;
 
     public static String mac = "testcode";
-//    public static int templateType = 1; //1酒店
+    //    public static int templateType = 1; //1酒店
 //    public static int templateType = 2;//2医院
     public static int templateType = 3;//3学校
 //    public static int templateType = 4;//4监狱

@@ -93,6 +93,8 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
         RequestParams params = new RequestParams(MyApp.apiurl + "getNews");
         params.addBodyParameter("mac", MyApp.mac);
         params.addBodyParameter("type", newscat2[position]);
+        params.addBodyParameter("pageNo", "1");
+        params.addBodyParameter("pageSize", "40");
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -101,8 +103,8 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
                     TGson<List<News>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<News>>>() {
                             }.getType());
-                    if (!json.getCode().equals(200)) {
-                        Toast.makeText(getApplicationContext(), json.getErrorInfo(), Toast.LENGTH_SHORT).show();
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
                     }
                     grid = json.getData();
                     Logs.e(grid.size() + "");

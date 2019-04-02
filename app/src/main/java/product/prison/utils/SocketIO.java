@@ -128,6 +128,7 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-upgrade-事件" + json);
+                    new Utils().Download(context, json, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -193,6 +194,12 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-close-事件" + json);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "关机", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     adb.InputEvent(KeyEvent.KEYCODE_POWER);
                 } catch (Exception e) {
                     e.printStackTrace();
