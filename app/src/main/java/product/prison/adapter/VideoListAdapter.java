@@ -14,8 +14,8 @@ import product.prison.R;
 
 
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.ViewHolder> implements View.OnClickListener {
-    List<String> list;
-    Context context;
+    private List<String> list;
+    private Context context;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -294,6 +294,10 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                         boolean r = handler.sendMessageDelayed(msg, totalTime);
                         totalTime = totalTime + (ad.getInter() * 1000L);
                     }
+                    if (totalTime < 1) {
+                        toMain();
+                        return;
+                    }
 
                     new CountDownTimer(totalTime, 1000) {
                         @Override

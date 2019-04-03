@@ -1,12 +1,14 @@
 package product.prison.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -18,13 +20,13 @@ import product.prison.utils.ImageUtils;
 
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements View.OnClickListener {
-    List<TMenu> list;
-    Context context;
+    private   List<TMenu> list;
+    private   Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView mImageView;
         TextView mTextView;
-        LinearLayout menu_linearlayout;
+        RelativeLayout menu_linearlayout;
 
         public ViewHolder(View v) {
             super(v);
@@ -74,12 +76,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
             ImageUtils.display(holder.mImageView, list.get(position).getIcon());
             if (position % 3 == 0) {
                 holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(485, 242);
+//                holder.menu_linearlayout.setBackgroundColor(Color.WHITE);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(485, 242);
                 holder.menu_linearlayout.setLayoutParams(lp);
-
             } else {
                 holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line2);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(242, 242);
+//                holder.menu_linearlayout.setBackgroundColor(Color.WHITE);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(242, 242);
                 holder.menu_linearlayout.setLayoutParams(lp);
             }
 

@@ -52,8 +52,6 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     private RecyclerView mainrecyle;
     private StaggeredGridLayoutManager layoutManager;
     private MainAdapter adapter;
-    private ImageView head_logo;
-    private ImageView qr_code;
     private List<TMenu> list = new ArrayList<>();
     private int menusize = 0;
     private List<InfoData> info = new ArrayList<>();
@@ -66,8 +64,8 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
         mainrecyle = f(R.id.mainrecyle);
         layoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.HORIZONTAL);
         mainrecyle.setLayoutManager(layoutManager);
-        head_logo = f(R.id.head_logo);
-        qr_code = f(R.id.qr_code);
+
+
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 

@@ -14,8 +14,8 @@ import product.prison.R;
 
 
 public class CommonListAdapter extends RecyclerView.Adapter<CommonListAdapter.ViewHolder> implements View.OnClickListener {
-    String[] list;
-    Context context;
+    private   String[] list;
+    private   Context context;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {

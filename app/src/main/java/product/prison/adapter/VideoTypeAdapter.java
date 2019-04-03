@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -23,14 +24,14 @@ import product.prison.utils.ImageUtils;
  */
 
 public class VideoTypeAdapter extends RecyclerView.Adapter<VideoTypeAdapter.ViewHolder> implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-    List<VodTypeData> list;
-    Context context;
+    private  List<VodTypeData> list;
+    private  Context context;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView mImageView;
         TextView mTextView;
-        LinearLayout menu_linearlayout;
+        RelativeLayout menu_linearlayout;
 
         public ViewHolder(View v) {
             super(v);
@@ -83,11 +84,11 @@ public class VideoTypeAdapter extends RecyclerView.Adapter<VideoTypeAdapter.View
             holder.menu_linearlayout.setLayoutParams(lp);
         } else if (position % 6 == 2) {
             holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(485, 242);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(485, 242);
             holder.menu_linearlayout.setLayoutParams(lp);
         } else {
             holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line2);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(242, 242);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(242, 242);
             holder.menu_linearlayout.setLayoutParams(lp);
         }
         ImageUtils.display(holder.mImageView, list.get(position).getIcon());

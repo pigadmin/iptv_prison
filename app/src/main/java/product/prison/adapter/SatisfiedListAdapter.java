@@ -15,8 +15,8 @@ import product.prison.model.Satisfied;
 
 
 public class SatisfiedListAdapter extends RecyclerView.Adapter<SatisfiedListAdapter.ViewHolder> implements View.OnClickListener {
-    List<Satisfied> list;
-    Context context;
+    private   List<Satisfied> list;
+    private  Context context;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {

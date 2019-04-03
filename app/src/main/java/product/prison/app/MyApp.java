@@ -49,7 +49,7 @@ public class MyApp extends Application {
     //    public static String ip = "192.168.1.202";
 //        public static String ip = "192.168.2.25";
 //        public static String port = "8089";
-    public static String ip = "192.168.2.5";
+    public static String ip = "192.168.2.3";
     public static String port = "8080";
     public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";

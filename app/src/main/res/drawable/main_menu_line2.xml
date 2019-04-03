@@ -7,9 +7,4 @@
     <item android:drawable="@drawable/main_item_l2" android:state_pressed="true" />
     <item android:drawable="@drawable/main_item_n2" android:state_pressed="false" />
 
-    <item android:drawable="@drawable/main_item_l2" android:state_selected="true" />
-    <item android:drawable="@drawable/main_item_n2" android:state_selected="false" />
-
-    <item android:drawable="@drawable/main_item_l2" android:state_checked="true" />
-    <item android:drawable="@drawable/main_item_n2" android:state_checked="false" />
 </selector>

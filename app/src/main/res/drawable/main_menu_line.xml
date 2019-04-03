@@ -3,13 +3,7 @@
     <item android:drawable="@drawable/main_item_l" android:state_focused="true" />
     <item android:drawable="@drawable/main_item_n" android:state_focused="false" />
 
-
     <item android:drawable="@drawable/main_item_l" android:state_pressed="true" />
     <item android:drawable="@drawable/main_item_n" android:state_pressed="false" />
 
-    <item android:drawable="@drawable/main_item_l" android:state_selected="true" />
-    <item android:drawable="@drawable/main_item_n" android:state_selected="false" />
-
-    <item android:drawable="@drawable/main_item_l" android:state_checked="true" />
-    <item android:drawable="@drawable/main_item_n" android:state_checked="false" />
 </selector>

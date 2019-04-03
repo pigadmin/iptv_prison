@@ -16,8 +16,8 @@ import product.prison.model.InfoData;
 
 
 public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHolder> implements View.OnClickListener {
-    List<Details> list;
-    Context context;
+    private  List<Details> list;
+    private  Context context;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
