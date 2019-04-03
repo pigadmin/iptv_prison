@@ -47,7 +47,7 @@ public class UserData {
     private String programList;
 
 
-    private String houseType;
+    private HouseType houseType;
 
     private String password;
 
@@ -228,11 +228,11 @@ public class UserData {
         return this.programList;
     }
 
-    public void setHouseType(String houseType) {
+    public void setHouseType(HouseType houseType) {
         this.houseType = houseType;
     }
 
-    public String getHouseType() {
+    public HouseType getHouseType() {
         return this.houseType;
     }
 

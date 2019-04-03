@@ -78,24 +78,16 @@ public class VideoTypeAdapter extends RecyclerView.Adapter<VideoTypeAdapter.View
 
         if (position % 6 == 0) {
             holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line3);
-            StaggeredGridLayoutManager.LayoutParams lp = new StaggeredGridLayoutManager.LayoutParams(240, 480);
-///           LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(472, 231);
+            StaggeredGridLayoutManager.LayoutParams lp = new StaggeredGridLayoutManager.LayoutParams(242, 485);
             lp.setFullSpan(true);
-            lp.setMargins(0, 9, 9, 0);
             holder.menu_linearlayout.setLayoutParams(lp);
         } else if (position % 6 == 2) {
             holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line);
-//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(472, 231);
-//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(480, 240);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(480, 247);
-            lp.setMargins(0, 9, 9, 0);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(485, 242);
             holder.menu_linearlayout.setLayoutParams(lp);
         } else {
             holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line2);
-//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(231, 231);
-//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(240, 240);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(240, 247);
-            lp.setMargins(0, 9, 9, 0);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(242, 242);
             holder.menu_linearlayout.setLayoutParams(lp);
         }
         ImageUtils.display(holder.mImageView, list.get(position).getIcon());

@@ -4,7 +4,7 @@
 http://localhost:8080/wisdom_iptv/remote/checkAuth
 -------------------------------------------------------------------
 获取菜单
-http://localhost:8080/wisdom_iptv/remote/tmenu?mac=00151818a1eb&templateType=1
+http://localhost:8080/wisdom_iptv/remote/tmenu?mac=00151818a1eb&templateType=3
 参数：mac
     templateType  1酒店信息  2医院信息  3学校信息 4监狱信息 5 水疗信息
 
@@ -111,7 +111,7 @@ data结构：
    type: 1   (1.模拟直播。2.数字直播 3.第三方直播)
    data: []  （数据类型对应type）
 }
-http://localhost:8080/wisdom_iptv/remote/live?mac=00:15:18:16:F9:99
+http://localhost:8080/wisdom_iptv/remote/live?mac=testcode
 -------------------------------------------------------------------
 -------------------------------------------------------------------
 应用信息
@@ -176,20 +176,6 @@ http://localhost:8080/wisdom_spa/remote/exam_question?mac=00:15:18:16:F9:99
 data结构：
 {
         "id": 36,
-        "name": "555555",                       // 问卷题目分类名称
-        "details": [                            // 问题详细
-            {
-                "id": 172,
-                "name": "您对护士的服务态度 ？"
-            }
-        ]
-}
--------------------------------------------------------------------
-2.提交答案
-参数  : mac：mac地址       answer ：   所有答案拼接字符串    1：满意  2：基本满意  3：不满意  用,号隔开     如 ：answer=1,2,3,2,1,3,2,1,2
-data结构：
-{
-        "id": 36,
         "name": "555555",                       // 问卷标题
         "createDate": 1495767791000,
         "details": [                            // 问题详细
@@ -199,7 +185,11 @@ data结构：
             }
         ]
 }
-http://localhost:8080/wisdom_spa/remote/exam_answer?mac=00:15:18:16:F9:99?answer=1,2,3,2,1,3,2,1,2,1
+-------------------------------------------------------------------
+2.提交答案
+参数  : mac：mac地址  answer ：list<QuetionVo>的json字符串  questionId ，answer    答案序号1：满意  2：基本满意  3：不满意  用,号隔开
+
+http://localhost:8080/wisdom_spa/remote/exam_answer?mac=00:15:18:16:F9:99?answer=
 
 -------------------------------------------------------------------
 

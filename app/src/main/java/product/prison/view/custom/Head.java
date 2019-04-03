@@ -43,7 +43,10 @@ public class Head extends LinearLayout {
         try {
             handler.sendEmptyMessage(0);
 //            Logs.e(app.getLogoData().getLogo().getLogoPath());
-            ImageUtils.display(logo, app.getLogoData().getLogo().getLogoPath());
+            String url = app.getLogoData().getLogo().getLogoPath();
+            if (url.isEmpty() || !url.startsWith("h"))
+                return;
+            ImageUtils.display(logo, url);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -47,8 +47,8 @@ public class MyApp extends Application {
     private SocketIO socketIO;
     public static String head = "http://";
     //    public static String ip = "192.168.1.202";
-    //    public static String ip = "192.168.2.25";
-    //    public static String port = "8089";
+//        public static String ip = "192.168.2.25";
+//        public static String port = "8089";
     public static String ip = "192.168.2.5";
     public static String port = "8080";
     public static String sioport = "8000";

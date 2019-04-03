@@ -91,10 +91,12 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
         welcome_video = f(R.id.welcome_video);
         welcome_video.setOnPreparedListener(this);
         welcome_video.setOnErrorListener(this);
+        Utils.fullvideo(welcome_video);
         welcome_tips = f(R.id.welcome_tips);
         welcome_time_tips = f(R.id.welcome_time_tips);
         setMediaListene();
         handler.sendEmptyMessage(0);
+//        toMain();
     }
 
     private MediaPlayer mediaPlayer;
@@ -338,7 +340,11 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             if (welcome_image.getVisibility() == View.GONE) {
                 welcome_image.setVisibility(View.VISIBLE);
             }
-            ImageUtils.display(welcome_image, currentad.getFilePath());
+            String url = currentad.getFilePath();
+            if (url.isEmpty() || !url.startsWith("h"))
+                return;
+            Logs.e(url);
+            ImageUtils.display(welcome_image, url);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -349,13 +355,17 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
         // TODO Auto-generated method stub
 
         try {
+            String url = currentad.getBgFile();
+            if (url.isEmpty() || !url.startsWith("h"))
+                return;
             mediaPlayer.stop();
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(WelcomeActivity.this,
-                    Uri.parse(currentad.getBgFile()));
+            mediaPlayer.setDataSource(getApplicationContext(),
+                    Uri.parse(url));
             mediaPlayer.prepareAsync();
         } catch (Exception e) {
             // TODO: handle exception
+            e.printStackTrace();
         }
 
     }
@@ -368,7 +378,11 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             if (welcome_video.getVisibility() == View.GONE) {
                 welcome_video.setVisibility(View.VISIBLE);
             }
-            welcome_video.setVideoURI(Uri.parse(currentad.getFilePath()));
+            String url = currentad.getFilePath();
+            if (url.isEmpty() || !url.startsWith("h"))
+                return;
+            Logs.e(url);
+            welcome_video.setVideoURI(Uri.parse(url));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -422,7 +436,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             final EditText pwd = dialog
                     .findViewById(R.id.serverip);
             pwd.setHint(R.string.password);
-            pwd.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            pwd.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
             pwd.requestFocus();
             ImageButton serverip_ok = dialog
                     .findViewById(R.id.serverip_ok);

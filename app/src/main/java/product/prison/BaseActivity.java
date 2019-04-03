@@ -56,7 +56,7 @@ public abstract class BaseActivity extends Activity implements IBaseView {
                     url = backs.getPath();
                 }
             }
-            Logs.e(url);
+            Logs.e("bg" + url);
             x.image().loadDrawable(url, imageOptions, new Callback.CommonCallback<Drawable>() {
                 @Override
                 public void onSuccess(Drawable bg) {

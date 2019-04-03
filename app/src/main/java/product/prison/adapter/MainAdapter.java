@@ -74,15 +74,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
             ImageUtils.display(holder.mImageView, list.get(position).getIcon());
             if (position % 3 == 0) {
                 holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(480, 240);
-
-                lp.setMargins(0, 9, 9, 0);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(485, 242);
                 holder.menu_linearlayout.setLayoutParams(lp);
 
             } else {
                 holder.menu_linearlayout.setBackgroundResource(R.drawable.main_menu_line2);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(239, 240);
-                lp.setMargins(2, 9, 9, 0);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(242, 242);
                 holder.menu_linearlayout.setLayoutParams(lp);
             }
 

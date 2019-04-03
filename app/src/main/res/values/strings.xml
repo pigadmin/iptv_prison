@@ -50,4 +50,12 @@
     <string name="usb_in">检测到USB设备</string>
     <string name="usb_out">USB设备已拔出</string>
     <string name="usb_error">USB路径异常，该功能不适用于此机顶盒</string>
+
+    <string name="title">满意度问卷调查表</string>
+    <string name="tishi">\t\t尊敬的用户，您好!感谢您对我们工作的支持。请您根据自身感受填写这张表格，
+        对我们的服务质量等方面给予真实的评价，以便我们改进工作，为您提供更好的服务。我们对本问卷的信息保密负责，谢谢合作!</string>
+    <string name="my">1.满意</string>
+    <string name="jbmy">2.基本满意</string>
+    <string name="bmy">3.不满意</string>
+    <string name="Ok">确\t定</string>
 </resources>

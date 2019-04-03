@@ -62,6 +62,12 @@
             android:name=".view.news.NewsActivity"
             android:launchMode="singleTask" />
         <activity
+            android:name=".view.game.GameActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.satisfied.SatisfiedActivity"
+            android:launchMode="singleTask" />
+        <activity
             android:name=".WelcomeActivity"
             android:launchMode="singleTask">
             <intent-filter>

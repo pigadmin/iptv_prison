@@ -36,11 +36,13 @@ import product.prison.model.TMenu;
 import product.prison.model.TranscribeData;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
+import product.prison.view.game.GameActivity;
 import product.prison.view.info.InfoActivity;
 import product.prison.view.live.LiveActivity;
 import product.prison.view.live.LiveApkActivity;
 import product.prison.view.news.NewsActivity;
 import product.prison.view.record.RecordActivity;
+import product.prison.view.satisfied.SatisfiedActivity;
 import product.prison.view.set.SetActivity;
 import product.prison.view.video.VideoApkActivity;
 import product.prison.view.video.VideoTypeActivity;
@@ -57,9 +59,15 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     private List<InfoData> info = new ArrayList<>();
     private MediaPlayer mediaPlayer;
 
+
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void initView(Bundle savedInstanceState) {
+        app = (MyApp) getApplication();
+        mainrecyle = f(R.id.mainrecyle);
+        layoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.HORIZONTAL);
+        mainrecyle.setLayoutManager(layoutManager);
+        head_logo = f(R.id.head_logo);
+        qr_code = f(R.id.qr_code);
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
@@ -78,18 +86,9 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
-        app = (MyApp) getApplication();
-        mainrecyle = f(R.id.mainrecyle);
-        layoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.HORIZONTAL);
-        mainrecyle.setLayoutManager(layoutManager);
-        head_logo = f(R.id.head_logo);
-        qr_code = f(R.id.qr_code);
-    }
-
-    @Override
     public void loadData() {
         getmenu();
+        setBgMusic();
     }
 
     private void getmenu() {
@@ -161,12 +160,18 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             }
             String name = list.get(position).getName();
             int id = list.get(position).getId();
+            Logs.e(id + "");
             switch (id) {
                 case 60://首页
                     break;
-                case 61://直播
-                case 47:
+                case 61://直播  case 47:
                     live();
+                    break;
+                case 44://互动游戏
+                    startActivity(new Intent(this, GameActivity.class));
+                    break;
+                case 45://问卷调查
+                    startActivity(new Intent(this, SatisfiedActivity.class));
                     break;
                 case 62://点播
                 case 48:
@@ -175,7 +180,10 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 case 63://录播
                     getTranscribe();
                     break;
+                case 59://音乐
+                    break;
                 case 64://设置
+                case 46:
                     startActivity(new Intent(this, SetActivity.class));
                     break;
                 case 43://3新闻通知
@@ -186,6 +194,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             e.printStackTrace();
         }
     }
+
 
     private void getInfo() {
         RequestParams params = new RequestParams(MyApp.apiurl + "getInfo");
@@ -392,19 +401,47 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             if (app.getLogoData() == null) return;
             String url = "";
             for (Backs backs : app.getLogoData().getBacks()) {
-                if (backs.getType() == 1) {
+                if (backs.getType() == 2) {
                     url = backs.getPath();
                 }
+
+
             }
-            Logs.e(url);
+            if (url.isEmpty() || !url.startsWith("h"))
+                return;
+            Logs.e("bgmusic" + url);
             mediaPlayer.stop();
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(activity, Uri.parse(url));
+            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(url));
             mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Logs.e("onPause");
+        try {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Logs.e("onRestart");
+        try {
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
