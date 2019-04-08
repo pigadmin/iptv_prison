@@ -43,4 +43,27 @@ public class xDBUtils {
 //    3.update操作   db.update();
 //    4.select操作   db.select(Province.class).where....
 
-
+//    private void add() throws DbException {
+//        User user = new User("用户1");
+//        db.save(user);
+//        LogUtil.i("---保存数据");
+//    }
+//
+//    private void find() throws DbException {
+//        List<User> list = db.findAll(User.class);
+//        LogUtil.i("---" + list.toString());
+//    }
+//
+//    private void update() throws DbException {
+//        List<User> list = db.findAll(User.class);
+//        User user = list.get(0);
+//        user.setName("更换姓名");
+//        db.update(user);
+//        LogUtil.i("---更新数据");
+//    }
+//
+//    private void delete() throws DbException {
+//        List<User> list = db.findAll(User.class);
+//        db.delete(list.get(0));
+//        LogUtil.i("---删除数据");
+//    }

@@ -13,6 +13,7 @@ import java.util.List;
 
 import product.prison.R;
 import product.prison.model.Nt;
+import product.prison.utils.Logs;
 import product.prison.view.ad.RsType;
 
 public class NoticAdapter extends BaseAdapter {
@@ -66,13 +67,19 @@ public class NoticAdapter extends BaseAdapter {
                 null);
 
         try {
+
+
             email_status = view.findViewById(R.id.email_status);
 
-            if (!list.get(position).isRead()) {
-                email_status.setBackgroundResource(R.drawable.msg_ico_r);
-            } else {
+
+            Logs.e("变化变化-----------" + list.get(position).isRead());
+
+            if (list.get(position).isRead()) {
                 email_status.setBackgroundResource(R.drawable.msg_ico_p);
+            } else {
+                email_status.setBackgroundResource(R.drawable.msg_ico_r_p);
             }
+
 
             email_time = view.findViewById(R.id.email_time);
 
@@ -112,4 +119,9 @@ public class NoticAdapter extends BaseAdapter {
         return null;
     }
 
+
+    public void update(List<Nt> list) {
+        this.list = list;
+        notifyDataSetChanged();
+    }
 }

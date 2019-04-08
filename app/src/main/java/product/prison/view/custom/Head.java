@@ -89,14 +89,14 @@ public class Head extends LinearLayout {
             wea = app.getWea();
 
             handler.removeMessages(1);
-            handler.sendEmptyMessageDelayed(1, 1000);
+            handler.sendEmptyMessageDelayed(1, 1);
 //            Logs.e(app.getLogoData().getLogo().getLogoPath());
-            if (app.getLogoData() == null)
-                return;
-            String url = app.getLogoData().getLogo().getLogoPath();
-            if (url.isEmpty() || !url.startsWith("h"))
-                return;
-            ImageUtils.display(logo, url);
+            if (app.getLogoData() != null) {
+                String url = app.getLogoData().getLogo().getLogoPath();
+                if (url.isEmpty() || !url.startsWith("h"))
+                    return;
+                ImageUtils.display(logo, url);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

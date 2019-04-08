@@ -45,7 +45,10 @@ public abstract class BaseActivity extends Activity implements IBaseView {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                    dialog.dismiss();
+                    if (dialog == null)
+                        return;
+                    if (dialog.isShowing())
+                        dialog.dismiss();
                     break;
             }
         }
@@ -136,9 +139,10 @@ public abstract class BaseActivity extends Activity implements IBaseView {
     private void showAlterDialog() {
         try {
             if (dialog != null) {
-                if (dialog.isShowing())
+                if (dialog.isShowing()) {
                     dialog.dismiss();
-                handler.removeMessages(0);
+                    handler.removeMessages(0);
+                }
             }
             final Nt nt = app.getNt();
             final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(this);
@@ -157,6 +161,7 @@ public abstract class BaseActivity extends Activity implements IBaseView {
                         break;
                     case 2:
                     case 3:
+
                         VideoView welcome_video = view.findViewById(R.id.welcome_video);
                         welcome_video.setVisibility(View.VISIBLE);
                         welcome_video.setVideoPath(nt.getContent());
@@ -180,11 +185,12 @@ public abstract class BaseActivity extends Activity implements IBaseView {
                 handler.sendEmptyMessageDelayed(0, closetime * 1000);
             }
 
-            alterDiaglog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            alterDiaglog.setPositiveButton("查看", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    startActivity(new Intent(BaseActivity.this, NoticeActivity.class));
                     dialog.dismiss();
+                    startActivity(new Intent(BaseActivity.this, NoticeActivity.class));
+
                 }
             });
             alterDiaglog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
