@@ -1,10 +1,13 @@
 package product.prison.utils;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -13,16 +16,22 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.reflect.TypeToken;
 
+import org.xutils.ex.DbException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import product.prison.R;
 import product.prison.app.MyApp;
 import product.prison.broadcast.MyAction;
 import product.prison.model.Command;
 import product.prison.model.MsgData;
+import product.prison.model.Nt;
 import product.prison.model.RegistVo;
 import product.prison.model.TMenu;
+import product.prison.model.wea.NewWea;
+import product.prison.model.wea.Wea;
 import product.prison.view.ad.NowinsActivity;
 
 
@@ -140,8 +149,13 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-weather-事件" + json);
+                    NewWea newWea = Utils.gson.fromJson(json, NewWea.class);
+                    Wea wea = Utils.gson.fromJson(newWea.getInfo(), Wea.class);
+                    app.setWea(wea);
+//                    Logs.e(Utils.gson.toJson(wea.getData().get(0).getAlarm()));
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Logs.e(e.toString());
                 }
             }
         });
@@ -307,6 +321,13 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-nt-事件" + json);
+                    Nt nt = new Nt();
+                    nt.setRead(false);
+                    nt.setContent(json);
+                    nt.setCtiem(app.getServertime());
+                    app.setNt(nt);
+                    context.sendBroadcast(new Intent().setAction(MyApp.NT));
+                    MyApp.db.save(nt);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -326,10 +347,6 @@ public class SocketIO {
             }
 
         });
-    }
-
-    public static void disconnect() {
-        socket.disconnect();
     }
 
     private Emitter.Listener EVENT_CONNECT = new Emitter.Listener() {

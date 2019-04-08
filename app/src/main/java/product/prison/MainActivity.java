@@ -40,6 +40,7 @@ import product.prison.view.game.GameActivity;
 import product.prison.view.info.InfoActivity;
 import product.prison.view.live.LiveActivity;
 import product.prison.view.live.LiveApkActivity;
+import product.prison.view.msg.NoticeActivity;
 import product.prison.view.news.NewsActivity;
 import product.prison.view.record.RecordActivity;
 import product.prison.view.satisfied.SatisfiedActivity;
@@ -120,6 +121,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onCancelled(CancelledException cex) {
 
+
             }
 
             @Override
@@ -162,7 +164,8 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             switch (id) {
                 case 60://首页
                     break;
-                case 61://直播  case 47:
+                case 61://直播
+                case 47:
                     live();
                     break;
                 case 44://互动游戏
@@ -186,6 +189,9 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     break;
                 case 43://3新闻通知
                     startActivity(new Intent(this, NewsActivity.class));
+                    break;
+                case 58://查询未读消息
+                    startActivity(new Intent(this, NoticeActivity.class));
                     break;
             }
         } catch (Exception e) {

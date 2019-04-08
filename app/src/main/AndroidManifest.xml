@@ -68,6 +68,9 @@
             android:name=".view.satisfied.SatisfiedActivity"
             android:launchMode="singleTask" />
         <activity
+            android:name=".view.msg.NoticeActivity"
+            android:launchMode="singleTask" />
+        <activity
             android:name=".WelcomeActivity"
             android:launchMode="singleTask">
             <intent-filter>

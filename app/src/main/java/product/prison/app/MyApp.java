@@ -2,35 +2,26 @@ package product.prison.app;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.WindowManager;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
+import org.xutils.DbManager;
 import org.xutils.x;
 
-import java.text.SimpleDateFormat;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import product.prison.broadcast.MyAction;
 import product.prison.model.LogoData;
 import product.prison.model.Mings;
 import product.prison.model.MsgData;
-import product.prison.model.TMenu;
+import product.prison.model.Nt;
+import product.prison.model.wea.Wea;
 import product.prison.service.MyService;
-import product.prison.utils.Logs;
 import product.prison.utils.SocketIO;
 import product.prison.utils.SpUtils;
 import product.prison.utils.Utils;
@@ -43,13 +34,14 @@ public class MyApp extends Application {
     public static final String FORWARD = "FORWARD";
     public static final String REWIND = "REWIND";
     public static final String Cancle = "Cancle";
+    public static final String NT = "nt";
 
     private SocketIO socketIO;
     public static String head = "http://";
     //    public static String ip = "192.168.1.202";
-//        public static String ip = "192.168.2.25";
-//        public static String port = "8089";
-    public static String ip = "192.168.2.3";
+//      public static String ip = "192.168.2.25";
+//      public static String port = "8089";
+    public static String ip = "192.168.2.7";
     public static String port = "8080";
     public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";
@@ -70,6 +62,7 @@ public class MyApp extends Application {
     private static AudioManager am;
     private static int maxvolume;
     private static int defaultvolume;
+    public static DbManager db;
 
     @Override
 
@@ -108,9 +101,43 @@ public class MyApp extends Application {
 
             startService(new Intent(this, MyService.class));
 
+            initDb();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    DbManager.DaoConfig daoConfig;
+
+    private void initDb() {
+
+
+        daoConfig = new DbManager.DaoConfig()
+                .setDbName("iptv.db")//设置数据库名称
+                // 不设置dbDir时, 默认存储在app的私有目录.
+                .setDbDir(new File("sdcard/iptv")) // 数据库存储路径
+                .setDbVersion(1)//设置数据库版本
+                .setDbOpenListener(new DbManager.DbOpenListener() {
+                    @Override
+                    public void onDbOpened(DbManager db) {
+                        // 开启WAL, 对写入加速提升巨大
+                        db.getDatabase().enableWriteAheadLogging();
+                    }
+                })
+                .setDbUpgradeListener(new DbManager.DbUpgradeListener() {
+                    @Override
+                    public void onUpgrade(DbManager db, int oldVersion, int newVersion) {
+                        // TODO: ...
+                        // db.dropTable(...);
+                        // ...
+                        // or
+                        // db.dropDb();
+                    }
+                })
+        ;
+        //db还有其他的一些构造方法，比如含有更新表版本的监听器的
+        db = x.getDb(daoConfig);//获取数据库单例
+
     }
 
     // 设置音量
@@ -130,6 +157,15 @@ public class MyApp extends Application {
             }
         }
     };
+    private Nt nt = new Nt();
+
+    public Nt getNt() {
+        return nt;
+    }
+
+    public void setNt(Nt nt) {
+        this.nt = nt;
+    }
 
     public List<MsgData> getMsgData() {
         return msgData;
@@ -202,4 +238,15 @@ public class MyApp extends Application {
     }
 
     private Mings mings = new Mings();
+
+    public Wea getWea() {
+        return wea;
+    }
+
+    public void setWea(Wea wea) {
+        this.wea = wea;
+    }
+
+    private Wea wea;
+
 }

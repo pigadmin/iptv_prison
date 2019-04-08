@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/left_list_name"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="64dp"
     android:background="@drawable/left_list"
     android:descendantFocusability="beforeDescendants"
     android:drawableBottom="@drawable/divider_bg"

@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="210dp"
         android:layout_height="match_parent"
         android:background="@drawable/left_list_bg"
         android:gravity="center"
@@ -15,14 +15,6 @@
             android:layout_height="40dp"
             android:gravity="center"
             android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textSize="27sp" />
 
             <TextView
                 android:id="@+id/live_count"
@@ -39,11 +31,11 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/divider_bg"></View>
+            android:background="@color/white"></View>
 
         <ListView
             android:id="@+id/live_list"
-            android:layout_width="210dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@drawable/divider_bg"
             android:focusable="false"

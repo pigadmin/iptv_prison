@@ -113,6 +113,19 @@ data结构：
 }
 http://localhost:8080/wisdom_iptv/remote/live?mac=testcode
 -------------------------------------------------------------------
+根据直播频道获取节目预告
+http://localhost:8080/wisdom_iptv/remote/livePrevieew?mac=00151818a1eb&liveId=6
+参数：mac
+      liveId  直播频道id
+      pageNo
+      pageSize
+
+data结构：
+{"code":"200","data":
+{"pageNo":1,"pageSize":10,"totalPage":1,"totalRows":1,"hasPrePage":false,"hasNextPage":false,
+"data":[{"id":2,"liveId":6,"programName":"cctv1午间点新闻","startTime":1554366212000,"endTime":1554359020000,"isRecord":0,"status":0,"filePath":null}]}
+,"msg":"获取成功","errorInfo":null}
+
 -------------------------------------------------------------------
 应用信息
 参数 ：mac
@@ -227,4 +240,3 @@ http://localhost:8081/wisdom_hotel/remote/getNotice?mac=00:15:18:16:F9:99
 参数 ： noticeId    //消息id
 
 http://localhost:8081/wisdom_hotel/remote/updateNotice?noticeId=1
-

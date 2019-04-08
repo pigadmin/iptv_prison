@@ -24,10 +24,8 @@ import java.util.List;
 
 import product.prison.BaseActivity;
 import product.prison.R;
-import product.prison.adapter.LiveListAdapter;
 import product.prison.adapter.RecordListAdapter;
 import product.prison.app.MyApp;
-import product.prison.model.LiveData;
 import product.prison.model.TranscribeData;
 import product.prison.utils.Logs;
 import product.prison.utils.SpUtils;
@@ -44,7 +42,7 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
     private AudioManager audioManager;
     private ListView live_list;
     private TextView live_count;
-    private PopupWindow popupWindow;
+    private PopupWindow popupWindow = null;
     private View view;
     private String keych = "";
     private Handler handler = new Handler() {
@@ -64,7 +62,7 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
 
                         live_no_b.setText((channel + 1) + "");
                         handler.removeMessages(1);
-                        handler.sendEmptyMessageDelayed(1, 5 * 1000);
+                        handler.sendEmptyMessageDelayed(1, 3 * 1000);
 
                         if (url.startsWith("h") || url.startsWith("r") || url.startsWith("u")) {
                             live_player.setVideoPath(url);
@@ -83,16 +81,24 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
                         popupWindow.dismiss();
                         break;
                     case 3:
-                        channel = Integer.parseInt(keych) - 1;
-                        keych = "";
-                        if (channel < 0)
-                            return;
-                        if (channel > livelist.size() - 1) {
-                            Toast.makeText(getApplicationContext(), "频道总数" + livelist.size(), Toast.LENGTH_SHORT).show();
-                            return;
+                        try {
+                            if (Long.parseLong(keych) > livelist.size()) {
+                                keych = "";
+                                Toast.makeText(getApplicationContext(), "没有此频道,节目编号1-" + livelist.size(), Toast.LENGTH_SHORT).show();
+                                handler.removeMessages(1);
+                                handler.sendEmptyMessageDelayed(1, 3 * 1000);
+                                return;
+                            }
+                            channel = Integer.parseInt(keych) - 1;
+                            keych = "";
+                            handler.sendEmptyMessage(0);
+                        } catch (Exception e) {
+                            keych = "";
+                            Toast.makeText(getApplicationContext(), "没有此频道,节目编号1-" + livelist.size(), Toast.LENGTH_SHORT).show();
+                            handler.removeMessages(1);
+                            handler.sendEmptyMessageDelayed(1, 3 * 1000);
+                            e.printStackTrace();
                         }
-
-                        handler.sendEmptyMessage(0);
                         break;
                 }
             } catch (Exception e) {
@@ -128,8 +134,11 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
     private void show() {
         // TODO Auto-generated method stub
         try {
-            if (popupWindow != null && popupWindow.isShowing())
-                return;
+            if (popupWindow != null) {
+//                Logs.e("@@@" + popupWindow.isShowing());
+                if (popupWindow.isShowing())
+                    return;
+            }
 //            System.out.println("@@@@@@2222");
             view = getLayoutInflater().inflate(R.layout.pop_live, null);
             popupWindow = new PopupWindow(view, WindowManager.LayoutParams.MATCH_PARENT,
@@ -145,12 +154,11 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
                 }
             });
             live_list = view.findViewById(R.id.live_list);
-            live_count = view
-                    .findViewById(R.id.live_count);
+            live_count = view.findViewById(R.id.live_count);
             live_list.setAdapter(new RecordListAdapter(this, livelist));
             live_count.setText("频道总数(" + livelist.size() + ")");
             live_list.setSelectionFromTop(channel, 220);
-            popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+            popupWindow.showAtLocation(view, Gravity.TOP, 0, 0);
 //            System.out.println("@@@@@@3333");
             live_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -159,14 +167,14 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
                                         int position, long id) {
                     channel = position;
                     handler.sendEmptyMessage(0);
-                    handler.sendEmptyMessage(2);
+                    handler.removeMessages(2);
                     handler.sendEmptyMessageDelayed(2, 5 * 1000);
                 }
             });
             live_list.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    handler.sendEmptyMessage(2);
+                    handler.removeMessages(2);
                     handler.sendEmptyMessageDelayed(2, 5 * 1000);
                 }
 
@@ -188,11 +196,12 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
 
+//        Logs.e("@@@" + keyCode);
 
         if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9) {
             keych += keyCode - 7;
 
-
+            live_no_b.setText(keych);
             handler.removeMessages(3);
             handler.sendEmptyMessageDelayed(3, 1 * 1000);
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER
@@ -237,7 +246,7 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
             ++channel;
             if (channel > livelist.size() - 1)
                 channel = 0;
-            handler.removeMessages(0);
+            handler.sendEmptyMessage(0);
         } catch (Exception e) {
             // TODO: handle exception
 
@@ -251,7 +260,7 @@ public class RecordActivity extends BaseActivity implements MediaPlayer.OnErrorL
             --channel;
             if (channel < 0)
                 channel = livelist.size() - 1;
-            handler.removeMessages(0);
+            handler.sendEmptyMessage(0);
         } catch (Exception e) {
             // TODO: handle exception
         }

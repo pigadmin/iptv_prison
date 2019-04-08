@@ -9,6 +9,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -118,7 +119,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
     private void checkAuth() {
         RequestParams params = new RequestParams(MyApp.apiurl + "checkAuth");
         params.setConnectTimeout(5 * 1000);
-//        Logs.e(MyApp.apiurl + "checkAuth");
+        Logs.e(MyApp.apiurl + "checkAuth");
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {

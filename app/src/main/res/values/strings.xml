@@ -58,4 +58,9 @@
     <string name="jbmy">2.基本满意</string>
     <string name="bmy">3.不满意</string>
     <string name="Ok">确\t定</string>
+
+    <string name="notice_status">状态</string>
+    <string name="notice_time">时间</string>
+    <string name="notice_title">留言</string>
+    <string name="notice_content">详细</string>
 </resources>
