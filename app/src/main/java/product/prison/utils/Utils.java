@@ -183,7 +183,7 @@ public class Utils {
                 @Override
                 public void onError(Throwable ex, boolean isOnCallback) {
                     Logs.e("下载失败 " + url);
-                    Toast.makeText(context, context.getString(R.string.downloadfail), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, context.getString(R.string.downloadfail), Toast.LENGTH_SHORT).show();
                     mProgressDialog.dismiss();
                 }
 

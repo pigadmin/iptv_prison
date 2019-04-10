@@ -16,12 +16,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import product.prison.model.InfoData;
 import product.prison.model.LogoData;
 import product.prison.model.Mings;
 import product.prison.model.MsgData;
 import product.prison.model.Nt;
 import product.prison.model.wea.Wea;
 import product.prison.service.MyService;
+import product.prison.utils.Calendar;
 import product.prison.utils.SocketIO;
 import product.prison.utils.SpUtils;
 import product.prison.utils.Utils;
@@ -34,16 +36,17 @@ public class MyApp extends Application {
     public static final String FORWARD = "FORWARD";
     public static final String REWIND = "REWIND";
     public static final String Cancle = "Cancle";
-    public static final String NT = "nt";
 
     private SocketIO socketIO;
     public static String head = "http://";
-    //    public static String ip = "192.168.1.202";
-//      public static String ip = "192.168.2.25";
-//      public static String port = "8089";
-    public static String ip = "192.168.2.7";
-    public static String port = "8080";
-    public static String sioport = "8000";
+    public static String ip = "s1.natfrp.org";
+    public static String port = "42188";
+    public static String sioport = "55577";
+    //    public static String ip = "192.168.2.25";
+//    public static String port = "8089";
+    //    public static String ip = "192.168.2.5";
+//    public static String port = "8080";
+//    public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";
     public static String spaceName = "/tv";
     public static String apiurl = head + ip + port + apiName;
@@ -248,5 +251,46 @@ public class MyApp extends Application {
     }
 
     private Wea wea;
+
+    public InfoData getInfoData() {
+        return infoData;
+    }
+
+    public void setInfoData(InfoData infoData) {
+        this.infoData = infoData;
+    }
+
+    private InfoData infoData = null;
+
+    public String getUpdateurl() {
+        return updateurl;
+    }
+
+    public void setUpdateurl(String updateurl) {
+        this.updateurl = updateurl;
+    }
+
+    private String updateurl = "";
+
+    public List<Calendar> getCalendars() {
+        return calendars;
+    }
+
+    public void setCalendars(List<Calendar> calendars) {
+        this.calendars = calendars;
+    }
+
+    private List<Calendar> calendars = new ArrayList<>();
+
+    public boolean isDownloadzip() {
+        return downloadzip;
+    }
+
+    public void setDownloadzip(boolean downloadzip) {
+        this.downloadzip = downloadzip;
+    }
+
+    boolean downloadzip;
+
 
 }

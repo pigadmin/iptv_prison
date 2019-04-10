@@ -40,6 +40,7 @@ import product.prison.view.ad.RsType;
 
 public class NoticeActivity extends BaseActivity implements OnItemClickListener {
     private List<Nt> list = new ArrayList<>();
+    private List<Nt> nts = new ArrayList<>();
 
     private ListView notice_list;
     private NoticAdapter adapter;
@@ -47,6 +48,7 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
     private ImageView notice_img;
     private VideoView notice_video;
     private TextView notice_txt;
+    private MyApp app;
 
 
     @Override
@@ -108,6 +110,7 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
 
     @Override
     public void initView(Bundle savedInstanceState) {
+        app = (MyApp) getApplication();
         notice_list = f(R.id.notice_list);
 
         notice_txt = f(R.id.notice_txt);
@@ -134,9 +137,22 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
         getNotice();
     }
 
+    long sptime = 86400000;
+//    long sptime = 1020000;
     private void getNotice() {
         try {
+
+
+//            list = MyApp.db.selector(Nt.class).where("ctiem", ">", app.getServertime() - sptime).findAll();
+            nts = MyApp.db.findAll(Nt.class);
+            for (Nt nt : nts) {
+                if (nt.getCtiem() < app.getServertime() - sptime) {
+                    MyApp.db.delete(nt);
+                }
+            }
+
             list = MyApp.db.findAll(Nt.class);
+
             if (list.isEmpty())
                 return;
             adapter = new NoticAdapter(this, list);

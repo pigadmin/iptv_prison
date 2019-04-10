@@ -30,18 +30,18 @@
             android:id="@+id/right_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="45dp"
+            android:layout_marginLeft="25dp"
             android:background="@drawable/right_grid_bg"
-            android:horizontalSpacing="20dp"
             android:listSelector="@drawable/vod_select_bg"
             android:numColumns="5"
             android:orientation="vertical"
+            android:verticalSpacing="10dp"
             android:paddingLeft="45dp"
             android:paddingTop="18.5dp"
-            android:paddingRight="45dp"
+            android:paddingRight="25dp"
             android:paddingBottom="18.5dp"
-            android:scrollbars="none"
-            android:verticalSpacing="20dp"></GridView>
-
+            android:scrollbars="none"></GridView>
     </LinearLayout>
+
+
 </FrameLayout>

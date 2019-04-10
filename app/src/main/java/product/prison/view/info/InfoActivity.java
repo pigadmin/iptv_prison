@@ -3,6 +3,8 @@ package product.prison.view.info;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,6 +48,33 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
     private InfoListAdapter listAdapter;
     private List<Details> list = new ArrayList<>();
     private ImageView right_image;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    try {
+                        if (crrent > list.get(index).getPics().size() - 1) {
+                            crrent = 0;
+                        }
+                        String url = list.get(index).getPics().get(crrent).getFilePath();
+                        if (url.startsWith("h")) {
+                            ImageUtils.display(right_image, url);
+                        }
+//                        Logs.e("下标" + crrent + " url " + url);
+
+                        crrent++;
+                        if (list.get(index).getPics().size() < 2)
+                            return;
+                        handler.sendEmptyMessageDelayed(0, 5 * 1000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -57,6 +86,8 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
         left_list.setLayoutManager(layoutmanager);
     }
 
+    private int crrent = 0;
+    private int index = 0;
 
     @Override
     public void loadData() {
@@ -67,18 +98,20 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
             left_list.setAdapter(listAdapter);
             listAdapter.setOnItemClickListener(InfoActivity.this);
 
-            image(0);
+            index = 0;
+            image();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void image(int position) {
+
+    private void image() {
         if (list.isEmpty())
             return;
 //        Logs.e("@@" + list.get(position).getIcon());
-
-        ImageUtils.display(right_image, list.get(position).getIcon());
+        crrent = 0;
+        handler.sendEmptyMessage(0);
     }
 
 
@@ -91,7 +124,9 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
     @Override
     public void onItemClick(View view, int position) {
         try {
-            image(position);
+            index = position;
+            image();
+            listAdapter.update(position);
         } catch (Exception e) {
             e.printStackTrace();
         }

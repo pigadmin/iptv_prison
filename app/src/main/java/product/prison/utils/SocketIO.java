@@ -15,6 +15,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.reflect.TypeToken;
+import com.mstar.android.tv.TvPictureManager;
 
 import org.xutils.ex.DbException;
 
@@ -25,7 +26,9 @@ import java.util.List;
 import product.prison.R;
 import product.prison.app.MyApp;
 import product.prison.broadcast.MyAction;
+import product.prison.model.CalendarData;
 import product.prison.model.Command;
+import product.prison.model.Mings;
 import product.prison.model.MsgData;
 import product.prison.model.Nt;
 import product.prison.model.RegistVo;
@@ -48,12 +51,12 @@ public class SocketIO {
             switch (msg.what) {
                 case openw:
                     try {
-//                        TvPictureManager.getInstance().enableBacklight();
-                        adb.InputEvent(KeyEvent.KEYCODE_POWER);
                         Toast.makeText(context, "开机", Toast.LENGTH_SHORT).show();
+                        TvPictureManager.getInstance().enableBacklight();
                         socket.emit("power", 1);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Logs.e("执行adb开机");
                         adb.InputEvent(KeyEvent.KEYCODE_POWER);
                     }
                     break;
@@ -61,14 +64,13 @@ public class SocketIO {
 
                     try {
                         Toast.makeText(context, "关机", Toast.LENGTH_SHORT).show();
-//                        TvPictureManager.getInstance().disableBacklight();
-                        adb.InputEvent(KeyEvent.KEYCODE_POWER);
+                        TvPictureManager.getInstance().disableBacklight();
                         socket.emit("power", 0);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Logs.e("执行adb关机");
                         adb.InputEvent(KeyEvent.KEYCODE_POWER);
                     }
-
                     break;
             }
         }
@@ -137,7 +139,7 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-upgrade-事件" + json);
-                    new Utils().Download(context, json, true);
+                    app.setUpdateurl(json);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -206,15 +208,9 @@ public class SocketIO {
             @Override
             public void call(Object... args) {
                 try {
-                    String json = args[0].toString();
-                    Logs.e("sio-close-事件" + json);
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "关机", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    adb.InputEvent(KeyEvent.KEYCODE_POWER);
+//                    String json = args[0].toString();
+                    Logs.e("sio-close-事件");
+                    handler.sendEmptyMessage(closew);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -224,19 +220,19 @@ public class SocketIO {
             @Override
             public void call(Object... args) {
                 try {
-                    String json = args[0].toString();
+                    final String json = args[0].toString();
                     Logs.e("sio-close-time-事件" + json);
                     String head = WZDateUtil.toString(new Date(), "yyyy-MM-dd");
-                    Date date = new Date(Long.valueOf(json));
-                    final String hms = WZDateUtil.toString(date, "HH:mm:ss");
+//                    Date date = new Date(Long.valueOf(json));
+//                    final String hms = WZDateUtil.toString(date, "HH:mm:ss");
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context, "系统将在" + hms + "关闭", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "系统将在" + json + "关闭", Toast.LENGTH_SHORT).show();
                         }
                     });
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
-                    long close = dateFormat.parse(head + hms).getTime();
+                    long close = dateFormat.parse(head + json).getTime();
                     long local = new Date().getTime();
                     if (close > local) {
                         handler.sendEmptyMessageDelayed(closew, close - local);
@@ -254,9 +250,9 @@ public class SocketIO {
             @Override
             public void call(Object... args) {
                 try {
-                    String json = args[0].toString();
-                    Logs.e("sio-open-事件" + json);
-                    adb.InputEvent(KeyEvent.KEYCODE_POWER);
+//                    String json = args[0].toString();
+                    Logs.e("sio-open-事件");
+                    handler.sendEmptyMessage(openw);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -266,20 +262,20 @@ public class SocketIO {
             @Override
             public void call(Object... args) {
                 try {
-                    String json = args[0].toString();
+                    final String json = args[0].toString();
                     Logs.e("sio-open-time-事件" + json);
 
                     String head = WZDateUtil.toString(new Date(), "yyyy-MM-dd");
-                    Date date = new Date(Long.valueOf(json));
-                    final String hms = WZDateUtil.toString(date, "HH:mm:ss");
+//                    Date date = new Date(Long.valueOf(json));
+//                    final String hms = WZDateUtil.toString(date, "HH:mm:ss");
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context, "系统将在" + hms + "开机", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "系统将在" + json + "开机", Toast.LENGTH_SHORT).show();
                         }
                     });
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
-                    long open = dateFormat.parse(head + hms).getTime();
+                    long open = dateFormat.parse(head + json).getTime();
                     long local = new Date().getTime();
                     if (open > local) {
                         handler.sendEmptyMessageDelayed(openw, open - local);
@@ -298,6 +294,13 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-msgInsert-事件" + json);
+                    Mings list = Utils.jsonToObject(json, new TypeToken<Mings>() {
+                    });
+                    if (list == null)
+                        return;
+
+                    app.setMings(list);
+                    context.sendBroadcast(new Intent().setAction(MyAction.Mings));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -310,6 +313,13 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-todayCalendar-事件" + json);
+                    List<CalendarData> list = Utils.jsonToObject(json, new TypeToken<List<CalendarData>>() {
+                    });
+                    if (list.isEmpty())
+                        return;
+
+                    app.setCalendars(list.get(0).getDetails());
+                    context.sendBroadcast(new Intent().setAction(MyAction.Calendar));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -326,7 +336,7 @@ public class SocketIO {
                     nt.setContent(json);
                     nt.setCtiem(app.getServertime());
                     app.setNt(nt);
-                    context.sendBroadcast(new Intent().setAction(MyApp.NT));
+                    context.sendBroadcast(new Intent().setAction(MyAction.NT));
                     MyApp.db.save(nt);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -339,7 +349,7 @@ public class SocketIO {
                 // TODO Auto-generated method stub
                 try {
                     String json = arg0[0].toString();
-                    System.out.println("vol@" + json);
+                    Logs.e("sio-vol-事件" + json);
                     MyApp.setStreamVolume(Integer.valueOf(json));
                 } catch (Exception e) {
                     // TODO: handle exception

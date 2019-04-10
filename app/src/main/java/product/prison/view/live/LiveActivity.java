@@ -14,11 +14,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import com.google.gson.reflect.TypeToken;
+
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +33,19 @@ import java.util.List;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.LiveListAdapter;
+import product.prison.adapter.LivePreListAdapter;
+import product.prison.adapter.VideoGridAdapter;
 import product.prison.app.MyApp;
+import product.prison.model.Live;
 import product.prison.model.LiveData;
+import product.prison.model.LivePreView;
+import product.prison.model.LivePreViewData;
+import product.prison.model.TGson;
+import product.prison.model.Vod;
 import product.prison.utils.Logs;
 import product.prison.utils.SpUtils;
 import product.prison.utils.Utils;
+import product.prison.view.video.VideoActivity;
 
 public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
@@ -41,8 +56,8 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
     private VideoView live_player;
     private List<LiveData> livelist = new ArrayList<>();
     private AudioManager audioManager;
-    private ListView live_list;
-    private TextView live_count;
+    private ListView live_list, live_list2;
+    private TextView live_count, live_count2;
     private PopupWindow popupWindow = null;
     private View view;
     private String keych = "";
@@ -77,9 +92,10 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
                         live_no_b.setText("");
                         break;
                     case 2://关闭频道列表显示
-                        if (popupWindow == null || !popupWindow.isShowing())
-                            return;
-                        popupWindow.dismiss();
+//                        if (popupWindow == null || !popupWindow.isShowing())
+//                            return;
+//                        popupWindow.dismiss();
+                        tvlist.setVisibility(View.GONE);
                         break;
                     case 3:
                         try {
@@ -107,6 +123,7 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
             }
         }
     };
+    LinearLayout tvlist;
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -116,6 +133,117 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
         live_player.setOnPreparedListener(this);
         live_player.setOnCompletionListener(this);
         live_player.setOnErrorListener(this);
+
+
+        tvlist = f(R.id.tvlist);
+        live_list = f(R.id.live_list);
+        live_list2 = f(R.id.live_list2);
+        live_count = f(R.id.live_count);
+        live_count2 = f(R.id.live_count2);
+        live_list.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    handler.removeMessages(2);
+                    handler.sendEmptyMessageDelayed(2, 5 * 1000);
+                }
+                return false;
+            }
+        });
+        live_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> av, View v,
+                                    int position, long id) {
+                channel = position;
+                handler.sendEmptyMessage(0);
+            }
+        });
+        live_list.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                liveId = livelist.get(position).getId();
+                livePrevieew();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        live_list2.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    handler.removeMessages(2);
+                    handler.sendEmptyMessageDelayed(2, 5 * 1000);
+                }
+                return false;
+            }
+        });
+    }
+
+    private int liveId = 0;
+    private List<LivePreView> list2 = new ArrayList<>();
+
+    private void livePrevieew() {
+        Logs.e("直播节目id" + liveId);
+        RequestParams params = new RequestParams(MyApp.apiurl + "livePrevieew");
+        params.addBodyParameter("mac", MyApp.mac);
+        params.addBodyParameter("liveId", liveId + "");
+        params.addBodyParameter("pageNo", "1");
+        params.addBodyParameter("pageSize", "99999");
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    Logs.e(result);
+                    TGson<LivePreViewData> json = Utils.gson.fromJson(result,
+                            new TypeToken<TGson<LivePreViewData>>() {
+                            }.getType());
+                    if (!json.getCode().equals("200")) {
+                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
+                    list2 = json.getData().getData();
+                    if (list2.isEmpty()) {
+                        live_count2.setText("暂无节目预告");
+                    }else{
+                        live_count2.setText("节目预告数 ("+list2.size()+")");
+                    }
+                    live_list2.setAdapter(new LivePreListAdapter(getApplicationContext(), list2));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        try {
+            if (tvlist.isShown()) {
+                tvlist.setVisibility(View.GONE);
+            } else {
+                super.onBackPressed();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -125,6 +253,9 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
         livelist = (List<LiveData>) getIntent().getExtras().get("key");
 
         handler.sendEmptyMessage(0);
+
+        live_list.setAdapter(new LiveListAdapter(this, livelist));
+        live_count.setText("频道总数(" + livelist.size() + ")");
     }
 
 
@@ -135,57 +266,69 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
     private void show() {
         // TODO Auto-generated method stub
         try {
-            if (popupWindow != null) {
-//                Logs.e("@@@" + popupWindow.isShowing());
-                if (popupWindow.isShowing())
-                    return;
-            }
-//            System.out.println("@@@@@@2222");
-            view = getLayoutInflater().inflate(R.layout.pop_live, null);
-            popupWindow = new PopupWindow(view, WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT);
-            popupWindow.setFocusable(true);
-            popupWindow.setOutsideTouchable(true);
-            popupWindow.setBackgroundDrawable(new BitmapDrawable());
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    popupWindow.dismiss();
-                }
-            });
-            live_list = view.findViewById(R.id.live_list);
-            live_count = view.findViewById(R.id.live_count);
-            live_list.setAdapter(new LiveListAdapter(this, livelist));
-            live_count.setText("频道总数(" + livelist.size() + ")");
             live_list.setSelectionFromTop(channel, 220);
-            popupWindow.showAtLocation(view, Gravity.TOP, 0, 0);
-//            System.out.println("@@@@@@3333");
-            live_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                @Override
-                public void onItemClick(AdapterView<?> av, View v,
-                                        int position, long id) {
-                    channel = position;
-                    handler.sendEmptyMessage(0);
-                    handler.removeMessages(2);
-                    handler.sendEmptyMessageDelayed(2, 5 * 1000);
-                }
-            });
-            live_list.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    handler.removeMessages(2);
-                    handler.sendEmptyMessageDelayed(2, 5 * 1000);
-                }
+            if (!tvlist.isShown()) {
+                tvlist.setVisibility(View.VISIBLE);
+                live_list.requestFocus();
+                handler.removeMessages(2);
+                handler.sendEmptyMessageDelayed(2, 5 * 1000);
+            } else {
+                tvlist.setVisibility(View.GONE);
+            }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
 
-                }
-            });
-            handler.removeMessages(2);
-            handler.sendEmptyMessageDelayed(2, 5 * 1000);
+//            if (popupWindow != null) {
+////                Logs.e("@@@" + popupWindow.isShowing());
+//                if (popupWindow.isShowing())
+//                    return;
+//            }
+////            System.out.println("@@@@@@2222");
+//            view = getLayoutInflater().inflate(R.layout.pop_live, null);
+//            popupWindow = new PopupWindow(view, WindowManager.LayoutParams.MATCH_PARENT,
+//                    WindowManager.LayoutParams.MATCH_PARENT);
+//            popupWindow.setFocusable(true);
+//            popupWindow.setOutsideTouchable(true);
+//            popupWindow.setBackgroundDrawable(new BitmapDrawable());
+//            view.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    // TODO Auto-generated method stub
+//                    popupWindow.dismiss();
+//                }
+//            });
+//            live_list = view.findViewById(R.id.live_list);
+//            live_count = view.findViewById(R.id.live_count);
+//            live_list.setAdapter(new LiveListAdapter(this, livelist));
+//            live_count.setText("频道总数(" + livelist.size() + ")");
+//            live_list.setSelectionFromTop(channel, 220);
+//            popupWindow.showAtLocation(view, Gravity.TOP, 0, 0);
+////            System.out.println("@@@@@@3333");
+//            live_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//                @Override
+//                public void onItemClick(AdapterView<?> av, View v,
+//                                        int position, long id) {
+//                    channel = position;
+//                    handler.sendEmptyMessage(0);
+//                    handler.removeMessages(2);
+//                    handler.sendEmptyMessageDelayed(2, 5 * 1000);
+//                }
+//            });
+//            live_list.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    handler.removeMessages(2);
+//                    handler.sendEmptyMessageDelayed(2, 5 * 1000);
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> parent) {
+//
+//                }
+//            });
+//            handler.removeMessages(2);
+//            handler.sendEmptyMessageDelayed(2, 5 * 1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -196,8 +339,10 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
+        Logs.e("@@@" + keyCode);
+        handler.removeMessages(2);
+        handler.sendEmptyMessageDelayed(2, 5 * 1000);
 
-//        Logs.e("@@@" + keyCode);
 
         if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9) {
             keych += keyCode - 7;
@@ -211,15 +356,23 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
         }
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (tvlist.isShown())
+                    return false;
                 downvol();
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (tvlist.isShown())
+                    return false;
                 upvol();
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (tvlist.isShown())
+                    return true;
                 upchanle();
                 break;
             case KeyEvent.KEYCODE_DPAD_UP:
+                if (tvlist.isShown())
+                    return true;
                 downchanle();
                 break;
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
@@ -298,15 +451,15 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
         }
     }
 
-    //触摸监听
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//            System.out.println("@@@@@@1111");
-            show();
-        }
-        return super.onTouchEvent(event);
-    }
+//    //触摸监听
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+////            System.out.println("@@@@@@1111");
+//            show();
+//        }
+//        return super.onTouchEvent(event);
+//    }
 
 
     @Override

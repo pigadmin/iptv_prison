@@ -72,12 +72,10 @@ public class NoticAdapter extends BaseAdapter {
             email_status = view.findViewById(R.id.email_status);
 
 
-            Logs.e("变化变化-----------" + list.get(position).isRead());
-
             if (list.get(position).isRead()) {
-                email_status.setBackgroundResource(R.drawable.msg_ico_p);
-            } else {
                 email_status.setBackgroundResource(R.drawable.msg_ico_r_p);
+            } else {
+                email_status.setBackgroundResource(R.drawable.msg_ico_p);
             }
 
 

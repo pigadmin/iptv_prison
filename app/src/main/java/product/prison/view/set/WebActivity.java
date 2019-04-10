@@ -22,7 +22,7 @@ public class WebActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Logs.e(fram_web.canGoBack() + "##");
+        Logs.e("是否可以返回上一页" + fram_web.canGoBack());
         if (fram_web.canGoBack()) {
             fram_web.goBack();
         } else {
@@ -39,7 +39,11 @@ public class WebActivity extends BaseActivity {
     @Override
     public void loadData() {
         try {
-            Home = getIntent().getStringExtra("key");
+            String url = getIntent().getStringExtra("key");
+            if (url != null) {
+                Home = url;
+            }
+            Logs.e(Home);
             WebSettings websettings = fram_web.getSettings();
             websettings.setJavaScriptEnabled(true);
             websettings.setBuiltInZoomControls(true);

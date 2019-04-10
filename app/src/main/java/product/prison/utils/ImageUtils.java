@@ -20,8 +20,8 @@ public class  ImageUtils {
         ImageOptions imageOptions = new ImageOptions.Builder()
                 .setIgnoreGif(false)//是否忽略gif图。false表示不忽略。不写这句，默认是true
                 .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
-                .setFailureDrawableId(R.mipmap.ic_launcher)
-                .setLoadingDrawableId(R.mipmap.ic_launcher)
+//                .setFailureDrawableId(R.drawable.bg)
+//                .setLoadingDrawableId(R.drawable.bg)
                 .build();
         x.image().bind(imageView, iconUrl, imageOptions);
     }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="product.prison">
 
+    package="product.prison">
+    <!--android:sharedUserId="android.uid.system"-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -37,9 +38,7 @@
         <activity
             android:name=".view.set.SetActivity"
             android:launchMode="singleTask" />
-        <activity
-            android:name=".view.ad.NowinsActivity"
-            android:launchMode="singleTask" />
+
         <activity
             android:name=".view.video.VideoTypeActivity"
             android:launchMode="singleTask" />
@@ -68,6 +67,27 @@
             android:name=".view.satisfied.SatisfiedActivity"
             android:launchMode="singleTask" />
         <activity android:name=".view.msg.NoticeActivity" />
+        <activity
+            android:name=".view.music.MusicActivity"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".view.dish.DishTypeActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.dish.DishActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.dish.CartActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".view.dish.OrderActivity"
+            android:launchMode="singleTask" />
+
+        <activity android:name=".view.ad.MsginsActivity" />
+        <activity android:name=".view.ad.WeekActivity" />
+        <activity android:name=".view.ad.NowinsActivity" />
+
         <activity
             android:name=".WelcomeActivity"
             android:launchMode="singleTask">

@@ -89,17 +89,15 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
 
     @Override
     public void onItemClick(View view, int position) {
-        if (list.get(position).equals(getString(R.string.news))) {
-            sort = 1;
-        } else if (list.get(position).equals(getString(R.string.news))) {
-            sort = 2;
-        }
+        sort = position + 1;
         vod();
+        listAdapter.update(position);
     }
 
     private int sort = 1;
 
     private void vod() {
+        Logs.e("最新最热" + sort);
         RequestParams params = new RequestParams(MyApp.apiurl + "vod");
         params.addBodyParameter("mac", MyApp.mac);
         params.addBodyParameter("type", type + "");

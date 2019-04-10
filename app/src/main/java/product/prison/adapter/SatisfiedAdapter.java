@@ -24,9 +24,11 @@ import java.util.List;
 
 import product.prison.R;
 import product.prison.app.MyApp;
+import product.prison.model.QuetionVo;
 import product.prison.model.Satisfied;
 import product.prison.model.SatisfiedDetails;
 import product.prison.model.TGson;
+import product.prison.utils.EditMax;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
 
@@ -76,10 +78,12 @@ public class SatisfiedAdapter extends BaseAdapter {
 
         satisfied_title = view.findViewById(R.id.satisfied_title);
         satisfied_no = view.findViewById(R.id.satisfied_no);
+        EditMax.set(satisfied_no, 1, 3);
         try {
             satisfied_title.setText((position + 1) + "、" + list.get(position).getName());
         } catch (Exception e) {
             // TODO: handle exception
+            e.printStackTrace();
         }
 
         satisfied_no.addTextChangedListener(new TextWatcher() {
@@ -97,7 +101,16 @@ public class SatisfiedAdapter extends BaseAdapter {
             @Override
             public void afterTextChanged(Editable s) {
                 // 将editText中改变的值设置的HashMap中
-                hashMap.put(position, s.toString());
+                try {
+//                    if (Integer.parseInt(s.toString()) > 3 || s.toString().equals("")) {
+//                        hashMap.put(position, 1 + "");
+//                    } else {
+                    hashMap.put(position, s.toString());
+//                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -115,10 +128,17 @@ public class SatisfiedAdapter extends BaseAdapter {
     private void exam_answer(int id) {
         String answer = "";
 
+        List<QuetionVo> quetionVos = new ArrayList<>();
         for (int i = 0; i < hashMap.size(); i++) {
-//            answer += list.get(i).getId() + ":" + hashMap.get(i) + ",";
-            answer += hashMap.get(i) + ",";
+
+            QuetionVo quetionVo = new QuetionVo();
+            quetionVo.setQuestionId(list.get(i).getId() + "");
+            quetionVo.setAnswer(hashMap.get(i));
+            // answer += list.get(i).getId() + ":" + hashMap.get(i) + ",";
+            //  answer += hashMap.get(i) + ",";
+            quetionVos.add(quetionVo);
         }
+        answer = Utils.gson.toJson(quetionVos);
         Logs.e(answer);
         RequestParams params = new RequestParams(MyApp.apiurl + "exam_answer");
         params.addBodyParameter("mac", MyApp.mac);

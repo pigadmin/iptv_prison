@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.google.gson.reflect.TypeToken;
 
 import org.xutils.common.Callback;
@@ -35,12 +36,15 @@ import product.prison.model.TGson;
 import product.prison.model.TMenu;
 import product.prison.model.TranscribeData;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
+import product.prison.view.dish.DishTypeActivity;
 import product.prison.view.game.GameActivity;
 import product.prison.view.info.InfoActivity;
 import product.prison.view.live.LiveActivity;
 import product.prison.view.live.LiveApkActivity;
 import product.prison.view.msg.NoticeActivity;
+import product.prison.view.music.MusicActivity;
 import product.prison.view.news.NewsActivity;
 import product.prison.view.record.RecordActivity;
 import product.prison.view.satisfied.SatisfiedActivity;
@@ -76,12 +80,18 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 mediaPlayer.setLooping(true);
             }
         });
+
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
                 return true;
             }
         });
+
+        if (!app.getUpdateurl().equals("")) {
+            Logs.e("升级" + app.getUpdateurl());
+            new Utils().Download(getApplicationContext(), app.getUpdateurl(), true);
+        }
     }
 
     @Override
@@ -142,6 +152,9 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
 //        Logs.e(position + "");
         try {
             int open = list.get(position).getStatus();
+            String name = list.get(position).getName();
+            int id = list.get(position).getId();
+            Logs.e(id + "");
             if (open == 0) {
                 Toast.makeText(getApplicationContext(), R.string.disable, Toast.LENGTH_SHORT).show();
                 return;
@@ -158,9 +171,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 startActivity(new Intent(MainActivity.this, InfoActivity.class).putExtras(bundle));
                 return;
             }
-            String name = list.get(position).getName();
-            int id = list.get(position).getId();
-            Logs.e(id + "");
+
             switch (id) {
                 case 60://首页
                     break;
@@ -181,7 +192,11 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 case 63://录播
                     getTranscribe();
                     break;
+                case 51://商品
+                    startActivity(new Intent(this, DishTypeActivity.class));
+                    break;
                 case 59://音乐
+                    startActivity(new Intent(this, MusicActivity.class));
                     break;
                 case 64://设置
                 case 46:
@@ -215,16 +230,25 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     if (!json.getCode().equals("200")) {
                         Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
                     }
+                    Logs.e(json.getData().size() + "");
                     info = json.getData();
-                    for (InfoData infoData : info) {
-                        TMenu tMenu = new TMenu();
-                        tMenu.setId(infoData.getId());
+                    int n = 0;
+                    for (int i = 0; i < info.size(); i++) {
+                        if (info.get(i).getName().equals("校内新闻")) {
+                            n=i;
+                            app.setInfoData(info.get(i));
+                        } else {
+                            TMenu tMenu = new TMenu();
+                            tMenu.setId(info.get(i).getId());
 //                        tMenu.setName(MyApp.info[MyApp.templateType - 1]);
-                        tMenu.setName(infoData.getName());
-                        tMenu.setStatus(1);
-                        tMenu.setIcon(infoData.getPath());
-                        list.add(tMenu);
+                            tMenu.setName(info.get(i).getName());
+                            Logs.e(info.get(i).getName());
+                            tMenu.setStatus(1);
+                            tMenu.setIcon(info.get(i).getPics().get(0).getFilePath());
+                            list.add(tMenu);
+                        }
                     }
+                    info.remove(n);
                     adapter = new MainAdapter(MainActivity.this, list);
                     adapter.setOnItemClickListener(MainActivity.this);
                     mainrecyle.setAdapter(adapter);
@@ -426,7 +450,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     @Override
     protected void onPause() {
         super.onPause();
-        Logs.e("onPause");
+//        Logs.e("onPause");
         try {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();

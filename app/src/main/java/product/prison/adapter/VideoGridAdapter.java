@@ -67,7 +67,6 @@ public class VideoGridAdapter extends BaseAdapter {
 
     }
 
-
     public class ViewHolder {
         private ImageView vod_bg;
         private TextView vod_name;

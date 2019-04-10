@@ -66,9 +66,19 @@ public class SatisfiedListAdapter extends RecyclerView.Adapter<SatisfiedListAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.left_list_name.setText(list.get(position).getName());
 
+        if (chk == position) {
+            holder.itemView.requestFocus();
+            holder.itemView.setBackgroundResource(R.drawable.left_list_f);
+        }
         holder.itemView.setTag(position);
     }
 
+    private int chk = -1;
+
+    public void update(int chk) {
+        this.chk = chk;
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return list.size();

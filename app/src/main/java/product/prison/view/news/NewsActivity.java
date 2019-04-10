@@ -27,6 +27,7 @@ import product.prison.adapter.TeleplayGridAdapter;
 import product.prison.adapter.VideoGridAdapter;
 import product.prison.adapter.VideoListAdapter;
 import product.prison.app.MyApp;
+import product.prison.model.Details;
 import product.prison.model.News;
 import product.prison.model.TGson;
 import product.prison.model.Vod;
@@ -50,6 +51,7 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
     String[] list = {"头条", "社会", "国内", "国际", "娱乐", "体育", "军事", "科技", "财经", "时尚"};
     String[] newscat2 = {"top", "shehui", "guonei", "guoji", "yule", "tiyu", "junshi", "keji", "caijing", "shishang"};
     private NewsGridAdapter gridAdapter;
+    private MyApp app;
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -67,11 +69,18 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
     @Override
     public void loadData() {
         try {
+            app = (MyApp) getApplication();
+            if (app.getInfoData() != null) {
+                list = new String[]{app.getInfoData().getName(), "头条", "社会", "国内", "国际", "娱乐", "体育", "军事", "科技", "财经", "时尚"};
+                newscat2 = new String[]{"", "top", "shehui", "guonei", "guoji", "yule", "tiyu", "junshi", "keji", "caijing", "shishang"};
+            }
+
             listAdapter = new CommonListAdapter(getApplicationContext(), list);
             left_list.setAdapter(listAdapter);
             listAdapter.setOnItemClickListener(NewsActivity.this);
 
             getNews(0);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,10 +95,25 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
     @Override
     public void onItemClick(View view, int position) {
         getNews(position);
+        listAdapter.update(position);
     }
 
 
     private void getNews(int position) {
+        if (newscat2[position].equals("")) {
+            grid = new ArrayList<>();
+            for (Details details : app.getInfoData().getDetails()) {
+                News news = new News();
+                news.setTitle(details.getName());
+                news.setThumbnail_pic_s(details.getIcon());
+                news.setUrl(details.getIcon());
+                grid.add(news);
+            }
+            Logs.e(grid.size() + "");
+            gridAdapter = new NewsGridAdapter(NewsActivity.this, grid);
+            right_grid.setAdapter(gridAdapter);
+            return;
+        }
         RequestParams params = new RequestParams(MyApp.apiurl + "getNews");
         params.addBodyParameter("mac", MyApp.mac);
         params.addBodyParameter("type", newscat2[position]);

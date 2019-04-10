@@ -180,6 +180,7 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
     @Override
     public void onItemClick(View view, int position) {
         update(position);
+        listAdapter.update(position);
     }
 
 //    @Override

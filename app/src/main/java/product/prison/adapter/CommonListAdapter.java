@@ -14,8 +14,8 @@ import product.prison.R;
 
 
 public class CommonListAdapter extends RecyclerView.Adapter<CommonListAdapter.ViewHolder> implements View.OnClickListener {
-    private   String[] list;
-    private   Context context;
+    private String[] list;
+    private Context context;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,7 +64,19 @@ public class CommonListAdapter extends RecyclerView.Adapter<CommonListAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.left_list_name.setText(list[position]);
+
+        if (chk == position) {
+            holder.itemView.requestFocus();
+            holder.itemView.setBackgroundResource(R.drawable.left_list_f);
+        }
         holder.itemView.setTag(position);
+    }
+
+    private int chk = -1;
+
+    public void update(int chk) {
+        this.chk = chk;
+        notifyDataSetChanged();
     }
 
     @Override

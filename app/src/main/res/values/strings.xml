@@ -19,6 +19,8 @@
 
     <string name="hot">最 热</string>
     <string name="news">最 新</string>
+    <string name="order">我的订单</string>
+    <string name="cat">购物车</string>
 
     <string name="video_time">上一次观看到x,是否继续播放?</string>
 
@@ -63,4 +65,35 @@
     <string name="notice_time">时间</string>
     <string name="notice_title">留言</string>
     <string name="notice_content">详细</string>
+
+
+    <string name="shop_time">供应时间：</string>
+    <string name="shop_sale">已售0份</string>
+    <string name="shop_price">￥</string>
+    <!--<string name="shop_dialog_tips">是否将</string>-->
+    <string name="shop_dialog_tips">是否将</string>
+    <string name="one">1</string>
+    <string name="shop_dialog_tips3">份装进购物车?</string>
+    <string name="shop_product_intro">商品描述</string>
+    <string name="shop_clean_car">清空购物车</string>
+    <string name="shop_clean_order">取消订单</string>
+    <string name="shop_car_no">序号</string>
+    <string name="shop_car_name">商品名称</string>
+    <string name="shop_car_num">数量</string>
+    <string name="shop_car_price">单价￥</string>
+    <string name="shop_tolprice">总价￥</string>
+    <string name="shop_allprice">合计(￥)：</string>
+    <string name="shop_yuan">元</string>
+    <string name="shop_cartnull">请先加入购物车!</string>
+    <string name="shop_add_cart_scuess">添加购物车成功!</string>
+    <string name="shop_clean_cart">确定清空购物车？</string>
+    <string name="shop_clean_cart_scuess">清空成功!</string>
+    <string name="shop_addorder">添加到订单!</string>
+    <string name="shop_orderscu">下单成功!</string>
+    <string name="shop_clean_orders">确定取消订单？</string>
+    <string name="shop_clean_order_scuess">清空成功!</string>
+    <string name="shop_ordernull">您还没有任何订单!</string>
+    <string name="shop_order_ok">确定提交订单？</string>
+    <string name="shop_tel">输入联系电话</string>
+    <string name="shop_telerror">请输入正确的联系方式!</string>
 </resources>

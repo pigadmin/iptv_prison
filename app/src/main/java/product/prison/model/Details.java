@@ -1,6 +1,7 @@
 package product.prison.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Details implements Serializable {
 
@@ -105,4 +106,11 @@ public class Details implements Serializable {
         return this.sourceId;
     }
 
+    private List<Pics> pics ;
+    public void setPics(List<Pics> pics){
+        this.pics = pics;
+    }
+    public List<Pics> getPics(){
+        return this.pics;
+    }
 }

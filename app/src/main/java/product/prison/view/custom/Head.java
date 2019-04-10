@@ -43,8 +43,8 @@ public class Head extends LinearLayout {
                     case 1:
                         if (wea == null)
                             return;
-                        Logs.e(wea.getCity());
-                        Logs.e(Utils.gson.toJson(wea.getData().get(0)));
+//                        Logs.e(wea.getCity());
+//                        Logs.e(Utils.gson.toJson(wea.getData().get(0)));
                         wea_image.setBackgroundResource(WeatherImage.parseIcon(wea.getData().get(0).getWea()));
                         city.setText(wea.getCity());
                         tmp.setText(wea.getData().get(0).getTem());

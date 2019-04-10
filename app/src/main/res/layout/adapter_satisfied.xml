@@ -17,7 +17,9 @@
             android:background="@color/white"
             android:gravity="center"
             android:inputType="number"
-            android:maxLength="1" />
+            android:maxLength="1"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/edit_cur" />
 
         <TextView
             android:id="@+id/satisfied_title"

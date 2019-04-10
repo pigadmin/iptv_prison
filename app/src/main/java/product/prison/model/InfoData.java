@@ -84,4 +84,14 @@ public class InfoData implements Serializable {
         return this.details;
     }
 
+    private List<Pics> pics;
+
+    public void setPics(List<Pics> pics) {
+        this.pics = pics;
+    }
+
+    public List<Pics> getPics() {
+        return this.pics;
+    }
+
 }
