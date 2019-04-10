@@ -1,25 +1,16 @@
 package product.prison.view.dish;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -27,28 +18,19 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.DishListAdapter;
-import product.prison.adapter.DishTypeAdapter;
 import product.prison.adapter.FoodGalleryAdapter;
-import product.prison.adapter.InfoListAdapter;
 import product.prison.app.MyApp;
-import product.prison.model.Details;
 import product.prison.model.Food;
-import product.prison.model.FoodCat;
-import product.prison.model.Nt;
 import product.prison.model.TGson;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
-import product.prison.view.ad.RsType;
-import product.prison.view.info.InfoActivity;
-import product.prison.view.msg.NoticeActivity;
 
 public class DishActivity extends BaseActivity implements DishListAdapter.OnItemClickListener {
 
@@ -57,9 +39,11 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
     private DishListAdapter listAdapter;
     private ImageView right_image;
     private Button shop_order, shop_cat;
+    private MyApp app;
 
     @Override
     public void initView(Bundle savedInstanceState) {
+        app = (MyApp) getApplication();
         left_list = f(R.id.left_list);
         right_image = f(R.id.right_image);
 
@@ -214,7 +198,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-//                    orderDish();
+                    addcat(count);
                 }
 
 
@@ -234,6 +218,35 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
 
     }
 
+    private void addcat(int c) {
+        try {
+            if (app.getShopCats().isEmpty()) {
+                addnew(c);
+            } else {
+                int re = -1;
+                for (int i = 0; i < app.getShopCats().size(); i++) {
+                    if (list.get(current).getId() == app.getShopCats().get(i).getId())
+                        re = i;
+                }
+                if (re == -1) {
+                    addnew(c);
+                } else {
+                    int tmp = app.getShopCats().get(re).getCount() + c;
+                    app.getShopCats().get(re).setCount(tmp);
+                }
+            }
+            Toast.makeText(this, getString(R.string.shop_add_cart_scuess), Toast.LENGTH_SHORT).show();
+            add_dialog.dismiss();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addnew(int c) {
+        Food cat = list.get(current);
+        cat.setCount(c);
+        app.getShopCats().add(cat);
+    }
 
     private void orderDish() {
         String order = list.get(current).getId() + ","

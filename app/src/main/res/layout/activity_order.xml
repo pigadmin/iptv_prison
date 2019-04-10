@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <product.prison.view.custom.Head
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="107dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="80dp"
+        android:orientation="horizontal">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/left_list"
+            android:layout_width="210dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/left_list_bg"
+            android:clipChildren="false"></android.support.v7.widget.RecyclerView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/right_grid_bg"
+            android:orientation="vertical"
+            android:padding="30dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/shop_order_clean"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:paddingRight="35dp"
+                        android:singleLine="true"
+                        android:text="订单"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="114"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="时间"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="260"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/shop_car_name"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="120"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/shop_car_num"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="138"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/shop_tolprice"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="120"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="状态"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <ListView
+                android:id="@+id/order_list"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_weight="1"
+                android:divider="@drawable/pay_diver"
+                android:scrollbars="none"></ListView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="35dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|right"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/shop_allprices"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="@string/shop_allprice"
+                        android:textColor="@color/white"
+                        android:textSize="22dp" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

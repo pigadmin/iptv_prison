@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/shop_order_no"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="114"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:singleLine="true"
+            android:text="时间"
+            android:textColor="@color/white"
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/shop_order_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="260"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/shop_car_name"
+            android:textColor="@color/white"
+            android:textSize="22dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="120"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/shop_jia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/food_jia"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/shop_num"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLength="2"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="18dp" />
+
+            <ImageButton
+                android:id="@+id/shop_jian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/food_jian"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/order_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="138"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/shop_car_price"
+            android:textColor="@color/white"
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/sendif"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="120"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="状态"
+            android:textColor="@color/white"
+            android:textSize="22dp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import product.prison.model.Food;
 import product.prison.model.InfoData;
 import product.prison.model.LogoData;
 import product.prison.model.Mings;
@@ -39,14 +40,14 @@ public class MyApp extends Application {
 
     private SocketIO socketIO;
     public static String head = "http://";
-    public static String ip = "s1.natfrp.org";
-    public static String port = "42188";
-    public static String sioport = "55577";
+//    public static String ip = "s1.natfrp.org";
+//    public static String port = "42188";
+//    public static String sioport = "55577";
     //    public static String ip = "192.168.2.25";
 //    public static String port = "8089";
-    //    public static String ip = "192.168.2.5";
-//    public static String port = "8080";
-//    public static String sioport = "8000";
+        public static String ip = "192.168.2.5";
+    public static String port = "8080";
+    public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";
     public static String spaceName = "/tv";
     public static String apiurl = head + ip + port + apiName;
@@ -292,5 +293,19 @@ public class MyApp extends Application {
 
     boolean downloadzip;
 
+    List<Food> shopCats = new ArrayList<>();
 
+    public List<Food> getShopCats() {
+        return shopCats;
+    }
+
+    private List<Food> orDishs = new ArrayList<Food>();
+
+    public List<Food> getOrDishs() {
+        return orDishs;
+    }
+
+    public void setOrDishs(List<Food> orDishs) {
+        this.orDishs = orDishs;
+    }
 }

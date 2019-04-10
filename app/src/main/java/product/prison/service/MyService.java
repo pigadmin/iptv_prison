@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.gson.reflect.TypeToken;
@@ -187,6 +188,12 @@ public class MyService extends Service implements Runnable, IScrollState {
 //                + ",\"msg\":null,\"status\":\"success\"}";
 //        System.out.println("接收到命令：" + msgs);
         try {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "接受到修改IP指令", Toast.LENGTH_SHORT).show();
+                }
+            });
             final Ncommand cm = Utils.jsonToObject(msg, new TypeToken<Ncommand>() {
             });
             if (cm.getCommand() == 7) {

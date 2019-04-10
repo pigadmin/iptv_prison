@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +25,11 @@ import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.DishListAdapter;
 import product.prison.adapter.FoodGalleryAdapter;
+import product.prison.adapter.ShopOrderAdapter;
 import product.prison.adapter.VideoListAdapter;
 import product.prison.app.MyApp;
 import product.prison.model.Food;
+import product.prison.model.OrderData;
 import product.prison.model.TGson;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
@@ -38,6 +42,11 @@ public class OrderActivity extends BaseActivity implements VideoListAdapter.OnIt
     private VideoListAdapter listAdapter;
     private ImageView right_image;
     private List<String> list = new ArrayList<>();
+    private TextView shop_order_clean, shop_allprices;
+    private ListView order_list;
+    private ImageButton shop_order_ok;
+    private ShopOrderAdapter shopOrderAdapter;
+    private List<OrderData> order = new ArrayList<>();
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -48,126 +57,51 @@ public class OrderActivity extends BaseActivity implements VideoListAdapter.OnIt
         layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
         left_list.setLayoutManager(layoutmanager);
         list.add(getString(R.string.order));
+
+        order_list = f(R.id.order_list);
+
+
+        shop_order_clean = f(R.id.shop_order_clean);
+
+
+        shop_allprices = f(R.id.shop_allprices);
+
     }
 
-    private int styleId;
 
     @Override
     public void loadData() {
         listAdapter = new VideoListAdapter(getApplicationContext(), list);
         left_list.setAdapter(listAdapter);
         listAdapter.setOnItemClickListener(OrderActivity.this);
-    }
-
-    private FoodGalleryAdapter galleryAdapter;
-
-
-    private void setdate() {
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    AlertDialog add_dialog;
-    ImageButton ok, cancle;
-    ImageButton jia, jian;
-    TextView number;
-    int count;
-
-    public void add() {
-        // TODO Auto-generated method stub
-        try {
-            count = 1;
-            if (add_dialog != null) {
-                add_dialog.dismiss();
-                add_dialog = null;
-            }
-            add_dialog = new AlertDialog.Builder(this).create();
-            add_dialog.show();
-            add_dialog.setContentView(R.layout.dialog_food);
-            jia = add_dialog.findViewById(R.id.jia);
-            jian = add_dialog.findViewById(R.id.jian);
-            number = add_dialog.findViewById(R.id.number);
-            jia.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    count = Integer.parseInt(number.getText().toString());
-                    count++;
-                    number.setText(count + "");
-                }
-            });
-
-            jian.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    count = Integer.parseInt(number.getText().toString());
-                    if (count > 1) {
-                        count--;
-                    } else {
-                        count = 9;
-                    }
-                    number.setText(count + "");
-
-                }
-            });
-
-            ok = add_dialog.findViewById(R.id.ok);
-            ok.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-//                    orderDish();
-                }
-
-
-            });
-            cancle = add_dialog.findViewById(R.id.cancle);
-            cancle.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    add_dialog.dismiss();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        getOrder();
     }
 
 
-    private void orderDish() {
-//        String order = list.get(current).getId() + ","
-//                + count + ";";
-//        Logs.e(order);
-        RequestParams params = new RequestParams(MyApp.apiurl + "orderDish");
+    private void getOrder() {
+        RequestParams params = new RequestParams(MyApp.apiurl + "getOrder");
         params.addBodyParameter("mac", MyApp.mac);
-//        params.addBodyParameter("order", order);
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 try {
                     Logs.e(result);
-                    TGson<String> json = Utils.gson.fromJson(result,
-                            new TypeToken<TGson<String>>() {
+                    TGson<List<OrderData>> json = Utils.gson.fromJson(result,
+                            new TypeToken<TGson<List<OrderData>>>() {
                             }.getType());
-                    if (json.getCode().equals("200")) {
-                        if (add_dialog != null)
-                            add_dialog.dismiss();
-                        add_dialog = null;
-                        Toast.makeText(getApplicationContext(), getString(R.string.shop_orderscu), Toast.LENGTH_SHORT).show();
-                    } else {
+                    if (!json.getCode().equals("200")) {
                         Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
                     }
+                    order = json.getData();
+                    shopOrderAdapter = new ShopOrderAdapter(getApplicationContext(),
+                            order);
+                    order_list.setAdapter(shopOrderAdapter);
 
+                    int allprice = 0;
+                    for (OrderData orderData : order) {
+                        allprice += orderData.getTotalPrice();
+                    }
+                    shop_allprices.setText(getString(R.string.shop_allprice) + allprice);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -192,7 +126,7 @@ public class OrderActivity extends BaseActivity implements VideoListAdapter.OnIt
 
     @Override
     public int getContentId() {
-        return R.layout.activity_video;
+        return R.layout.activity_order;
     }
 
 
