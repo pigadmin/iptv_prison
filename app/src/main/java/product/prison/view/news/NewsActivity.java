@@ -102,11 +102,14 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
     private void getNews(int position) {
         if (newscat2[position].equals("")) {
             grid = new ArrayList<>();
+
+            Logs.e(Utils.gson.toJson(app.getInfoData()));
+
             for (Details details : app.getInfoData().getDetails()) {
                 News news = new News();
                 news.setTitle(details.getName());
-                news.setThumbnail_pic_s(details.getIcon());
-                news.setUrl(details.getIcon());
+                news.setThumbnail_pic_s(details.getPics().get(0).getFilePath());
+                news.setUrl(details.getPics().get(0).getFilePath());
                 grid.add(news);
             }
             Logs.e(grid.size() + "");

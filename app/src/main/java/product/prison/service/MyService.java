@@ -8,14 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,16 +34,17 @@ import java.util.List;
 
 import product.prison.BaseActivity;
 import product.prison.R;
+import product.prison.WelcomeActivity;
 import product.prison.app.MyApp;
 import product.prison.broadcast.MyAction;
 import product.prison.download.BPRDownloading;
 import product.prison.model.MaterialVO;
 import product.prison.model.MsgData;
-import product.prison.model.Ncommand;
 import product.prison.model.Nt;
 import product.prison.model.ProgramContentVO;
 import product.prison.model.ProgramListVO;
 import product.prison.model.ProgramVO;
+import product.prison.model.Servermessage;
 import product.prison.msg.IScrollState;
 import product.prison.msg.MarqueeToast;
 import product.prison.msg.TextSurfaceView;
@@ -163,7 +162,7 @@ public class MyService extends Service implements Runnable, IScrollState {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             } finally {
                 try {
                     if (in != null) {
@@ -184,32 +183,26 @@ public class MyService extends Service implements Runnable, IScrollState {
 
     private void event(String msg) {
         // TODO Auto-generated method stub
-//        String msgs = "{\"data\":" + msg.substring(1, msg.length() - 1)
-//                + ",\"msg\":null,\"status\":\"success\"}";
-//        System.out.println("接收到命令：" + msgs);
+
         try {
-            new Handler().post(new Runnable() {
+            final Servermessage servermessage = Utils.jsonToObject(msg, new TypeToken<Servermessage>() {
+            });
+            handler.post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(), "接受到修改IP指令", Toast.LENGTH_SHORT).show();
+
+                    SpUtils.putString(getApplicationContext(), "ip", servermessage.getServerip());
+                    SpUtils.putString(getApplicationContext(), "port", servermessage.getServerPort() + "");
+                    SpUtils.putString(getApplicationContext(), "sioport", servermessage.getSioPort() + "");
+
+                    Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    android.os.Process.killProcess(android.os.Process.myPid());
+
                 }
             });
-            final Ncommand cm = Utils.jsonToObject(msg, new TypeToken<Ncommand>() {
-            });
-            if (cm.getCommand() == 7) {
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        SpUtils.putString(getApplicationContext(), "ip", cm.getServermessage().getServerip());
-                        SpUtils.putString(getApplicationContext(), "port", cm.getServermessage().getServerPort() + "");
-                        SpUtils.putString(getApplicationContext(), "sioport", cm.getServermessage().getSioPort() + "");
-
-                        Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
-                });
-            }
         } catch (Exception e) {
             e.printStackTrace();
 

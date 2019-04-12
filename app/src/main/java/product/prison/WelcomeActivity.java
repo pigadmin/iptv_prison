@@ -197,6 +197,8 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                             }
                         }.start();
                     }
+                    if( json.getData()==null)
+                        return;
                     password = json.getData().getPassword();
                     if (password != null && !password.trim().equals("") && MyApp.templateType == 3) {
                         inputPassword();
