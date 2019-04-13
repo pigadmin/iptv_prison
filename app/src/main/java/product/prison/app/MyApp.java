@@ -45,7 +45,7 @@ public class MyApp extends Application {
 //    public static String sioport = "55577";
 //        public static String ip = "192.168.2.25";
 //    public static String port = "8089";
-        public static String ip = "192.168.2.1";
+        public static String ip = "192.168.2.3";
     public static String port = "8081";
     public static String sioport = "8001";
     public static String apiName = "/wisdom_iptv/remote/";
@@ -82,7 +82,8 @@ public class MyApp extends Application {
 //                SpUtils.putString(this, "mac", Utils.GetMac());
             }
 //            mac = SpUtils.getString(this, "mac", mac);
-            mac = Utils.GetMac();
+//            mac = Utils.GetMac();
+            mac ="testcode";
             port = SpUtils.getString(this, "port", port);
             sioport = SpUtils.getString(this, "sioport", sioport);
             apiurl = head + SpUtils.getString(this, "ip", ip) + ":" + port + apiName;

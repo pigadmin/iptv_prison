@@ -165,6 +165,7 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
         try {
             String path = grid.get(position).getUrl();
 
+
             Intent intent = new Intent(NewsActivity.this, WebActivity.class);
             intent.putExtra("key", path);
             startActivity(intent);

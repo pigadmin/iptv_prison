@@ -24,7 +24,9 @@ import android.widget.VideoView;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -196,19 +198,31 @@ public class MyService extends Service implements Runnable, IScrollState {
                     SpUtils.putString(getApplicationContext(), "port", servermessage.getServerPort() + "");
                     SpUtils.putString(getApplicationContext(), "sioport", servermessage.getSioPort() + "");
 
-                    Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
                     android.os.Process.killProcess(android.os.Process.myPid());
-
+                    execLinuxCommand();
                 }
             });
+
         } catch (Exception e) {
             e.printStackTrace();
 
         }
 
+    }
 
+    private void execLinuxCommand() {
+        String cmd = "sleep 120;am start -n product.prison/product.prison.WelcomeActivity";
+
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process localProcess = runtime.exec("su");
+            OutputStream localOutputStream = localProcess.getOutputStream();
+            DataOutputStream localDataOutputStream = new DataOutputStream(localOutputStream);
+            localDataOutputStream.writeBytes(cmd);
+            localDataOutputStream.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     String head = new SimpleDateFormat("yyyy-MM-dd ").format(new Date(System

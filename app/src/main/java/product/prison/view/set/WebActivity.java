@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
 import product.prison.BaseActivity;
 import product.prison.R;
+import product.prison.service.MyService;
 import product.prison.utils.Logs;
 
 
@@ -24,7 +27,6 @@ public class WebActivity extends BaseActivity {
         } else {
             super.onBackPressed();
         }
-
     }
 
     @Override
