@@ -76,7 +76,7 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getSongType "+result);
                     TGson<List<MusicData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<MusicData>>>() {
                             }.getType());
@@ -143,7 +143,7 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getsong "+result);
                     TGson<SongData> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<SongData>>() {
                             }.getType());

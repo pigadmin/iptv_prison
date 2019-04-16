@@ -2,6 +2,7 @@ package product.prison.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,12 @@ import java.util.List;
 import product.prison.R;
 import product.prison.model.Details;
 import product.prison.model.InfoData;
+import product.prison.utils.Logs;
 
 
 public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHolder> implements View.OnClickListener {
-    private  List<Details> list;
-    private  Context context;
+    private List<Details> list;
+    private Context context;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -67,18 +69,19 @@ public class InfoListAdapter extends RecyclerView.Adapter<InfoListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.left_list_name.setText(list.get(position).getName());
 
-        if (chk == position) {
-            holder.itemView.requestFocus();
-            holder.itemView.setBackgroundResource(R.drawable.left_list_f);
-        }
+
         holder.itemView.setTag(position);
+        holder.itemView.setBackgroundResource(R.drawable.left_list);
+        if (chk == position) {
+            holder.itemView.setBackgroundResource(R.drawable.left_list_c);
+        }
     }
 
     private int chk = -1;
 
     public void update(int chk) {
         this.chk = chk;
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0, list.size());
     }
 
     @Override

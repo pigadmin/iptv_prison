@@ -96,6 +96,7 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
 
     private int sort = 1;
 
+
     private void vod() {
         Logs.e("最新最热" + sort);
         RequestParams params = new RequestParams(MyApp.apiurl + "vod");
@@ -108,7 +109,7 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("vod "+result);
                     TGson<Vod> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Vod>>() {
                             }.getType());

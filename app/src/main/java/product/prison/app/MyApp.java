@@ -43,11 +43,11 @@ public class MyApp extends Application {
 //    public static String ip = "s1.natfrp.org";
 //    public static String port = "42188";
 //    public static String sioport = "55577";
-//        public static String ip = "192.168.2.25";
-//    public static String port = "8089";
-        public static String ip = "192.168.2.3";
-    public static String port = "8081";
-    public static String sioport = "8001";
+        public static String ip = "192.168.2.25";
+    public static String port = "8089";
+//        public static String ip = "192.168.2.3";
+//    public static String port = "8080";
+    public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";
     public static String spaceName = "/tv";
     public static String apiurl = head + ip + port + apiName;

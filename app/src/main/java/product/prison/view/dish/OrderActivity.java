@@ -85,7 +85,7 @@ public class OrderActivity extends BaseActivity implements VideoListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getOrder "+result);
                     TGson<List<OrderData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<OrderData>>>() {
                             }.getType());

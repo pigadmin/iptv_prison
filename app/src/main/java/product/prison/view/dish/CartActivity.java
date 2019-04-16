@@ -120,7 +120,7 @@ public class CartActivity extends BaseActivity implements VideoListAdapter.OnIte
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("orderDish "+result);
                     TGson<String> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<String>>() {
                             }.getType());

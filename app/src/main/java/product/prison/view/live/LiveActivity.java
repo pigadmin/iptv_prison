@@ -197,7 +197,7 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("livePrevieew "+result);
                     TGson<LivePreViewData> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<LivePreViewData>>() {
                             }.getType());

@@ -58,7 +58,7 @@ public class VideoTypeActivity extends BaseActivity implements VideoTypeAdapter.
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("vodtype "+result);
                     TGson<List<VodTypeData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<VodTypeData>>>() {
                             }.getType());

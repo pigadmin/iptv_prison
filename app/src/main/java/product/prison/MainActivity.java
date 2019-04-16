@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getmenu: "+result);
                     TGson<List<TMenu>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<TMenu>>>() {
                             }.getType());
@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-
+                Toast.makeText(getApplicationContext(), "访问异常", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -223,14 +223,14 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getInfo: "+result);
                     TGson<List<InfoData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<InfoData>>>() {
                             }.getType());
                     if (!json.getCode().equals("200")) {
                         Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
                     }
-                    Logs.e(json.getData().size() + "");
+//                    Logs.e(json.getData().size() + "");
                     info = json.getData();
                     int n = 0;
                     for (int i = 0; i < info.size(); i++) {
@@ -260,7 +260,10 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-
+//                Logs.e("getInfo接口异常");
+//                adapter = new MainAdapter(MainActivity.this, list);
+//                adapter.setOnItemClickListener(MainActivity.this);
+//                mainrecyle.setAdapter(adapter);
             }
 
             @Override
@@ -283,7 +286,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getTranscribe "+result);
                     TGson<List<TranscribeData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<TranscribeData>>>() {
                             }.getType());
@@ -324,7 +327,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("vod "+result);
                     TGson<Integer> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Integer>>() {
                             }.getType());
@@ -372,7 +375,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("live "+result);
                     TGson<Live> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Live>>() {
                             }.getType());

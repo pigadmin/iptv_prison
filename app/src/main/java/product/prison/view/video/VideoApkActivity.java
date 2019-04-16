@@ -54,7 +54,7 @@ public class VideoApkActivity extends BaseActivity implements LiveAdapter.OnItem
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("vodapp "+result);
                     TGson<List<LiveData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<LiveData>>>() {
                             }.getType());

@@ -123,7 +123,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("vrecord "+ result);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

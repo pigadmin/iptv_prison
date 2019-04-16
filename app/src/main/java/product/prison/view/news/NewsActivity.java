@@ -126,7 +126,7 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getNews "+ result);
                     TGson<List<News>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<News>>>() {
                             }.getType());

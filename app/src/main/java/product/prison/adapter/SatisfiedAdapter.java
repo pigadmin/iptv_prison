@@ -148,7 +148,7 @@ public class SatisfiedAdapter extends BaseAdapter {
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("exam_answer "+result);
                     TGson<String> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<String>>() {
                             }.getType());

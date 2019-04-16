@@ -125,7 +125,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             public void onSuccess(String result) {
                 try {
                     welcome_tips.setText("");
-                    Logs.e(result);
+                    Logs.e("checkAuth "+result);
                     TGson<Long> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Long>>() {
                             }.getType());
@@ -179,7 +179,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getUser "+result);
                     final TGson<UserData> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<UserData>>() {
                             }.getType());
@@ -235,7 +235,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getLogo "+result);
                     TGson<LogoData> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<LogoData>>() {
                             }.getType());
@@ -278,7 +278,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getWelComeAd "+result);
                     TGson<List<WelcomeAd>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<WelcomeAd>>>() {
                             }.getType());

@@ -89,7 +89,7 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("exam_question "+result);
                     TGson<List<Satisfied>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<Satisfied>>>() {
                             }.getType());

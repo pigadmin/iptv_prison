@@ -59,7 +59,7 @@ public class DishTypeActivity extends BaseActivity implements DishTypeAdapter.On
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getDishStyle "+result);
                     TGson<List<FoodCat>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<FoodCat>>>() {
                             }.getType());

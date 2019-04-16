@@ -124,6 +124,8 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
     @Override
     public void onItemClick(View view, int position) {
         try {
+//            view.setBackgroundResource(R.drawable.left_list_c);
+
             index = position;
             image();
             listAdapter.update(position);

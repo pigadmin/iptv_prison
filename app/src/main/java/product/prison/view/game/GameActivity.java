@@ -68,7 +68,7 @@ public class GameActivity extends BaseActivity implements AdapterView.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getApp "+result);
                     TGson<List<GameData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<GameData>>>() {
                             }.getType());

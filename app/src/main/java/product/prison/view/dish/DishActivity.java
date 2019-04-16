@@ -97,7 +97,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("getDish "+result);
                     TGson<List<Food>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<Food>>>() {
                             }.getType());
@@ -266,7 +266,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e(result);
+                    Logs.e("orderDish"+result);
                     TGson<String> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<String>>() {
                             }.getType());

@@ -65,19 +65,21 @@ public class CommonListAdapter extends RecyclerView.Adapter<CommonListAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.left_list_name.setText(list[position]);
 
-        if (chk == position) {
-            holder.itemView.requestFocus();
-            holder.itemView.setBackgroundResource(R.drawable.left_list_f);
-        }
+
         holder.itemView.setTag(position);
+        holder.itemView.setBackgroundResource(R.drawable.left_list);
+        if (chk == position) {
+            holder.itemView.setBackgroundResource(R.drawable.left_list_c);
+        }
     }
 
     private int chk = -1;
 
     public void update(int chk) {
         this.chk = chk;
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0, list.length);
     }
+
 
     @Override
     public int getItemCount() {
