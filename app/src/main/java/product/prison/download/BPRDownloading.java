@@ -2,7 +2,6 @@ package product.prison.download;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -14,6 +13,8 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 import product.prison.app.MyApp;
+import product.prison.utils.Logs;
+import product.prison.utils.SpUtils;
 
 public class BPRDownloading {
 
@@ -32,25 +33,25 @@ public class BPRDownloading {
      */
     public static int zipdownload(Context context, String url,
                                   String fileDir, String fileName, DownloadProgressUpdater updater) {
-        Log.v(TAG, "进行断点续传下载，地址：" + url + "|文件：" + fileDir + "/" + fileName);
+        Logs.e("进行断点续传下载，地址：" + url + "|文件：" + fileDir + "/" + fileName);
         if (SDHandler.isSDAvaliable()) {
             File tempFile = new File(fileDir, fileName);
             // 没有可用网络连接
             if (!NetworkStatusHandler.isNetWorkAvaliable(context)) {
-                Log.v(TAG, "没有可用网络连接，下载失败！");
+                Logs.e("没有可用网络连接，下载失败！");
                 return NET_ERROR;
             } else {
                 if (!url.startsWith("http"))
-                    return 0 ;
+                    return 0;
                 HttpGet httpGet = new HttpGet(url);
                 HttpResponse response = null;
                 InputStream is = null;
                 // 上次中断位置
                 long breakPoint = 0l;
                 if (tempFile.exists() && tempFile.isFile()) {
-                    Log.v(TAG, "该文件已经下载过一部分，从上次中断位置开始下载：" + tempFile.toString());
+                    Logs.e("该文件已经下载过一部分，从上次中断位置开始下载：" + tempFile.toString());
                     breakPoint = tempFile.length();
-                    Log.v(TAG, "断点位置：" + breakPoint + "b" + " | " + breakPoint
+                    Logs.e("断点位置：" + breakPoint + "b" + " | " + breakPoint
                             * 1.0f / 1024 + "k" + " | " + breakPoint * 1.0f
                             / 1024 / 1024 + "m");
                 }
@@ -58,17 +59,12 @@ public class BPRDownloading {
                 try {
                     response = HttpClientHolder.getInstance().execute(httpGet);
                 } catch (Exception e) {
-                    System.out.println("download error");
-                    e.printStackTrace();
-                    SharedPreferences preferences = context
-                            .getSharedPreferences("task", Context.MODE_PRIVATE);
-                    preferences.edit().putString("url", "taskurl")
-                            .commit();
-                    MyApp app = (MyApp) context
-                            .getApplicationContext();
+                    Logs.e("下载失败 " + url);
+//                    e.printStackTrace();
+                    SpUtils.putString(context, "url", "taskurl");
+                    MyApp app = (MyApp) context.getApplicationContext();
                     app.setDownloadzip(false);
                     return 0;
-
                 }
                 HttpEntity entity = null;
                 long total = 0;
@@ -76,7 +72,7 @@ public class BPRDownloading {
                     if (response != null) {
                         // 返回码不是206
                         if (response.getStatusLine().getStatusCode() != 206) {
-                            Log.v(TAG, "该文件已下载或返回码不是206，下载失败");
+                            Logs.e("该文件已下载或返回码不是206，下载失败");
                             tempFile.delete();
                             return NET_ERROR;
                         }
@@ -99,7 +95,7 @@ public class BPRDownloading {
                     File parentFile = new File(fileDir);
                     if (!parentFile.exists()) {
                         if (!parentFile.mkdirs()) {
-                            Log.v(TAG, "创建文件存放目录失败！");
+                            Logs.e("创建文件存放目录失败！");
                             return SD_ERROR;
                         }
                     }
@@ -109,11 +105,11 @@ public class BPRDownloading {
                             tempFile.createNewFile();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.v(TAG, "下载失败，新建文件失败：\n" + e.getMessage());
+                            Logs.e("下载失败，新建文件失败：\n" + e.getMessage());
                             return SD_ERROR;
                         }
                     }
-                    Log.v(TAG, "没有可用断点续传文件，新建一个文件:" + tempFile.toString());
+                    Logs.e("没有可用断点续传文件，新建一个文件:" + tempFile.toString());
                 }
                 byte[] buffer = new byte[1024];
                 RandomAccessFile oSavedFile = null;
@@ -154,7 +150,7 @@ public class BPRDownloading {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.v(TAG, "下载失败，从流中读取字节时候异常,保存下载文件位置，等待下次下载");
+                    Logs.e("下载失败，从流中读取字节时候异常,保存下载文件位置，等待下次下载");
                     return NET_ERROR;
                 } finally {
                     try {
@@ -170,7 +166,7 @@ public class BPRDownloading {
                 }
             }
         } else {
-            Log.v(TAG, "sd卡不可用，下载失败！");
+            Logs.e("sd卡不可用，下载失败！");
             return SD_ERROR;
         }
         return OK;
@@ -178,27 +174,26 @@ public class BPRDownloading {
 
     public static int resdownload(Context context, String url,
                                   String fileDir, String fileName, DownloadProgressUpdater updater) {
-        Log.v(TAG, "进行断点续传下载，地址：" + url + "|文件：" + fileDir + "/" + fileName);
-        System.out.println(url);
+        Logs.e("进行断点续传下载，地址：" + url + "|文件：" + fileDir + "/" + fileName);
         if (SDHandler.isSDAvaliable()) {
             File tempFile = new File(fileDir, fileName);
             // 没有可用网络连接
             if (!NetworkStatusHandler.isNetWorkAvaliable(context)) {
-                Log.v(TAG, "没有可用网络连接，下载失败！");
+                Logs.e("没有可用网络连接，下载失败！");
                 return NET_ERROR;
             } else {
 
                 if (!url.startsWith("http"))
-                    return 0 ;
+                    return 0;
                 HttpGet httpGet = new HttpGet(url);
                 HttpResponse response = null;
                 InputStream is = null;
                 // 上次中断位置
                 long breakPoint = 0l;
                 if (tempFile.exists() && tempFile.isFile()) {
-                    Log.v(TAG, "该文件已经下载过一部分，从上次中断位置开始下载：" + tempFile.toString());
+                    Logs.e("该文件已经下载过一部分，从上次中断位置开始下载：" + tempFile.toString());
                     breakPoint = tempFile.length();
-                    Log.v(TAG, "断点位置：" + breakPoint + "b" + " | " + breakPoint
+                    Logs.e("断点位置：" + breakPoint + "b" + " | " + breakPoint
                             * 1.0f / 1024 + "k" + " | " + breakPoint * 1.0f
                             / 1024 / 1024 + "m");
                 }
@@ -206,12 +201,9 @@ public class BPRDownloading {
                 try {
                     response = HttpClientHolder.getInstance().execute(httpGet);
                 } catch (Exception e) {
-                    System.out.println("download error");
-                    e.printStackTrace();
-                    SharedPreferences preferences = context
-                            .getSharedPreferences("task", context.MODE_PRIVATE);
-                    preferences.edit().putString("url", "taskurl")
-                            .commit();
+                    Logs.e("下载失败 " + url);
+//                    e.printStackTrace();
+                    SpUtils.putString(context, "url", "taskurl");
                     MyApp app = (MyApp) context
                             .getApplicationContext();
                     app.setDownloadzip(false);
@@ -224,7 +216,7 @@ public class BPRDownloading {
                     if (response != null) {
                         // 返回码不是206
                         if (response.getStatusLine().getStatusCode() != 206) {
-                            Log.v(TAG, "下载失败，该文件已下载或返回码不是206");
+                            Logs.e("下载失败，该文件已下载或返回码不是206");
                             return NET_ERROR;
                         }
                         entity = response.getEntity();
@@ -246,7 +238,7 @@ public class BPRDownloading {
                     File parentFile = new File(fileDir);
                     if (!parentFile.exists()) {
                         if (!parentFile.mkdirs()) {
-                            Log.v(TAG, "创建文件存放目录失败！");
+                            Logs.e("创建文件存放目录失败！");
                             return SD_ERROR;
                         }
                     }
@@ -256,11 +248,11 @@ public class BPRDownloading {
                             tempFile.createNewFile();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.v(TAG, "下载失败，新建文件失败：\n" + e.getMessage());
+                            Logs.e("下载失败，新建文件失败：\n" + e.getMessage());
                             return SD_ERROR;
                         }
                     }
-                    Log.v(TAG, "没有可用断点续传文件，新建一个文件:" + tempFile.toString());
+                    Logs.e("没有可用断点续传文件，新建一个文件:" + tempFile.toString());
                 }
                 byte[] buffer = new byte[1024];
                 RandomAccessFile oSavedFile = null;
@@ -301,7 +293,7 @@ public class BPRDownloading {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.v(TAG, "下载失败，从流中读取字节时候异常,保存下载文件位置，等待下次下载");
+                    Logs.e("下载失败，从流中读取字节时候异常,保存下载文件位置，等待下次下载");
                     return NET_ERROR;
                 } finally {
                     try {
@@ -317,7 +309,7 @@ public class BPRDownloading {
                 }
             }
         } else {
-            Log.v(TAG, "sd卡不可用，下载失败！");
+            Logs.e("sd卡不可用，下载失败！");
             return SD_ERROR;
         }
         return OK;

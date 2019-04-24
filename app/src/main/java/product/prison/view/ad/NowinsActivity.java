@@ -432,6 +432,7 @@ public class NowinsActivity extends BaseActivity implements MediaPlayer.OnPrepar
     public void onPrepared(MediaPlayer mp) {
         // TODO Auto-generated method stub
         mp.start();
+        mp.setLooping(true);
     }
 
     @Override

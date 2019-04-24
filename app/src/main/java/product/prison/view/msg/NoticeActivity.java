@@ -24,6 +24,7 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import product.prison.BaseActivity;
@@ -35,6 +36,7 @@ import product.prison.model.TGson;
 import product.prison.model.TMenu;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 import product.prison.view.ad.RsType;
 
@@ -57,6 +59,7 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
         try {
             gone();
             String url = list.get(position).getContent();
+            SocketIO.uploadLog("信息管理预览" + url);
             Logs.e(url);
             if (url.startsWith("h")) {
                 String temp = url.substring(url.lastIndexOf("."));
@@ -138,7 +141,8 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
     }
 
     long sptime = 86400000;
-//    long sptime = 1020000;
+
+    //    long sptime = 1020000;
     private void getNotice() {
         try {
 
@@ -152,6 +156,8 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
             }
 
             list = MyApp.db.findAll(Nt.class);
+            TimeSort sort = new TimeSort();
+            Collections.sort(list, sort);
 
             if (list.isEmpty())
                 return;

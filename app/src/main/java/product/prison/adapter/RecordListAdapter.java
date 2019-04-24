@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import product.prison.R;
-import product.prison.model.LiveData;
 import product.prison.model.TranscribeData;
 
 

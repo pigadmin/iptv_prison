@@ -8,15 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
 import product.prison.R;
-import product.prison.model.LiveData;
-import product.prison.utils.ImageUtils;
 
 /**
  * Created by zhu on 2017/9/26.

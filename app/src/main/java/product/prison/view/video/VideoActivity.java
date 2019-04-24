@@ -3,6 +3,7 @@ package product.prison.view.video;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,10 +17,12 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import product.prison.BaseActivity;
+import product.prison.MainActivity;
 import product.prison.R;
 import product.prison.adapter.TeleplayGridAdapter;
 import product.prison.adapter.VideoGridAdapter;
@@ -31,6 +34,8 @@ import product.prison.model.VodData;
 import product.prison.model.VodTypeData;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
+import product.prison.view.ad.AdActivity;
+import product.prison.view.live.LiveActivity;
 
 public class VideoActivity extends BaseActivity implements VideoListAdapter.OnItemClickListener, AdapterView.OnItemClickListener {
 
@@ -109,7 +114,7 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("vod "+result);
+                    Logs.e("vod " + result);
                     TGson<Vod> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Vod>>() {
                             }.getType());
@@ -155,10 +160,7 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
             vodData = grid.get(position);
 
             if (vodData.getDetails().size() < 2) {     //电影或其他资源
-                Intent intent = new Intent(VideoActivity.this, PlayerActivity.class);
-                intent.putExtra("position", 0);
-                intent.putExtra("key", vodData);
-                startActivity(intent);
+                checkAd(0);
             } else { //电视剧
                 teledialog();
 
@@ -185,12 +187,17 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
         teleplay_grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(VideoActivity.this, PlayerActivity.class);
-                intent.putExtra("position", 0);
-                intent.putExtra("key", vodData);
-                startActivity(intent);
+                checkAd(position);
             }
         });
+
+    }
+
+    private void checkAd(final int position) {
+        Intent intent = new Intent(VideoActivity.this, PlayerActivity.class);
+        intent.putExtra("position", position);
+        intent.putExtra("key", vodData);
+        startActivity(intent);
 
     }
 

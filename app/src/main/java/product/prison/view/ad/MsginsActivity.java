@@ -22,6 +22,7 @@ import product.prison.model.Mings;
 import product.prison.model.MsgSgLives;
 import product.prison.model.Sources;
 import product.prison.utils.ImageUtils;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 
 public class MsginsActivity extends BaseActivity implements MediaPlayer.OnPreparedListener,
@@ -143,6 +144,7 @@ public class MsginsActivity extends BaseActivity implements MediaPlayer.OnPrepar
     @Override
     protected void onStop() {
         app.setMing(false);
+        SocketIO.uploadLog("结束计划播放");
         super.onStop();
     }
 
@@ -170,6 +172,7 @@ public class MsginsActivity extends BaseActivity implements MediaPlayer.OnPrepar
     public void onPrepared(MediaPlayer mp) {
         // TODO Auto-generated method stub
         mp.start();
+        mp.setLooping(true);
     }
 
     @Override

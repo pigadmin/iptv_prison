@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -31,6 +33,7 @@ import product.prison.model.Food;
 import product.prison.model.TGson;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 
 public class DishActivity extends BaseActivity implements DishListAdapter.OnItemClickListener {
@@ -43,12 +46,36 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
     private MyApp app;
     private LinearLayout right_l;
 
+    private View Fview = null;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        try {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+//                Logs.e(left_list.getFocusedChild() + "");
+                if (left_list.getFocusedChild() != null) {
+                    Fview = left_list.getFocusedChild();
+                }
+
+            } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                if (right_l.isFocused()) {
+                    Fview.requestFocus();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     @Override
     public void initView(Bundle savedInstanceState) {
         app = (MyApp) getApplication();
         left_list = f(R.id.left_list);
+
         right_image = f(R.id.right_image);
-        right_l= f(R.id.right_l);
+        right_l = f(R.id.right_l);
+
 
         layoutmanager = new LinearLayoutManager(this);
         layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -97,7 +124,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("getDish "+result);
+                    Logs.e("getDish " + result);
                     TGson<List<Food>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<Food>>>() {
                             }.getType());
@@ -242,6 +269,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
                     app.getShopCats().get(re).setCount(tmp);
                 }
             }
+            SocketIO.uploadLog("添加购物车-" + list.get(current).getName());
             Toast.makeText(this, getString(R.string.shop_add_cart_scuess), Toast.LENGTH_SHORT).show();
             add_dialog.dismiss();
         } catch (Exception e) {
@@ -266,7 +294,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("orderDish"+result);
+                    Logs.e("orderDish" + result);
                     TGson<String> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<String>>() {
                             }.getType());
@@ -311,6 +339,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
     public void onItemClick(View view, int position) {
         current = position;
         setdate();
+        listAdapter.update(position);
 
     }
 }

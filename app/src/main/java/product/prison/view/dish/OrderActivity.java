@@ -33,6 +33,7 @@ import product.prison.model.OrderData;
 import product.prison.model.TGson;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 
 public class OrderActivity extends BaseActivity implements VideoListAdapter.OnItemClickListener {
@@ -65,7 +66,7 @@ public class OrderActivity extends BaseActivity implements VideoListAdapter.OnIt
 
 
         shop_allprices = f(R.id.shop_allprices);
-
+        SocketIO.uploadLog("查看账单");
     }
 
 

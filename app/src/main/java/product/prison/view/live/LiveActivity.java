@@ -1,18 +1,14 @@
 package product.prison.view.live;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,25 +23,26 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import product.prison.BaseActivity;
+import product.prison.MainActivity;
 import product.prison.R;
 import product.prison.adapter.LiveListAdapter;
 import product.prison.adapter.LivePreListAdapter;
-import product.prison.adapter.VideoGridAdapter;
 import product.prison.app.MyApp;
 import product.prison.model.Live;
-import product.prison.model.LiveData;
 import product.prison.model.LivePreView;
 import product.prison.model.LivePreViewData;
+import product.prison.model.Livesingles;
 import product.prison.model.TGson;
-import product.prison.model.Vod;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.SpUtils;
 import product.prison.utils.Utils;
-import product.prison.view.video.VideoActivity;
+import product.prison.view.ad.AdActivity;
 
 public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
@@ -54,13 +51,14 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
     private int channel = 0;
     private TextView live_no_b;
     private VideoView live_player;
-    private List<LiveData> livelist = new ArrayList<>();
+    private List<Livesingles> livelist = new ArrayList<>();
     private AudioManager audioManager;
     private ListView live_list, live_list2;
     private TextView live_count, live_count2;
     private PopupWindow popupWindow = null;
     private View view;
     private String keych = "";
+    private Live live = null;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -73,6 +71,7 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
 //            if (live_player.isPlaying())
 //                live_player.stopPlayback();
                         String name = livelist.get(channel).getName();
+                        SocketIO.uploadLog("播放直播:" + name);
                         url = livelist.get(channel).getAddress();
                         Logs.e(channel + ". " + name + " " + url);
 
@@ -117,6 +116,26 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
                             e.printStackTrace();
                         }
                         break;
+                    case 4:
+                        if (live.getLiveAds() != null) {
+
+                            String[] s = live.getLiveAds().getInter().split(",");
+                            for (String t : s) {
+                                int ti = Integer.parseInt(t);
+                                Logs.e(ti + "分钟后执行直播广告");
+                                if (ti == 0) {
+                                    handler.sendEmptyMessage(5);
+                                } else {
+                                    handler.sendEmptyMessageDelayed(5, ti * 60 * 1000);
+                                }
+                            }
+                        }
+                        break;
+                    case 5:
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("key", (Serializable) live.getLiveAds().getDetails());
+                        startActivity(new Intent(getApplicationContext(), AdActivity.class).putExtras(bundle));
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -124,6 +143,14 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
         }
     };
     LinearLayout tvlist;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (!live_player.isPlaying()) {
+            live_player.start();
+        }
+    }
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -197,7 +224,7 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("livePrevieew "+result);
+                    Logs.e("livePrevieew " + result);
                     TGson<LivePreViewData> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<LivePreViewData>>() {
                             }.getType());
@@ -207,8 +234,8 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
                     list2 = json.getData().getData();
                     if (list2.isEmpty()) {
                         live_count2.setText("暂无节目预告");
-                    }else{
-                        live_count2.setText("节目预告数 ("+list2.size()+")");
+                    } else {
+                        live_count2.setText("节目预告数 (" + list2.size() + ")");
                     }
                     live_list2.setAdapter(new LivePreListAdapter(getApplicationContext(), list2));
                 } catch (Exception e) {
@@ -241,21 +268,27 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
             } else {
                 super.onBackPressed();
             }
+            finish();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
     @Override
     public void loadData() {
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         channel = SpUtils.getInt(this, "channel", defaultchannel);
-        livelist = (List<LiveData>) getIntent().getExtras().get("key");
+        live = (Live) getIntent().getExtras().get("key");
+        livelist = live.getLivesingles();
+
 
         handler.sendEmptyMessage(0);
 
         live_list.setAdapter(new LiveListAdapter(this, livelist));
         live_count.setText("频道总数(" + livelist.size() + ")");
+
+        handler.sendEmptyMessage(4);//广告
     }
 
 
@@ -385,11 +418,21 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SocketIO.uploadLog("退出直播");
+        handler.removeMessages(5);
+    }
+
     //onStop生命周期
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub
         SpUtils.putInt(this, "channel", channel);
+        if (live_player.isPlaying()) {
+            live_player.pause();
+        }
         super.onStop();
     }
 

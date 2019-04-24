@@ -14,16 +14,16 @@ import android.widget.ImageButton;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.CommonAdapter;
+import product.prison.adapter.SetAdapter;
 import product.prison.app.MyApp;
 import product.prison.utils.SpUtils;
 
-public class SetActivity extends BaseActivity implements CommonAdapter.OnItemClickListener {
-
+public class SetActivity extends BaseActivity implements SetAdapter.OnItemClickListener {
     private String[] list = {"WIFI", "USB", "浏览器",
             "网络设置", "IP设置"};
     private RecyclerView mainrecyle;
     private StaggeredGridLayoutManager layoutManager;
-    private CommonAdapter adapter;
+    private SetAdapter adapter;
 
 
     @Override
@@ -37,7 +37,7 @@ public class SetActivity extends BaseActivity implements CommonAdapter.OnItemCli
 
     @Override
     public void loadData() {
-        adapter = new CommonAdapter(this, list);
+        adapter = new SetAdapter(this, list);
         mainrecyle.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
     }

@@ -30,6 +30,7 @@ import product.prison.adapter.VideoListAdapter;
 import product.prison.app.MyApp;
 import product.prison.model.TGson;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 
 public class CartActivity extends BaseActivity implements VideoListAdapter.OnItemClickListener, View.OnClickListener {
@@ -97,6 +98,7 @@ public class CartActivity extends BaseActivity implements VideoListAdapter.OnIte
 
 
             settotal();
+            SocketIO.uploadLog("查看购物车");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,6 +128,7 @@ public class CartActivity extends BaseActivity implements VideoListAdapter.OnIte
                             }.getType());
                     if (json.getCode().equals("200")) {
                         Toast.makeText(getApplicationContext(), getString(R.string.shop_orderscu), Toast.LENGTH_SHORT).show();
+                        SocketIO.uploadLog("商品下单");
                     } else {
                         Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
                     }

@@ -32,6 +32,7 @@ import product.prison.model.SongalbumList;
 import product.prison.model.SongsData;
 import product.prison.model.TGson;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 
 public class MusicActivity extends BaseActivity implements MusicListAdapter.OnItemClickListener, AdapterView.OnItemClickListener {
@@ -76,7 +77,7 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("getSongType "+result);
+                    Logs.e("getSongType " + result);
                     TGson<List<MusicData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<MusicData>>>() {
                             }.getType());
@@ -143,7 +144,7 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("getsong "+result);
+                    Logs.e("getsong " + result);
                     TGson<SongData> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<SongData>>() {
                             }.getType());
@@ -250,6 +251,7 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
         mediaPlayer.stop();
         mediaPlayer.reset();
         try {
+            SocketIO.uploadLog("播放歌曲" + grid.get(index).getName());
             String url = grid.get(index).getSongFile();
             Logs.e(url);
             if (!url.startsWith("h"))
@@ -257,6 +259,7 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
             mediaPlayer.setDataSource(getApplicationContext(),
                     Uri.parse(url));
             mediaPlayer.prepareAsync();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

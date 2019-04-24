@@ -8,7 +8,7 @@ import org.xutils.x;
 
 import product.prison.R;
 
-public class  ImageUtils {
+public class ImageUtils {
 
     /**
      * 显示图片（默认情况）
@@ -19,7 +19,17 @@ public class  ImageUtils {
     public static void display(ImageView imageView, String iconUrl) {
         ImageOptions imageOptions = new ImageOptions.Builder()
                 .setIgnoreGif(false)//是否忽略gif图。false表示不忽略。不写这句，默认是true
-                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+//                .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+//                .setFailureDrawableId(R.drawable.bg)
+//                .setLoadingDrawableId(R.drawable.bg)
+                .build();
+        x.image().bind(imageView, iconUrl, imageOptions);
+    }
+
+    public static void displayFIT_XY(ImageView imageView, String iconUrl) {
+        ImageOptions imageOptions = new ImageOptions.Builder()
+                .setIgnoreGif(false)//是否忽略gif图。false表示不忽略。不写这句，默认是true
+                .setImageScaleType(ImageView.ScaleType.FIT_XY)
 //                .setFailureDrawableId(R.drawable.bg)
 //                .setLoadingDrawableId(R.drawable.bg)
                 .build();

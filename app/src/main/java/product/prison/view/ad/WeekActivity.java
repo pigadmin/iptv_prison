@@ -37,6 +37,7 @@ import product.prison.model.MaterialVO;
 import product.prison.model.ProgramContentVO;
 import product.prison.model.ProgramListVO;
 import product.prison.model.ProgramVO;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 import product.prison.utils.ViewUtil;
 import product.prison.utils.ZipUtil;
@@ -321,6 +322,7 @@ public class WeekActivity extends BaseActivity {
                 public void onPrepared(MediaPlayer mdplayer) {
                     // TODO Auto-generated method stub
                     mdplayer.start();
+                    mdplayer.setLooping(true);
                 }
             });
             media.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -491,6 +493,7 @@ public class WeekActivity extends BaseActivity {
             programTimer.cancel();
             programTimer.purge();
         }
+        SocketIO.uploadLog("结束播放节目单");
         super.onStop();
     }
 

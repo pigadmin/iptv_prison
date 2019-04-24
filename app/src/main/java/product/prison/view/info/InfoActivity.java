@@ -2,6 +2,7 @@ package product.prison.view.info;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,11 +19,13 @@ import com.google.gson.reflect.TypeToken;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import it.sephiroth.android.library.picasso.Picasso;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.InfoListAdapter;
@@ -60,9 +63,20 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                         }
                         String url = list.get(index).getPics().get(crrent).getFilePath();
                         if (url.startsWith("h")) {
-                            ImageUtils.display(right_image, url);
+//                            ImageUtils.display(right_image, url);
+                            Picasso.with(getApplicationContext()).load(url).into(right_image);
+
+//                            ImageOptions imageOptions = new ImageOptions.Builder().
+//                                    setUseMemCache(true).
+//                                    setConfig(Bitmap.Config.RGB_565).
+//                                    setIgnoreGif(false).
+//                                    setPlaceholderScaleType(ImageView.ScaleType.CENTER_CROP).
+//                                    setImageScaleType(ImageView.ScaleType.CENTER_CROP).
+//                                    build();
+//
+//                            x.image().bind(right_image, url, imageOptions);
                         }
-//                        Logs.e("下标" + crrent + " url " + url);
+                        Logs.e("下标" + crrent + " url " + url);
 
                         crrent++;
                         if (list.get(index).getPics().size() < 2)
@@ -75,6 +89,12 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
             }
         }
     };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        handler.removeMessages(0);
+    }
 
     @Override
     public void initView(Bundle savedInstanceState) {

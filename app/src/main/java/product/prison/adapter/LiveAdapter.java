@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 import product.prison.R;
-import product.prison.model.LiveData;
+import product.prison.model.Livesingles;
 import product.prison.utils.ImageUtils;
 
 /**
@@ -23,7 +22,7 @@ import product.prison.utils.ImageUtils;
  */
 
 public class LiveAdapter extends RecyclerView.Adapter<LiveAdapter.ViewHolder> implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-    private List<LiveData> list;
+    private List<Livesingles> list;
     private Context context;
 
 
@@ -42,7 +41,7 @@ public class LiveAdapter extends RecyclerView.Adapter<LiveAdapter.ViewHolder> im
         }
     }
 
-    public LiveAdapter(Context context, List<LiveData> list) {
+    public LiveAdapter(Context context, List<Livesingles> list) {
         this.context = context;
         this.list = list;
     }

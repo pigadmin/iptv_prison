@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,11 +18,16 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.gson.reflect.TypeToken;
+
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -37,16 +43,20 @@ import java.util.List;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.WelcomeActivity;
+import product.prison.adapter.NewsGridAdapter;
 import product.prison.app.MyApp;
 import product.prison.broadcast.MyAction;
 import product.prison.download.BPRDownloading;
+import product.prison.model.Details;
 import product.prison.model.MaterialVO;
 import product.prison.model.MsgData;
+import product.prison.model.News;
 import product.prison.model.Nt;
 import product.prison.model.ProgramContentVO;
 import product.prison.model.ProgramListVO;
 import product.prison.model.ProgramVO;
 import product.prison.model.Servermessage;
+import product.prison.model.TGson;
 import product.prison.msg.IScrollState;
 import product.prison.msg.MarqueeToast;
 import product.prison.msg.TextSurfaceView;
@@ -54,6 +64,7 @@ import product.prison.utils.Calendar;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
 import product.prison.utils.LtoDate;
+import product.prison.utils.SocketIO;
 import product.prison.utils.SpUtils;
 import product.prison.utils.Utils;
 import product.prison.utils.ZipUtil;
@@ -61,6 +72,7 @@ import product.prison.view.ad.MsginsActivity;
 import product.prison.view.ad.RsType;
 import product.prison.view.ad.WeekActivity;
 import product.prison.view.msg.NoticeActivity;
+import product.prison.view.news.NewsActivity;
 
 public class MyService extends Service implements Runnable, IScrollState {
     private List<MsgData> list = new ArrayList<>();
@@ -120,11 +132,86 @@ public class MyService extends Service implements Runnable, IScrollState {
                 Start();
             }
         }).start();
+
+        call();
+    }
+
+    private void call() {
+        try {
+            View view = LayoutInflater.from(this).inflate(R.layout.float_call, null);
+            WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+            params.x = 20;
+            params.y = 120;
+            params.height = 71;
+            params.width = 71;
+            params.gravity = Gravity.RIGHT;
+            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+                    | WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+            params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+            params.format = PixelFormat.TRANSLUCENT;
+            windowManager.addView(view, params);
+            ImageView call = view.findViewById(R.id.call);
+            call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {//去紧急呼叫
+                    addNotice();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addNotice() {
+        RequestParams params = new RequestParams(MyApp.apiurl + "addNotice");
+        params.addBodyParameter("mac", MyApp.mac);
+        params.addBodyParameter("notifyNews", "紧急呼叫");
+
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    final TGson<String> json = Utils.gson.fromJson(result,
+                            new TypeToken<TGson<String>>() {
+                            }.getType());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (json.getCode().equals("200")) {
+                                Toast.makeText(getApplicationContext(), "呼叫成功!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
     private static final int PORT = 9999;
     private ServerSocket server = null;
     private Socket socket = null;
+
 
     public void Start() {
         try {
@@ -225,10 +312,10 @@ public class MyService extends Service implements Runnable, IScrollState {
         }
     }
 
-    String head = new SimpleDateFormat("yyyy-MM-dd ").format(new Date(System
+    private String head = new SimpleDateFormat("yyyy-MM-dd ").format(new Date(System
             .currentTimeMillis()));
-    Calendar calendar;
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private Calendar calendar;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -237,6 +324,7 @@ public class MyService extends Service implements Runnable, IScrollState {
             }
 
             if (intent.getAction().equals(MyAction.updatetitle)) {
+                SocketIO.uploadLog("开始播放滚动字幕");
                 showMessage();
             }
             if (intent.getAction().equals(MyAction.NT)) {
@@ -248,11 +336,14 @@ public class MyService extends Service implements Runnable, IScrollState {
                     long cur = System.currentTimeMillis();
                     //任务计划
                     if (app.getMings() != null) {
+                        Logs.e("计划任务 " + Utils.gson.toJson(app.getMings()));
                         long start = app.getMings().getBeginTime();
                         long end = app.getMings().getEndTime();
-                        System.out.println("计划任务：" + LtoDate.yMdHmE(start) + "====" + LtoDate.yMdHmE(end));
+
+                        Logs.e("计划任务 " + LtoDate.yMdHmE(start) + "====" + LtoDate.yMdHmE(end));
 
                         if (cur > start && cur < end && !app.isMing()) {
+                            SocketIO.uploadLog("开始计划播放");
                             startActivity(new Intent(MyService.this, MsginsActivity.class)
                                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                             app.setMing(true);
@@ -261,15 +352,17 @@ public class MyService extends Service implements Runnable, IScrollState {
                     }
                     if (calendar != null) {
                         //一周安排
-                        Logs.e(Utils.gson.toJson(calendar));
+                        Logs.e("一周安排 " + Utils.gson.toJson(calendar));
                         long begin = (long) sdf.parse(head
                                 + calendar.getTime_begin()).getTime();
 
                         long end = (long) sdf.parse(head
                                 + calendar.getTime_end()).getTime();
 
-                        System.out.println("周任务：" + LtoDate.yMdHmE(begin) + "====" + LtoDate.yMdHmE(end));
+                        Logs.e("一周安排 " + LtoDate.yMdHmE(begin) + "====" + LtoDate.yMdHmE(end));
+
                         if (cur > begin && cur < end && !app.isWeek()) {
+                            SocketIO.uploadLog("开始播放节目单");
                             app.setWeek(true);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("key", calendar);
@@ -333,6 +426,8 @@ public class MyService extends Service implements Runnable, IScrollState {
                 toast.show();
                 currentmsg++;
             } else {
+                Logs.e("结束播放滚动字幕");
+                SocketIO.uploadLog("结束播放滚动字幕");
                 if (toast != null) {
                     toast.hid();
                     toast = null;
@@ -489,6 +584,7 @@ public class MyService extends Service implements Runnable, IScrollState {
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                     handler.removeMessages(0);
+                    dialog = null;
                 }
             }
             final Nt nt = app.getNt();

@@ -1,8 +1,6 @@
 package product.prison.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import product.prison.R;
-import product.prison.model.LiveData;
 import product.prison.model.SongsData;
 
 

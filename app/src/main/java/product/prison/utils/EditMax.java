@@ -2,6 +2,7 @@ package product.prison.utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 
 /**
@@ -29,7 +30,7 @@ public class EditMax {
             @Override
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
-                if (s != null && !s.equals("")) {
+                if (s.toString() != null && !s.toString().equals("")) {
                     if (min != -1 && max != -1) {//最大值和最小值自设
                         int a = 0;
                         try {

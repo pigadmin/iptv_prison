@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import product.prison.R;
-import product.prison.model.LiveData;
+import product.prison.model.Livesingles;
 
 
 public class LiveListAdapter extends BaseAdapter {
     private Activity activity;
 
-    private List<LiveData> list = new ArrayList<>();
-    public LiveListAdapter(Activity activity, List<LiveData> list) {
+    private List<Livesingles> list = new ArrayList<>();
+    public LiveListAdapter(Activity activity, List<Livesingles> list) {
         // TODO Auto-generated constructor stub
         this.activity = activity;
         this.list = list;

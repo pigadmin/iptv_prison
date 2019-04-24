@@ -2,7 +2,7 @@ package product.prison.model;
 
 import java.io.Serializable;
 
-public class LiveData implements Serializable {
+public class Livesingles implements Serializable {
     private int id;
 
     private String name;

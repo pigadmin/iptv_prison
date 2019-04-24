@@ -33,6 +33,7 @@ import product.prison.model.MsgData;
 import product.prison.model.Nt;
 import product.prison.model.RegistVo;
 import product.prison.model.TMenu;
+import product.prison.model.UploadLogVo;
 import product.prison.model.wea.NewWea;
 import product.prison.model.wea.Wea;
 import product.prison.view.ad.NowinsActivity;
@@ -44,13 +45,16 @@ public class SocketIO {
     private MyApp app;
     private final int openw = 0;
     private final int closew = 1;
-    Handler handler = new Handler() {
+    private boolean isreg = false;
+
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case openw:
                     try {
+                        uploadLog("执行开机");
                         Toast.makeText(context, "开机", Toast.LENGTH_SHORT).show();
                         TvPictureManager.getInstance().enableBacklight();
                         socket.emit("power", 1);
@@ -63,6 +67,7 @@ public class SocketIO {
                 case closew:
 
                     try {
+                        uploadLog("执行关机");
                         Toast.makeText(context, "关机", Toast.LENGTH_SHORT).show();
                         TvPictureManager.getInstance().disableBacklight();
                         socket.emit("power", 0);
@@ -140,6 +145,8 @@ public class SocketIO {
                     String json = args[0].toString();
                     Logs.e("sio-upgrade-事件" + json);
                     app.setUpdateurl(json);
+
+                    uploadLog("接受到升级指令" + json);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -180,8 +187,8 @@ public class SocketIO {
                     Logs.e("sio-title-事件" + json);
                     List<MsgData> list = Utils.jsonToObject(json, new TypeToken<List<MsgData>>() {
                     });
-                    if (list.isEmpty())
-                        return;
+//                    if (list.isEmpty())
+//                        return;
                     app.setMsgData(list);
                     context.sendBroadcast(new Intent().setAction(MyAction.updatetitle));
                 } catch (Exception e) {
@@ -240,7 +247,6 @@ public class SocketIO {
                     if (local > close) {
                         handler.sendEmptyMessageDelayed(closew, local - close);
                     }
-                    ;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -338,6 +344,7 @@ public class SocketIO {
                     app.setNt(nt);
                     context.sendBroadcast(new Intent().setAction(MyAction.NT));
                     MyApp.db.save(nt);
+                    uploadLog("接受到消息指令" + json);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -351,9 +358,18 @@ public class SocketIO {
                     String json = arg0[0].toString();
                     Logs.e("sio-vol-事件" + json);
                     MyApp.setStreamVolume(Integer.valueOf(json));
+                    uploadLog("音量更新为" + json + "%");
                 } catch (Exception e) {
                     // TODO: handle exception
                 }
+            }
+
+        });
+        socket.on("success", new Emitter.Listener() {
+
+            public void call(Object... arg0) {
+                // TODO Auto-generated method stub
+                isreg = true;
             }
 
         });
@@ -363,36 +379,65 @@ public class SocketIO {
         @Override
         public void call(Object... args) {
             Logs.e("连接" + MyApp.siourl + "成功");
-            RegistVo registVo = new RegistVo();
-            registVo.setVersion(Double.valueOf(Utils.getVersion(context)));
-            registVo.setVoice(Utils.getCurrentVolume(context));
-            String registVojson = Utils.gson.toJson(registVo);
-            socket.emit("register", registVojson);
-            Logs.e("发送注册事件" + registVojson);
+            if (!isreg) {
+                registVo();
+            }
         }
     };
+
+    private void registVo() {
+        RegistVo registVo = new RegistVo();
+        registVo.setVersion(Double.valueOf(Utils.getVersion(context)));
+        registVo.setVoice(Utils.getCurrentVolume(context));
+        String registVojson = Utils.gson.toJson(registVo);
+        socket.emit("register", registVojson);
+        Logs.e("发送注册事件" + registVojson);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isreg) {
+                    registVo();
+                }
+                uploadLog("注册请求终端");
+            }
+        }, 5 * 1000);
+    }
+
     private Emitter.Listener EVENT_CONNECT_ERROR = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             Logs.e("连接失败");
+            if (isreg) {
+                isreg = false;
+            }
         }
     };
     private Emitter.Listener EVENT_CONNECT_TIMEOUT = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             Logs.e("连接超时");
+            if (isreg) {
+                isreg = false;
+            }
         }
     };
     private Emitter.Listener EVENT_DISCONNECT = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             Logs.e("断开连接");
+            if (isreg) {
+                isreg = false;
+            }
         }
     };
     private Emitter.Listener EVENT_ERROR = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             Logs.e("EVENT_ERROR");
+            if (isreg) {
+                isreg = false;
+            }
         }
     };
     private Emitter.Listener EVENT_MESSAGE = new Emitter.Listener() {
@@ -438,6 +483,7 @@ public class SocketIO {
 //            app.setCmmond(cmmond);
             switch (cmmond.getCommand()) {
                 case 1:
+                    uploadLog("实时插播" + cmmond.getPlay().getSname());
                     NowinsActivity.exit();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("key", cmmond);
@@ -448,9 +494,11 @@ public class SocketIO {
                     context.startActivity(intent);
                     break;
                 case 2:
+                    uploadLog("实时插播-执行快进");
                     context.sendBroadcast(new Intent(MyApp.FORWARD));
                     break;
                 case 3:
+                    uploadLog("实时插播-执行快退");
                     context.sendBroadcast(new Intent(MyApp.REWIND));
                     break;
                 case 4:
@@ -458,9 +506,11 @@ public class SocketIO {
                     break;
                 case 5:
                 case 7:
+                    uploadLog("实时插播-执行暂停/播放");
                     context.sendBroadcast(new Intent(MyApp.PAUSE));
                     break;
                 case 6:
+                    uploadLog("实时插播-执行停止");
                     context.sendBroadcast(new Intent(MyApp.STOP));
                     break;
             }
@@ -469,5 +519,13 @@ public class SocketIO {
             // TODO: handle exception
             e.printStackTrace();
         }
+    }
+
+    public static void uploadLog(String operatetion) {
+        UploadLogVo uploadLogVo = new UploadLogVo();
+        uploadLogVo.setOperatetion(operatetion);
+        String json = Utils.gson.toJson(uploadLogVo);
+        Logs.e("uploadLog " + json);
+        socket.emit("uploadLog", json);
     }
 }

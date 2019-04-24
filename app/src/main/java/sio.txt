@@ -39,6 +39,8 @@ data:RegistVo json
 
 开机：open    定时开机：open-time
 
+音量改变：vol
+
 //后台自动检测时间到了会把计划插播事件发送给终端，终端自己检测时间停止
 计划插播：msgInsert  发送数据，跟之前一样
 
@@ -46,3 +48,9 @@ data:RegistVo json
 当天任务：todayCalendar   发送当天所有任务计划，请终端按时间执行
 
 消息通知事件：nt   string  （String可能是文字内容，可能是图片链接，也可能是视频连接）
+
+上传日志事件：uploadLog
+（直播，即时插播，计划管理，音乐播放，信息管理预览，问卷调查提交，滚动字幕，升级，商品管理，广告播放，播放节目单）
+data:UploadLogVo json格式
+    private String mac;  //设备mac，不可为空
+    private String operatetion;  //操作事件，不可为空

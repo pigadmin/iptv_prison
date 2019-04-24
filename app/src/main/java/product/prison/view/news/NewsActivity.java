@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -63,8 +64,30 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
         layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
         left_list.setLayoutManager(layoutmanager);
 
+
     }
 
+    private View Fview = null;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        try {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+//                Logs.e(left_list.getFocusedChild() + "");
+                if (left_list.getFocusedChild() != null) {
+                    Fview = left_list.getFocusedChild();
+                }
+
+            } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                if (right_grid.getSelectedItemPosition() % 5 == 0) {
+                    Fview.requestFocus();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     public void loadData() {
@@ -126,7 +149,7 @@ public class NewsActivity extends BaseActivity implements CommonListAdapter.OnIt
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("getNews "+ result);
+                    Logs.e("getNews " + result);
                     TGson<List<News>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<News>>>() {
                             }.getType());

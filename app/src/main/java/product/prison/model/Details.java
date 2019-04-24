@@ -57,6 +57,8 @@ public class Details implements Serializable {
         this.position = position;
     }
 
+
+
     private String name;
 
     private String icon;
@@ -113,4 +115,39 @@ public class Details implements Serializable {
     public List<Pics> getPics(){
         return this.pics;
     }
+
+
+
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getAd() {
+        return ad;
+    }
+
+    public void setAd(int ad) {
+        this.ad = ad;
+    }
+
+    private int ad;
+
+
+    public int getInter() {
+        return inter;
+    }
+
+    public void setInter(int inter) {
+        this.inter = inter;
+    }
+
+    private int  inter;
+
+
 }

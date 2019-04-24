@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -38,6 +40,7 @@ import product.prison.model.TranscribeData;
 import product.prison.utils.Logs;
 import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
+import product.prison.view.ad.AdActivity;
 import product.prison.view.dish.DishTypeActivity;
 import product.prison.view.game.GameActivity;
 import product.prison.view.info.InfoActivity;
@@ -63,6 +66,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     private MediaPlayer mediaPlayer;
 
 
+
     @Override
     public void initView(Bundle savedInstanceState) {
         app = (MyApp) getApplication();
@@ -77,7 +81,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
-                mediaPlayer.setLooping(true);
+//                mediaPlayer.setLooping(true);
             }
         });
 
@@ -87,7 +91,12 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 return true;
             }
         });
-
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                setBgMusic();
+            }
+        });
         if (!app.getUpdateurl().equals("")) {
             Logs.e("升级" + app.getUpdateurl());
             new Utils().Download(getApplicationContext(), app.getUpdateurl(), true);
@@ -108,7 +117,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("getmenu: "+result);
+                    Logs.e("getmenu: " + result);
                     TGson<List<TMenu>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<TMenu>>>() {
                             }.getType());
@@ -175,16 +184,20 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             switch (id) {
                 case 60://首页
                     break;
+                case 25:
                 case 61://直播
                 case 47:
                     live();
                     break;
+                case 27:
                 case 44://互动游戏
                     startActivity(new Intent(this, GameActivity.class));
                     break;
+                case 29:
                 case 45://问卷调查
                     startActivity(new Intent(this, SatisfiedActivity.class));
                     break;
+                case 26:
                 case 62://点播
                 case 48:
                     vod();
@@ -192,19 +205,24 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 case 63://录播
                     getTranscribe();
                     break;
+                case 30:
                 case 51://商品
                     startActivity(new Intent(this, DishTypeActivity.class));
                     break;
+                case 31:
                 case 59://音乐
                     startActivity(new Intent(this, MusicActivity.class));
                     break;
+                case 32:
                 case 64://设置
                 case 46:
                     startActivity(new Intent(this, SetActivity.class));
                     break;
+                case 33:
                 case 43://3新闻通知
                     startActivity(new Intent(this, NewsActivity.class));
                     break;
+                case 40:
                 case 58://查询未读消息
                     startActivity(new Intent(this, NoticeActivity.class));
                     break;
@@ -223,7 +241,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("getInfo: "+result);
+                    Logs.e("getInfo: " + result);
                     TGson<List<InfoData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<InfoData>>>() {
                             }.getType());
@@ -232,23 +250,31 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     }
 //                    Logs.e(json.getData().size() + "");
                     info = json.getData();
-                    int n = 0;
-                    for (int i = 0; i < info.size(); i++) {
-                        if (info.get(i).getName().equals("校内新闻")) {
-                            n=i;
-                            app.setInfoData(info.get(i));
-                        } else {
-                            TMenu tMenu = new TMenu();
-                            tMenu.setId(info.get(i).getId());
+                    if (!info.isEmpty()) {
+                        int n = -1;
+                        for (int i = 0; i < info.size(); i++) {
+                            if (info.get(i).getName().equals("校内新闻")) {
+                                n = i;
+                                app.setInfoData(info.get(i));
+                            } else {
+                                TMenu tMenu = new TMenu();
+                                tMenu.setId(info.get(i).getId());
 //                        tMenu.setName(MyApp.info[MyApp.templateType - 1]);
-                            tMenu.setName(info.get(i).getName());
-                            Logs.e(info.get(i).getName());
-                            tMenu.setStatus(1);
-                            tMenu.setIcon(info.get(i).getPics().get(0).getFilePath());
-                            list.add(tMenu);
+                                tMenu.setName(info.get(i).getName());
+//                            Logs.e(info.get(i).getName());
+                                tMenu.setStatus(1);
+                                tMenu.setIcon(info.get(i).getIcon());
+//                                if (!info.get(i).getPics().isEmpty()) {
+//                                    tMenu.setIcon(info.get(i).getPics().get(0).getFilePath());
+//                                }
+                                list.add(tMenu);
+                            }
+                        }
+                        if (n > 0) {
+                            info.remove(n);
                         }
                     }
-                    info.remove(n);
+
                     adapter = new MainAdapter(MainActivity.this, list);
                     adapter.setOnItemClickListener(MainActivity.this);
                     mainrecyle.setAdapter(adapter);
@@ -286,7 +312,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("getTranscribe "+result);
+                    Logs.e("getTranscribe " + result);
                     TGson<List<TranscribeData>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<TranscribeData>>>() {
                             }.getType());
@@ -321,52 +347,54 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     }
 
     private void vod() {//     （1.本地点播 2.第三方点播）
-        RequestParams params = new RequestParams(MyApp.apiurl + "vod/sel");
-        params.addBodyParameter("mac", MyApp.mac);
-        x.http().get(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                try {
-                    Logs.e("vod "+result);
-                    TGson<Integer> json = Utils.gson.fromJson(result,
-                            new TypeToken<TGson<Integer>>() {
-                            }.getType());
-                    if (!json.getCode().equals("200")) {
-                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
-                    }
-                    if (json.getData() == null)
-                        return;
-                    switch (json.getData()) {
-                        case 1:
-                            startActivity(new Intent(MainActivity.this, VideoTypeActivity.class));
-                            break;
-                        case 2:
-                            startActivity(new Intent(MainActivity.this, VideoApkActivity.class));
-                            break;
-                    }
-//                Logs.e(json.getData() + "");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
+        startActivity(new Intent(MainActivity.this, VideoTypeActivity.class));
+//        RequestParams params = new RequestParams(MyApp.apiurl + "vod/sel");
+//        params.addBodyParameter("mac", MyApp.mac);
+//        x.http().get(params, new Callback.CommonCallback<String>() {
+//            @Override
+//            public void onSuccess(String result) {
+//                try {
+//                    Logs.e("vod "+result);
+//                    TGson<Integer> json = Utils.gson.fromJson(result,
+//                            new TypeToken<TGson<Integer>>() {
+//                            }.getType());
+//                    if (!json.getCode().equals("200")) {
+//                        Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
+//                    }
+//                    if (json.getData() == null)
+//                        return;
+//                    switch (json.getData()) {
+//                        case 1:
+//                            startActivity(new Intent(MainActivity.this, VideoTypeActivity.class));
+//                            break;
+//                        case 2:
+//                            startActivity(new Intent(MainActivity.this, VideoApkActivity.class));
+//                            break;
+//                    }
+////                Logs.e(json.getData() + "");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable ex, boolean isOnCallback) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(CancelledException cex) {
+//
+//            }
+//
+//            @Override
+//            public void onFinished() {
+//
+//            }
+//        });
     }
+
 
     private void live() {
         RequestParams params = new RequestParams(MyApp.apiurl + "live");
@@ -375,26 +403,19 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("live "+result);
-                    TGson<Live> json = Utils.gson.fromJson(result,
+                    Logs.e("live " + result);
+                    final TGson<Live> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<Live>>() {
                             }.getType());
                     if (!json.getCode().equals("200")) {
                         Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
                     }
-                    int type = json.getData().getType();
+                    if (json.getData() == null)
+                        return;
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("key", (Serializable) json.getData().getData());
-                    switch (type) {
-                        case 1:
-                            break;
-                        case 2:
-                            startActivity(new Intent(MainActivity.this, LiveActivity.class).putExtras(bundle));
-                            break;
-                        case 3:
-                            startActivity(new Intent(MainActivity.this, LiveApkActivity.class).putExtras(bundle));
-                            break;
-                    }
+                    bundle.putSerializable("key", (Serializable) json.getData());
+                    startActivity(new Intent(MainActivity.this, LiveActivity.class).putExtras(bundle));
+//                    startActivity(new Intent(MainActivity.this, LiveApkActivity.class).putExtras(bundle));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -466,7 +487,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     @Override
     protected void onRestart() {
         super.onRestart();
-        Logs.e("onRestart");
+//        Logs.e("onRestart");
         try {
             if (!mediaPlayer.isPlaying()) {
                 mediaPlayer.start();

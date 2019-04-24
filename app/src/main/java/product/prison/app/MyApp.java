@@ -40,12 +40,12 @@ public class MyApp extends Application {
 
     private SocketIO socketIO;
     public static String head = "http://";
-//    public static String ip = "s1.natfrp.org";
+    //    public static String ip = "s1.natfrp.org";
 //    public static String port = "42188";
 //    public static String sioport = "55577";
-        public static String ip = "192.168.2.25";
+    public static String ip = "192.168.2.25";
     public static String port = "8089";
-//        public static String ip = "192.168.2.3";
+//    public static String ip = "192.168.2.3";
 //    public static String port = "8080";
     public static String sioport = "8000";
     public static String apiName = "/wisdom_iptv/remote/";
@@ -54,9 +54,9 @@ public class MyApp extends Application {
     public static String siourl = head + ip + sioport + spaceName;
 
     public static String mac = "testcode";
-    //    public static int templateType = 1; //1酒店
-//    public static int templateType = 2;//2医院
-    public static int templateType = 3;//3学校
+    // public static int templateType = 1; //1酒店
+    public static int templateType = 2;//2医院
+//    public static int templateType = 3;//3学校
 //    public static int templateType = 4;//4监狱
 //    public static int templateType = 5;//5水疗
 //    public static String[] info = {"酒店信息", "医院信息", "学校信息", "监狱信息", "水疗信息",};
@@ -82,13 +82,12 @@ public class MyApp extends Application {
 //                SpUtils.putString(this, "mac", Utils.GetMac());
             }
 //            mac = SpUtils.getString(this, "mac", mac);
-//            mac = Utils.GetMac();
-            mac ="testcode";
+            mac = Utils.GetMac();
+//            mac = "testcode";
             port = SpUtils.getString(this, "port", port);
             sioport = SpUtils.getString(this, "sioport", sioport);
             apiurl = head + SpUtils.getString(this, "ip", ip) + ":" + port + apiName;
             siourl = head + SpUtils.getString(this, "ip", ip) + ":" + sioport + spaceName;
-
 
             IntentFilter filter = new IntentFilter();
             filter.addAction(Intent.ACTION_TIME_TICK);
@@ -112,7 +111,8 @@ public class MyApp extends Application {
         }
     }
 
-    DbManager.DaoConfig daoConfig;
+    private DbManager.DaoConfig daoConfig;
+
 
     private void initDb() {
 
@@ -242,7 +242,7 @@ public class MyApp extends Application {
         this.mings = mings;
     }
 
-    private Mings mings = new Mings();
+    private Mings mings = null;
 
     public Wea getWea() {
         return wea;

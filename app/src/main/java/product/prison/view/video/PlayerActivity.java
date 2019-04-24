@@ -3,6 +3,7 @@ package product.prison.view.video;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -24,6 +25,7 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.io.Serializable;
 import java.util.List;
 
 import product.prison.BaseActivity;
@@ -34,8 +36,10 @@ import product.prison.model.TGson;
 import product.prison.model.Vod;
 import product.prison.model.VodData;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.SpUtils;
 import product.prison.utils.Utils;
+import product.prison.view.ad.AdActivity;
 
 public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
@@ -47,6 +51,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
     private String url = "";
     private int vid = 0;
     private int position = 0;
+    private String title = "";
 
     private Handler handler = new Handler() {
         @Override
@@ -55,6 +60,26 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
             switch (msg.what) {
                 case 0:
                     res_video_title.setVisibility(View.GONE);
+                    break;
+                case 4:
+                    if (vodData.getAd() != null) {
+
+                        String[] s = vodData.getAd().getInter().split(",");
+                        for (String t : s) {
+                            int ti = Integer.parseInt(t);
+                            Logs.e(ti + "分钟后执行直播广告");
+                            if (ti == 0) {
+                                handler.sendEmptyMessage(5);
+                            } else {
+                                handler.sendEmptyMessageDelayed(5, ti * 60 * 1000);
+                            }
+                        }
+                    }
+                    break;
+                case 5:
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("key", (Serializable) vodData);
+                    startActivity(new Intent(getApplicationContext(), AdActivity.class).putExtras(bundle));
                     break;
             }
         }
@@ -74,11 +99,29 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
         res_video.setOnPreparedListener(this);
         res_video.setOnCompletionListener(this);
         res_video.setOnErrorListener(this);
+
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (!res_video.isPlaying()) {
+            res_video.start();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (res_video.isPlaying()) {
+            res_video.pause();
+        }
     }
 
     @Override
@@ -96,7 +139,8 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
         try {
             vodData = (VodData) getIntent().getSerializableExtra("key");
             position = getIntent().getIntExtra("position", 0);
-            res_video_title.setText(vodData.getName() + " (" + vodData.getDetails().get(position).getName() + ")");
+            title = vodData.getName() + " (" + vodData.getDetails().get(position).getName() + ")";
+            res_video_title.setText(title);
             res_video_title.setVisibility(View.VISIBLE);
             vodtime = SpUtils.getInt(this, "video" + vodData.getId(), 0);
             url = vodData.getDetails().get(position).getFilePath();
@@ -105,13 +149,16 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
             if (vodtime > 0) {
                 crt(vodtime);
             } else {
+                SocketIO.uploadLog("播放点播正片-" + title);
                 res_video.setVideoPath(url);
             }
             handler.removeMessages(0);
             handler.sendEmptyMessageDelayed(0, 5 * 1000);
 
+            handler.sendEmptyMessage(1);
         } catch (Exception e) {
             // TODO: handle exception
+            e.printStackTrace();
         }
     }
 
@@ -123,7 +170,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("vrecord "+ result);
+                    Logs.e("vrecord " + result);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -174,6 +221,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
 
 //                vrecord(resData.getId());
                 vod_time_dialog.dismiss();
+                SocketIO.uploadLog("继续播放点播正片-" + title + getTimeStr(vodtime));
             }
         });
         ImageButton update_cancle = vod_time_dialog
@@ -185,6 +233,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
                 // TODO Auto-generated method stub
                 vod_time_dialog.dismiss();
                 res_video.setVideoPath(url);
+                SocketIO.uploadLog("重新播放点播正片-" + title);
             }
         });
 
@@ -194,6 +243,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
             public void onCancel(DialogInterface dialog) {
                 // TODO Auto-generated method stub
                 res_video.setVideoPath(url);
+                SocketIO.uploadLog("重新播放点播正片-" + title);
             }
         });
     }
@@ -233,7 +283,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        finish();
     }
 
     @Override
@@ -244,7 +294,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
-        mp.setLooping(true);
+//        mp.setLooping(true);
         vrecord();
     }
 

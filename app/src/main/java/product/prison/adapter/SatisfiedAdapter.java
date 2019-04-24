@@ -30,6 +30,7 @@ import product.prison.model.SatisfiedDetails;
 import product.prison.model.TGson;
 import product.prison.utils.EditMax;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 
 public class SatisfiedAdapter extends BaseAdapter {
@@ -156,6 +157,7 @@ public class SatisfiedAdapter extends BaseAdapter {
                         Toast.makeText(context, json.getMsg(), Toast.LENGTH_SHORT).show();
                     }
                     Toast.makeText(context, json.getMsg(), Toast.LENGTH_SHORT).show();
+                    SocketIO.uploadLog("问卷调查提交");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

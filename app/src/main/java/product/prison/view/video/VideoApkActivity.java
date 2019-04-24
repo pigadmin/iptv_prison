@@ -21,7 +21,7 @@ import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.LiveAdapter;
 import product.prison.app.MyApp;
-import product.prison.model.LiveData;
+import product.prison.model.Livesingles;
 import product.prison.model.TGson;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
@@ -30,7 +30,7 @@ public class VideoApkActivity extends BaseActivity implements LiveAdapter.OnItem
 
     private RecyclerView mainrecyle;
     private StaggeredGridLayoutManager layoutManager;
-    private List<LiveData> list = new ArrayList<>();
+    private List<Livesingles> list = new ArrayList<>();
     private LiveAdapter adapter;
 
     @Override
@@ -55,8 +55,8 @@ public class VideoApkActivity extends BaseActivity implements LiveAdapter.OnItem
             public void onSuccess(String result) {
                 try {
                     Logs.e("vodapp "+result);
-                    TGson<List<LiveData>> json = Utils.gson.fromJson(result,
-                            new TypeToken<TGson<List<LiveData>>>() {
+                    TGson<List<Livesingles>> json = Utils.gson.fromJson(result,
+                            new TypeToken<TGson<List<Livesingles>>>() {
                             }.getType());
                     if (!json.getCode().equals("200")) {
                         Toast.makeText(getApplicationContext(), json.getMsg(), Toast.LENGTH_SHORT).show();
@@ -67,7 +67,7 @@ public class VideoApkActivity extends BaseActivity implements LiveAdapter.OnItem
                     adapter = new LiveAdapter(getApplicationContext(), list);
                     mainrecyle.setAdapter(adapter);
                     adapter.setOnItemClickListener(VideoApkActivity.this);
-                } catch (JsonSyntaxException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
