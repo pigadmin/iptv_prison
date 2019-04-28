@@ -9,4 +9,5 @@
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
     <color name="red">#ffff0000</color>
+    <color name="musicbar">#ef8201</color>
 </resources>

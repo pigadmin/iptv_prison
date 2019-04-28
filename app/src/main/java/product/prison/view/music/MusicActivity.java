@@ -1,14 +1,20 @@
 package product.prison.view.music;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
@@ -17,7 +23,9 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import product.prison.BaseActivity;
@@ -49,11 +57,15 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
     private MusicListAdapter adapter;
     private SongGridAdapter songGridAdapter;
     private SongListAdapter songListAdapter;
+    private ImageButton music_left, music_play, music_right, music_voldown, music_volup;
+    private SeekBar music_sebar;
+    private TextView music_local, music_all, music_nowname, music_volnum;
+    private AudioManager am;
 
     @Override
     public void initView(Bundle savedInstanceState) {
+        am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         setMediaListene();
-
 
         left_list = f(R.id.left_list);
 
@@ -68,6 +80,98 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
         layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
         left_list.setLayoutManager(layoutmanager);
 
+        music_left = f(R.id.music_left);
+        music_play = f(R.id.music_play);
+        music_right = f(R.id.music_right);
+
+        music_volup = f(R.id.music_volup);
+        music_volup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+            }
+        });
+        music_voldown = f(R.id.music_voldown);
+        music_voldown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+            }
+        });
+
+
+        music_sebar = f(R.id.music_sebar);
+
+        music_local = f(R.id.music_local);
+        music_all = f(R.id.music_all);
+        music_nowname = f(R.id.music_nowname);
+
+
+        music_left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    index--;
+                    Logs.e(index + "@@@@");
+                    if (index < 0) {
+                        index = 0;
+                    }
+                    playerSong();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                }
+            }
+        });
+        music_right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+
+                    ++index;
+                    Logs.e(index + "@@@@");
+                    if (index > grid.size() - 1) {
+                        index = grid.size() - 1;
+                    }
+                    playerSong();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // 播放或者停止
+        music_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pauseMusic();
+            }
+        });// 音乐播放位置
+        music_sebar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.seekTo(seekBar.getProgress());
+                    staTimeStr = mediaPlayer.getCurrentPosition();
+                    music_local.setText(getTimeStr(staTimeStr));
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                                          boolean fromUser) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+//        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+//                music_volsebar.getProgress(), 0);
     }
 
     private void getSongType() {
@@ -193,6 +297,7 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
     public void onItemClick(View view, int position) {//左侧
         updateSongGrid(position);
         adapter.update(position);
+
     }
 
 
@@ -222,6 +327,9 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.start();
+                music_play.setBackgroundResource(R.drawable.music_pause);
+                endTimeStr = mp.getDuration();
+                handler.sendEmptyMessage(0);
             }
         });
 
@@ -251,42 +359,100 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
         mediaPlayer.stop();
         mediaPlayer.reset();
         try {
-            SocketIO.uploadLog("播放歌曲" + grid.get(index).getName());
+            String name = grid.get(index).getName();
+            SocketIO.uploadLog("播放歌曲" + name);
+            music_nowname.setText("正在播放：" + name);
             String url = grid.get(index).getSongFile();
-            Logs.e(url);
+            Logs.e(index + "正在播放：" + name + url);
             if (!url.startsWith("h"))
                 return;
             mediaPlayer.setDataSource(getApplicationContext(),
                     Uri.parse(url));
             mediaPlayer.prepareAsync();
-
+            songListAdapter.update(index);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    // 停止播放
-    private void stopMusic() {
-        mediaPlayer.stop();
-    }
-
-    @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        stopMusic();
-        super.onPause();
-    }
 
     // 暂停播放//继续播放
     private void pauseMusic() {
+
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
+            music_play.setBackgroundResource(R.drawable.music_play);
         } else {
             mediaPlayer.start();
+            music_play.setBackgroundResource(R.drawable.music_pause);
+        }
+    }
+
+    // 获取歌曲时间
+    private String getTimeStr(int time) {
+        return new SimpleDateFormat("mm:ss").format(new Date(time));
+    }
+
+    private int staTimeStr = 0;
+    private int endTimeStr = 0;
+
+    // 设置音乐播放时间
+    private void setPlayTime() {
+        music_sebar.setMax(endTimeStr);
+        music_sebar.setProgress(staTimeStr);
+    }
+
+
+    // 停止播放
+    private void stopMusic() {
+        music_local.setText("00:00");
+        music_all.setText("00:00");
+        staTimeStr = 0;
+        endTimeStr = 0;
+        music_sebar.setProgress(0);
+        mediaPlayer.stop();
+        music_play.setBackgroundResource(R.drawable.music_pause);
+    }
+
+
+    // 继续播放
+    private void restMusic() {
+
+//        myhandler.sendEmptyMessage(handles.SEEKBARCHANG);
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+        music_play.setBackgroundResource(R.drawable.music_play);
+    }
+
+    private Handler handler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            try {
+                switch (msg.what) {
+                    case 0:
+                        music_all.setText(getTimeStr(endTimeStr));
+                        staTimeStr = mediaPlayer.getCurrentPosition();
+                        setPlayTime();
+                        handler.sendEmptyMessage(1);
+
+                        break;
+                    case 1:
+                        if (mediaPlayer.isPlaying()) {
+                            staTimeStr = mediaPlayer.getCurrentPosition();
+                            music_local.setText(getTimeStr(staTimeStr));
+                            music_sebar.setProgress(staTimeStr);
+                        }
+                        handler.sendEmptyMessageDelayed(1, 1000);
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-    }
+    };
+
 
     @Override
     protected void onDestroy() {

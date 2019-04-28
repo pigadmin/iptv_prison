@@ -1,5 +1,9 @@
 package product.prison.view.ad;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -18,6 +22,7 @@ import android.widget.VideoView;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.app.MyApp;
+import product.prison.broadcast.MyAction;
 import product.prison.model.Mings;
 import product.prison.model.MsgSgLives;
 import product.prison.model.Sources;
@@ -232,10 +237,24 @@ public class MsginsActivity extends BaseActivity implements MediaPlayer.OnPrepar
             } else if (!mings.getSources().isEmpty()) {
                 OtherRes();
             }
+
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(MyAction.msgStop);
+            registerReceiver(receiver, filter);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(MyAction.msgStop)) {
+                finish();
+            }
+
+        }
+    };
 
     @Override
     public int getContentId() {

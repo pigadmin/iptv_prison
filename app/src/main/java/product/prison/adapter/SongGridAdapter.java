@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.sephiroth.android.library.picasso.Picasso;
 import product.prison.R;
 import product.prison.model.SongalbumList;
 import product.prison.model.VodData;
@@ -64,7 +65,9 @@ public class SongGridAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.vod_name.setText(list.get(position).getName());
-        ImageUtils.display(holder.vod_bg, list.get(position).getPath());
+//        ImageUtils.display(holder.vod_bg, list.get(position).getPath(),20);
+        Picasso.with(context).load(list.get(position).getPath()).into(holder.vod_bg);
+        
         return convertView;
 
     }

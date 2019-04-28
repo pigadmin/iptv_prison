@@ -1,6 +1,10 @@
 package product.prison.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +22,7 @@ public class SongListAdapter extends BaseAdapter {
     private Context activity;
 
     private List<SongsData> list = new ArrayList<>();
+
     public SongListAdapter(Context activity, List<SongsData> list) {
         // TODO Auto-generated constructor stub
         this.activity = activity;
@@ -42,6 +47,7 @@ public class SongListAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
@@ -50,9 +56,8 @@ public class SongListAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(activity).inflate(
-                    R.layout.adapter_livelist, null);
-            holder.livelist_no = convertView
-                    .findViewById(R.id.livelist_no);
+                    R.layout.adapter_musiclist, null);
+
             holder.livelist_name = convertView
                     .findViewById(R.id.livelist_name);
             convertView.setTag(holder);
@@ -60,10 +65,14 @@ public class SongListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.livelist_no.setText(liveno(position));
 
         holder.livelist_name.setText(list.get(position).getName());
+//        holder.livelist_name.setTextColor(activity.getResources().getColor(R.drawable.text2));
 
+        holder.livelist_name.setTextColor(activity.getResources().getColor(R.color.white));
+        if (chk == position) {
+            holder.livelist_name.setTextColor(activity.getResources().getColor(R.color.musicbar));
+        }
         return convertView;
 
     }
@@ -72,6 +81,13 @@ public class SongListAdapter extends BaseAdapter {
         if ((position + 1) < 10)
             return "0" + (position + 1);
         return (position + 1) + "";
+    }
+
+    private int chk = -1;
+
+    public void update(int chk) {
+        this.chk = chk;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder {

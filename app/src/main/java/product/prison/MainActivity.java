@@ -2,26 +2,19 @@
 package product.prison;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.github.nkzawa.emitter.Emitter;
 import com.google.gson.reflect.TypeToken;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
-import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.io.Serializable;
@@ -37,22 +30,19 @@ import product.prison.model.Live;
 import product.prison.model.TGson;
 import product.prison.model.TMenu;
 import product.prison.model.TranscribeData;
+import product.prison.utils.InstallApk;
 import product.prison.utils.Logs;
-import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
-import product.prison.view.ad.AdActivity;
 import product.prison.view.dish.DishTypeActivity;
 import product.prison.view.game.GameActivity;
 import product.prison.view.info.InfoActivity;
 import product.prison.view.live.LiveActivity;
-import product.prison.view.live.LiveApkActivity;
 import product.prison.view.msg.NoticeActivity;
 import product.prison.view.music.MusicActivity;
 import product.prison.view.news.NewsActivity;
 import product.prison.view.record.RecordActivity;
 import product.prison.view.satisfied.SatisfiedActivity;
 import product.prison.view.set.SetActivity;
-import product.prison.view.video.VideoApkActivity;
 import product.prison.view.video.VideoTypeActivity;
 
 public class MainActivity extends BaseActivity implements MainAdapter.OnItemClickListener {
@@ -64,7 +54,6 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
     private int menusize = 0;
     private List<InfoData> info = new ArrayList<>();
     private MediaPlayer mediaPlayer;
-
 
 
     @Override
@@ -97,16 +86,48 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 setBgMusic();
             }
         });
-        if (!app.getUpdateurl().equals("")) {
-            Logs.e("升级" + app.getUpdateurl());
-            new Utils().Download(getApplicationContext(), app.getUpdateurl(), true);
-        }
+
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(MyAction.upgrade);
+//        registerReceiver(receiver, filter);
+
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        unregisterReceiver(receiver);
+    }
+
+//    private BroadcastReceiver receiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            if (intent.getAction().equals(MyAction.upgrade)) {
+//                String url = intent.getStringExtra("key");
+//                Logs.e("升级" + url);
+////            new Utils().Download(getApplicationContext(), app.getUpdateurl(), true);
+//                new InstallApk(MainActivity.this, url).downloadAndInstall();
+//            }
+//
+//        }
+//    };
+
+    @Override
     public void loadData() {
-        getmenu();
-        setBgMusic();
+        try {
+            getmenu();
+            setBgMusic();
+            if (!app.getUpdateurl().equals("")) {
+                String url = app.getUpdateurl();
+                Logs.e("升级" + url);
+                app.setUpdateurl("");
+                //            new Utils().Download(getApplicationContext(), app.getUpdateurl(), true);
+                new InstallApk(MainActivity.this, url).downloadAndInstall();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getmenu() {
@@ -170,13 +191,18 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             }
             if (position > menusize - 1) {
                 Logs.e(info.size() + "长度  位置" + (position - menusize) + " getDetails长度" + info.get(position - menusize).getDetails().size());
+
+                Logs.e("***********" + Utils.gson.toJson(info.get(position - menusize)));
+
                 List<Details> details = info.get(position - menusize).getDetails();
-                if (details.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.noneconnent), Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                InfoData infoData = info.get(position - menusize);
+
+//                if (details.isEmpty()) {
+//                    Toast.makeText(getApplicationContext(), getString(R.string.noneconnent), Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("key", (Serializable) details);
+                bundle.putSerializable("key", (Serializable) infoData);
                 startActivity(new Intent(MainActivity.this, InfoActivity.class).putExtras(bundle));
                 return;
             }

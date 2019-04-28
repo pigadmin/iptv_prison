@@ -14,4 +14,9 @@ public class MyAction {
     public static final String Cancle = "Cancle";
     public static final String Calendar = "Calendar";
     public static final String Mings = "Mings";
+    public static final String msgStop = "msgStop";
+
+    public static final String upgrade = "upgrade";
+    public static final String STOPAD = "STOPAD";
+
 }

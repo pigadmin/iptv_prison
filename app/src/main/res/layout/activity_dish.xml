@@ -22,6 +22,7 @@
             android:id="@+id/left_list"
             android:layout_width="210dp"
             android:layout_height="match_parent"
+
             android:background="@drawable/left_list_bg"></android.support.v7.widget.RecyclerView>
 
         <LinearLayout

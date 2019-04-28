@@ -64,9 +64,9 @@
                 android:id="@+id/live_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@drawable/divider_bg"
+                android:divider="@color/transparent"
                 android:focusable="false"
-                android:listSelector="@drawable/left_list"
+                android:listSelector="@drawable/live_list_sel"
                 android:scrollbars="none"></ListView>
         </LinearLayout>
 
@@ -103,9 +103,9 @@
                 android:id="@+id/live_list2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@drawable/divider_bg"
+                android:divider="@color/transparent"
                 android:focusable="false"
-                android:listSelector="@drawable/left_list"
+                android:listSelector="@drawable/live_list_sel"
                 android:scrollbars="none"></ListView>
         </LinearLayout>
     </LinearLayout>

@@ -25,20 +25,39 @@
             android:background="@drawable/left_list_bg"></android.support.v7.widget.RecyclerView>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="30dp"
             android:background="@drawable/right_grid_bg"
             android:gravity="center">
 
+
             <ImageView
                 android:id="@+id/right_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="10dp"></ImageView>
-        </LinearLayout>
+                android:layout_centerInParent="true"
+                android:padding="1dp"
+                android:scaleType="fitXY"></ImageView>
+
+            <ImageButton
+                android:id="@+id/left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="2dp"
+                android:background="@drawable/left" />
+
+            <ImageButton
+                android:id="@+id/right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="2dp"
+                android:background="@drawable/right" />
+        </RelativeLayout>
 
     </LinearLayout>
 </FrameLayout>

@@ -1,9 +1,11 @@
 package product.prison.view.video;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -32,6 +34,7 @@ import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.VideoGridAdapter;
 import product.prison.app.MyApp;
+import product.prison.broadcast.MyAction;
 import product.prison.model.TGson;
 import product.prison.model.Vod;
 import product.prison.model.VodData;
@@ -61,24 +64,26 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
                 case 0:
                     res_video_title.setVisibility(View.GONE);
                     break;
-                case 4:
+                case 1:
                     if (vodData.getAd() != null) {
+                        Logs.e("vod aaad    " + Utils.gson.toJson(vodData.getAd()));
 
                         String[] s = vodData.getAd().getInter().split(",");
                         for (String t : s) {
                             int ti = Integer.parseInt(t);
-                            Logs.e(ti + "分钟后执行直播广告");
+                            Logs.e(ti + "分钟后执行点播广告");
                             if (ti == 0) {
-                                handler.sendEmptyMessage(5);
+                                handler.sendEmptyMessage(2);
                             } else {
-                                handler.sendEmptyMessageDelayed(5, ti * 60 * 1000);
+                                handler.sendEmptyMessageDelayed(2, ti * 60 * 1000);
                             }
                         }
                     }
                     break;
-                case 5:
+                case 2:
+                    SocketIO.uploadLog("播放点播广告-" + vodData.getAd().getName());
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("key", (Serializable) vodData);
+                    bundle.putSerializable("key", (Serializable) vodData.getAd().getDetails());
                     startActivity(new Intent(getApplicationContext(), AdActivity.class).putExtras(bundle));
                     break;
             }
@@ -101,11 +106,27 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
         res_video.setOnErrorListener(this);
 
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MyAction.STOPAD);
+        registerReceiver(receiver, filter);
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(MyAction.STOPAD)) {
+                finish();
+            }
+
+        }
+    };
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(receiver);
+        handler.removeMessages(2);
     }
 
     @Override
@@ -149,6 +170,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
             if (vodtime > 0) {
                 crt(vodtime);
             } else {
+
                 SocketIO.uploadLog("播放点播正片-" + title);
                 res_video.setVideoPath(url);
             }
@@ -156,6 +178,8 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
             handler.sendEmptyMessageDelayed(0, 5 * 1000);
 
             handler.sendEmptyMessage(1);
+//            handler.sendEmptyMessageDelayed(1, 1000);
+
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();

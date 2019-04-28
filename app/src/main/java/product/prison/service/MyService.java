@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import it.sephiroth.android.library.picasso.Picasso;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.WelcomeActivity;
@@ -141,8 +143,8 @@ public class MyService extends Service implements Runnable, IScrollState {
             View view = LayoutInflater.from(this).inflate(R.layout.float_call, null);
             WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
             WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-            params.x = 20;
-            params.y = 120;
+            params.x = 10;
+            params.y = 36;
             params.height = 71;
             params.width = 71;
             params.gravity = Gravity.RIGHT;
@@ -322,7 +324,25 @@ public class MyService extends Service implements Runnable, IScrollState {
             if (intent.getAction().equals(MyAction.Calendar)) {
                 calendar();
             }
+            if (intent.getAction().equals(MyAction.Mings)) {
+                //任务计划
+//                long cur = System.currentTimeMillis();
+                if (app.getMings() != null) {
+                    Logs.e("计划任务 " + Utils.gson.toJson(app.getMings()));
+//                    long start = app.getMings().getBeginTime();
+                    long end = app.getMings().getEndTime();
 
+//                    Logs.e("计划任务 " + LtoDate.yMdHmE(start) + "====" + LtoDate.yMdHmE(end));
+                    Logs.e("计划任务结束时间====" + LtoDate.yMdHmE(end));
+//                    if (cur > start && cur < end && !app.isMing()) {
+                    SocketIO.uploadLog("开始计划播放");
+                    startActivity(new Intent(MyService.this, MsginsActivity.class)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    app.setMing(true);
+//                    }
+
+                }
+            }
             if (intent.getAction().equals(MyAction.updatetitle)) {
                 SocketIO.uploadLog("开始播放滚动字幕");
                 showMessage();
@@ -334,22 +354,7 @@ public class MyService extends Service implements Runnable, IScrollState {
                 System.out.println("update time");
                 try {
                     long cur = System.currentTimeMillis();
-                    //任务计划
-                    if (app.getMings() != null) {
-                        Logs.e("计划任务 " + Utils.gson.toJson(app.getMings()));
-                        long start = app.getMings().getBeginTime();
-                        long end = app.getMings().getEndTime();
 
-                        Logs.e("计划任务 " + LtoDate.yMdHmE(start) + "====" + LtoDate.yMdHmE(end));
-
-                        if (cur > start && cur < end && !app.isMing()) {
-                            SocketIO.uploadLog("开始计划播放");
-                            startActivity(new Intent(MyService.this, MsginsActivity.class)
-                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                            app.setMing(true);
-                        }
-
-                    }
                     if (calendar != null) {
                         //一周安排
                         Logs.e("一周安排 " + Utils.gson.toJson(calendar));
@@ -409,18 +414,28 @@ public class MyService extends Service implements Runnable, IScrollState {
                     currentmsg = 0;
                 if (toast != null)
                     toast.hid();
+                MsgData msgData = list.get(currentmsg);
                 toast = new MarqueeToast(getApplicationContext());
                 Text = new TextSurfaceView(getApplicationContext(), this);
+                toast.setHeight(msgData.getFontSize() + 15);
+
+                Text.setSpeed(101-msgData.getRollSpeed());
 
 //                Text.setBackgroundColor(Color.parseColor("#7E88B9"));
-                toast.setHeight(40);
-
 
                 Text.setFocusable(false);
                 Text.setOrientation(1);
 
-                Text.setContent(list.get(currentmsg).getContent());
+//                Utils.gson.toJson(list.get(currentmsg));
+
+
 //                Logs.e("跑马灯：" + list.get(currentmsg).getContent());
+                Text.setFontSize(msgData.getFontSize());
+                if (!msgData.getFontColor().equals("")){
+                    Text.setFontColor(msgData.getFontColor());
+                }
+
+                Text.setContent(msgData.getContent());
                 toast.setView(Text);
                 toast.setGravity(Gravity.BOTTOM | Gravity.LEFT, MyApp.screenWidth, 0, 0);
                 toast.show();
@@ -432,8 +447,6 @@ public class MyService extends Service implements Runnable, IScrollState {
                     toast.hid();
                     toast = null;
                 }
-
-
             }
         } catch (Exception e) {
             // TODO: handle exception
@@ -588,6 +601,7 @@ public class MyService extends Service implements Runnable, IScrollState {
                 }
             }
             final Nt nt = app.getNt();
+            Logs.e("当前activity" + BaseActivity.activity.getClass().getSimpleName());
             final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(BaseActivity.activity);
             View view = LayoutInflater.from(this).inflate(R.layout.activity_welcome, null);
             alterDiaglog.setIcon(R.mipmap.ic_launcher);//图标
@@ -599,7 +613,8 @@ public class MyService extends Service implements Runnable, IScrollState {
                     case 1:
                         ImageView welcome_image = view.findViewById(R.id.welcome_image);
                         welcome_image.setVisibility(View.VISIBLE);
-                        ImageUtils.display(welcome_image, nt.getContent());
+//                        ImageUtils.display(welcome_image, nt.getContent());
+                        Picasso.with(getApplicationContext()).load(nt.getContent()).into(welcome_image);
                         handler.sendEmptyMessageDelayed(0, closetime * 1000);
                         break;
                     case 2:

@@ -45,8 +45,8 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
     private SatisfiedAdapter gridAdapter;
     private List<Satisfied> satisfied;
     private int id = 0;
-    private int timeout = 60 * 1000;
-
+    private int timeout = 60;
+    //    private CountDownTimer countDownTimer;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -54,25 +54,22 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
             try {
                 switch (msg.what) {
                     case 0:
+                        satisfied_submit.setText(getString(R.string.Ok) + "(" + (timeout--) + ")");
+                        if (timeout > 0) {
+                            handler.sendEmptyMessageDelayed(0, 1000);
+                        } else {
+                            handler.sendEmptyMessage(1);
+                        }
                         if (satisfied_submit.isEnabled()) {
                             satisfied_submit.setEnabled(!satisfied_submit.isEnabled());
                         }
-                        new CountDownTimer(timeout, 1000) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                satisfied_submit.setText(getString(R.string.Ok) + "(" + (millisUntilFinished / 1000) + ")");
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                if (!satisfied_submit.isEnabled()) {
-                                    satisfied_submit.setEnabled(!satisfied_submit.isEnabled());
-                                }
-                                satisfied_submit.setText(getString(R.string.Ok));
-                            }
-                        }.start();
-
-
+                        break;
+                    case 1:
+                        timeout = 60;
+                        if (!satisfied_submit.isEnabled()) {
+                            satisfied_submit.setEnabled(!satisfied_submit.isEnabled());
+                        }
+                        satisfied_submit.setText(getString(R.string.Ok));
                         break;
 
                 }
@@ -89,7 +86,7 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("exam_question "+result);
+                    Logs.e("exam_question " + result);
                     TGson<List<Satisfied>> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<List<Satisfied>>>() {
                             }.getType());
@@ -127,9 +124,10 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
     }
 
 
-
     private void update(int position) {
         try {
+            handler.removeMessages(0);
+            handler.sendEmptyMessage(1);
             id = satisfied.get(position).getId();
             gridAdapter = new SatisfiedAdapter(getApplicationContext(), satisfied.get(position).getDetails());
             satisfied_grid.setAdapter(gridAdapter);

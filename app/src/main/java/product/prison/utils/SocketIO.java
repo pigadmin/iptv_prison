@@ -54,26 +54,33 @@ public class SocketIO {
             switch (msg.what) {
                 case openw:
                     try {
+//                        if (app.isPower())
+//                            return;
                         uploadLog("执行开机");
+//                        app.setPower(true);
                         Toast.makeText(context, "开机", Toast.LENGTH_SHORT).show();
                         TvPictureManager.getInstance().enableBacklight();
                         socket.emit("power", 1);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Logs.e("执行adb开机");
+//                        app.setPower(true);
                         adb.InputEvent(KeyEvent.KEYCODE_POWER);
                     }
                     break;
                 case closew:
-
                     try {
+//                        if (!app.isPower())
+//                            return;
                         uploadLog("执行关机");
+//                        app.setPower(false);
                         Toast.makeText(context, "关机", Toast.LENGTH_SHORT).show();
                         TvPictureManager.getInstance().disableBacklight();
                         socket.emit("power", 0);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Logs.e("执行adb关机");
+//                        app.setPower(false);
                         adb.InputEvent(KeyEvent.KEYCODE_POWER);
                     }
                     break;
@@ -144,7 +151,9 @@ public class SocketIO {
                 try {
                     String json = args[0].toString();
                     Logs.e("sio-upgrade-事件" + json);
+
                     app.setUpdateurl(json);
+                    context.sendBroadcast(new Intent().setAction(MyAction.upgrade).putExtra("key", json));
 
                     uploadLog("接受到升级指令" + json);
                 } catch (Exception e) {
@@ -312,6 +321,24 @@ public class SocketIO {
                 }
             }
         });
+        socket.on("msgStop", new Emitter.Listener() {
+
+            public void call(Object... arg0) {
+                // TODO Auto-generated method stub
+                String json = arg0[0].toString();
+                Logs.e("sio-msgStop-事件" + json);
+                int id = Integer.parseInt(json);
+                if (app.getMings() != null) {
+                    if (app.getMings().getId() == id) {
+                        Logs.e("sio-msgStop-事件app.getMings().getId() == id");
+                        app.setMings(null);
+                        context.sendBroadcast(new Intent(MyAction.msgStop));
+                    }
+                }
+
+            }
+
+        });
 
         socket.on("todayCalendar", new Emitter.Listener() {//  当天任务：todayCalendar   发送当天所有任务计划，请终端按时间执行
             @Override
@@ -370,9 +397,13 @@ public class SocketIO {
             public void call(Object... arg0) {
                 // TODO Auto-generated method stub
                 isreg = true;
+                String json = arg0[0].toString();
+                Logs.e("sio-success-事件" + json);
+
             }
 
         });
+
     }
 
     private Emitter.Listener EVENT_CONNECT = new Emitter.Listener() {

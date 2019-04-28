@@ -100,7 +100,6 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
 //        toMain();
 
 
-
     }
 
     private MediaPlayer mediaPlayer;
@@ -308,7 +307,7 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
                     new CountDownTimer(totalTime, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
-                            welcome_time_tips.setText("广告剩余  "+(millisUntilFinished / 1000) + "秒");
+                            welcome_time_tips.setText("广告剩余  " + (millisUntilFinished / 1000) + "秒");
                         }
 
                         @Override
@@ -359,7 +358,6 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             e.printStackTrace();
         }
     }
-
 
     private void playmusic() {
         // TODO Auto-generated method stub
@@ -414,6 +412,12 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
         super.onDestroy();
         if (countDownTimer != null)
             countDownTimer.cancel();
+
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.release();
+        }
 
     }
 

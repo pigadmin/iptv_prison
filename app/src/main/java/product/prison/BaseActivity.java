@@ -40,6 +40,11 @@ public abstract class BaseActivity extends Activity implements IBaseView {
 
     private MyApp app;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        activity = this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +52,12 @@ public abstract class BaseActivity extends Activity implements IBaseView {
         setContentView(getContentId());
         initView(savedInstanceState);
         loadData();
-        activity = this;
+
         app = (MyApp) getApplication();
 
         setBg();
 
     }
-
 
 
     private void setBg() {
@@ -99,8 +103,6 @@ public abstract class BaseActivity extends Activity implements IBaseView {
             e.printStackTrace();
         }
     }
-
-
 
 
 }

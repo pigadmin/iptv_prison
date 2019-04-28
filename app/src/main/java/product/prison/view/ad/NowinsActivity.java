@@ -119,6 +119,7 @@ public class NowinsActivity extends BaseActivity implements MediaPlayer.OnPrepar
     protected void onStart() {
         // TODO Auto-generated method stub
         try {
+            activity = this;
             IntentFilter filter = new IntentFilter();
             filter.addAction(MyApp.PAUSE);
             filter.addAction(MyApp.STOP);

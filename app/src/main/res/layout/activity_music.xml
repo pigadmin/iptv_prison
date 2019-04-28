@@ -25,64 +25,189 @@
             android:background="@drawable/left_list_bg"
             android:clipChildren="false"></android.support.v7.widget.RecyclerView>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="25dp"
             android:background="@drawable/right_grid_bg"
             android:listSelector="@drawable/vod_select_bg"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="20dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="专辑推荐"
-                    android:textColor="@color/white"
-                    android:textSize="24sp" />
-
-                <GridView
-                    android:id="@+id/right_grid"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:horizontalSpacing="10dp"
-                    android:numColumns="2"
-                    android:scrollbars="none"
-                    android:verticalSpacing="10dp"></GridView>
+                    android:layout_margin="20dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="专辑推荐"
+                        android:textColor="@color/white"
+                        android:textSize="24sp" />
+
+                    <GridView
+                        android:id="@+id/right_grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:horizontalSpacing="10dp"
+                        android:listSelector="@drawable/music_grid_sel"
+                        android:numColumns="2"
+                        android:scrollbars="none"
+                        android:verticalSpacing="10dp"></GridView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="20dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="歌曲推荐"
+                        android:textColor="@color/white"
+                        android:textSize="24sp" />
+
+                    <ListView
+                        android:id="@+id/right_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:divider="@color/transparent"
+                        android:scrollbars="none"></ListView>
+                </LinearLayout>
+
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="歌曲推荐"
-                    android:textColor="@color/white"
-                    android:textSize="24sp" />
+                    android:paddingLeft="100dp"
+                    android:paddingRight="100dp">
 
-                <ListView
-                    android:id="@+id/right_list"
+                    <TextView
+                        android:id="@+id/music_nowname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="暂无歌曲播放"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/music_voldown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="24dp"
+                            android:background="@drawable/music_voldown"
+                            android:visibility="gone" />
+
+                        <ImageButton
+                            android:id="@+id/music_left"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="24dp"
+                            android:background="@drawable/music_up" />
+
+                        <ImageButton
+                            android:id="@+id/music_play"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="24dp"
+                            android:background="@drawable/music_play" />
+
+                        <ImageButton
+                            android:id="@+id/music_right"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="24dp"
+                            android:background="@drawable/music_down" />
+
+                        <ImageButton
+                            android:id="@+id/music_volup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/music_volup"
+                            android:visibility="gone" />
+
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="none"></ListView>
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="35dp"
+                    android:paddingTop="13dp"
+                    android:paddingRight="35dp"
+                    android:paddingBottom="25dp">
+
+                    <TextView
+                        android:id="@+id/music_local"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00:00"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+
+                    <SeekBar
+                        android:id="@+id/music_sebar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:maxHeight="2.0dp"
+                        android:minHeight="2.0dp"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/music_bar"
+                        android:thumb="@drawable/music_thumb"
+                        android:thumbOffset="0dp" />
+
+                    <TextView
+                        android:id="@+id/music_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="00:00"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
             </LinearLayout>
-
-
         </LinearLayout>
+
     </LinearLayout>
 
 

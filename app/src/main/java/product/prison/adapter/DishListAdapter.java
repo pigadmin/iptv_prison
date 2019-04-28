@@ -2,6 +2,7 @@ package product.prison.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,12 @@ import java.util.List;
 import product.prison.R;
 import product.prison.model.Details;
 import product.prison.model.Food;
+import product.prison.utils.Logs;
 
 
 public class DishListAdapter extends RecyclerView.Adapter<DishListAdapter.ViewHolder> implements View.OnClickListener {
-    private  List<Food> list;
-    private  Context context;
+    private List<Food> list;
+    private Context context;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,7 +66,7 @@ public class DishListAdapter extends RecyclerView.Adapter<DishListAdapter.ViewHo
 
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.left_list_name.setText(list.get(position).getName());
 
 
@@ -73,6 +75,17 @@ public class DishListAdapter extends RecyclerView.Adapter<DishListAdapter.ViewHo
         if (chk == position) {
             holder.itemView.setBackgroundResource(R.drawable.left_list_c);
         }
+        holder.left_list_name.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (v.getTag().toString().equals((list.size() - 1) + "") && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private int chk = -1;

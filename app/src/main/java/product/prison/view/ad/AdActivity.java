@@ -1,5 +1,8 @@
 package product.prison.view.ad;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,9 +21,11 @@ import java.util.List;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.app.MyApp;
+import product.prison.broadcast.MyAction;
 import product.prison.model.Details;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 
 public class AdActivity extends BaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener {
@@ -30,7 +35,7 @@ public class AdActivity extends BaseActivity implements MediaPlayer.OnErrorListe
     private ImageView welcome_image;
     private VideoView welcome_video;
     private TextView welcome_tips, welcome_time_tips;
-//    private Live live = null;
+    //    private Live live = null;
 //    private Ad ad;
     private List<Details> details = new ArrayList<>();
     private Details currentad;
@@ -130,6 +135,38 @@ public class AdActivity extends BaseActivity implements MediaPlayer.OnErrorListe
         setMediaListene();
     }
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        showNormalDialog();
+    }
+
+    private void showNormalDialog() {
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(this);
+        normalDialog.setTitle("溫馨提示");
+        normalDialog.setMessage("是否退出广告结束播放?");
+        normalDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+                        dialog.dismiss();
+                        sendBroadcast(new Intent(MyAction.STOPAD));
+                        finish();
+                    }
+                });
+        normalDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        // 显示
+        normalDialog.show();
+    }
+
     private MediaPlayer mediaPlayer;
 
     private void setMediaListene() {
@@ -158,7 +195,8 @@ public class AdActivity extends BaseActivity implements MediaPlayer.OnErrorListe
 //            }
 
 //            details = ad.getDetails();
-            details= (List<Details> ) getIntent().getSerializableExtra("key");
+
+            details = (List<Details>) getIntent().getSerializableExtra("key");
 
             if (details.isEmpty()) {
                 handler.sendEmptyMessageDelayed(1, 100);

@@ -1,5 +1,6 @@
 package product.prison.app;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,6 +32,17 @@ import product.prison.utils.Utils;
 
 
 public class MyApp extends Application {
+    private boolean power = true;
+
+    public boolean isPower() {
+        return power;
+    }
+
+    public void setPower(boolean power) {
+        this.power = power;
+    }
+
+
     public static final String PALY = "PALY";
     public static final String PAUSE = "PAUSE";
     public static final String STOP = "STOP";
@@ -43,11 +55,14 @@ public class MyApp extends Application {
     //    public static String ip = "s1.natfrp.org";
 //    public static String port = "42188";
 //    public static String sioport = "55577";
+
     public static String ip = "192.168.2.25";
+//    public static String ip = "106.13.5.145";
     public static String port = "8089";
 //    public static String ip = "192.168.2.3";
 //    public static String port = "8080";
     public static String sioport = "8000";
+//    public static String sioport = "8012";
     public static String apiName = "/wisdom_iptv/remote/";
     public static String spaceName = "/tv";
     public static String apiurl = head + ip + port + apiName;
@@ -94,6 +109,7 @@ public class MyApp extends Application {
             filter.addAction(Intent.ACTION_TIME_CHANGED);
             registerReceiver(receiver, filter);
 
+
             socketIO = new SocketIO(this);
 
             am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -120,7 +136,7 @@ public class MyApp extends Application {
         daoConfig = new DbManager.DaoConfig()
                 .setDbName("iptv.db")//设置数据库名称
                 // 不设置dbDir时, 默认存储在app的私有目录.
-                .setDbDir(new File("sdcard/iptv")) // 数据库存储路径
+                .setDbDir(new File("iptv")) // 数据库存储路径
                 .setDbVersion(1)//设置数据库版本
                 .setDbOpenListener(new DbManager.DbOpenListener() {
                     @Override

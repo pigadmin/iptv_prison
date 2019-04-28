@@ -17,6 +17,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.internal.Util;
 
 import org.xutils.common.Callback;
 import org.xutils.ex.DbException;
@@ -85,7 +86,11 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
             nt.setRead(true);
             MyApp.db.update(nt);
 
-            adapter.update(MyApp.db.findAll(Nt.class));
+            list = MyApp.db.findAll(Nt.class);
+            TimeSort sort = new TimeSort();
+            Collections.sort(list, sort);
+
+            adapter.update(list);
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();

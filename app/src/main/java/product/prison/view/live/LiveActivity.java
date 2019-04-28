@@ -1,7 +1,9 @@
 package product.prison.view.live;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ import product.prison.R;
 import product.prison.adapter.LiveListAdapter;
 import product.prison.adapter.LivePreListAdapter;
 import product.prison.app.MyApp;
+import product.prison.broadcast.MyAction;
 import product.prison.model.Live;
 import product.prison.model.LivePreView;
 import product.prison.model.LivePreViewData;
@@ -132,6 +135,7 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
                         }
                         break;
                     case 5:
+                        SocketIO.uploadLog("播放直播广告-" + live.getLiveAds().getName());
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("key", (Serializable) live.getLiveAds().getDetails());
                         startActivity(new Intent(getApplicationContext(), AdActivity.class).putExtras(bundle));
@@ -208,7 +212,21 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
                 return false;
             }
         });
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MyAction.STOPAD);
+        registerReceiver(receiver, filter);
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(MyAction.STOPAD)) {
+                finish();
+            }
+
+        }
+    };
 
     private int liveId = 0;
     private List<LivePreView> list2 = new ArrayList<>();
@@ -423,6 +441,7 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
         super.onDestroy();
         SocketIO.uploadLog("退出直播");
         handler.removeMessages(5);
+        unregisterReceiver(receiver);
     }
 
     //onStop生命周期

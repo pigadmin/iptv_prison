@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import product.prison.R;
 import product.prison.model.Nt;
 import product.prison.utils.Logs;
 import product.prison.view.ad.RsType;
+import product.prison.view.msg.TimeSort;
 
 public class NoticAdapter extends BaseAdapter {
     private Context context;
@@ -24,6 +26,8 @@ public class NoticAdapter extends BaseAdapter {
         // TODO Auto-generated constructor stub
         this.context = context;
         this.list = list;
+        TimeSort sort = new TimeSort();
+        Collections.sort(this.list, sort);
     }
 
     @Override
@@ -46,14 +50,6 @@ public class NoticAdapter extends BaseAdapter {
 
     }
 
-    private int current;
-
-    public void change(int current) {
-        // TODO Auto-generated method stub
-        this.current = current;
-        this.notifyDataSetChanged();
-
-    }
 
     View view;
     TextView email_time, email_title, email_content;
@@ -120,6 +116,8 @@ public class NoticAdapter extends BaseAdapter {
 
     public void update(List<Nt> list) {
         this.list = list;
+        TimeSort sort = new TimeSort();
+        Collections.sort(this.list, sort);
         notifyDataSetChanged();
     }
 }

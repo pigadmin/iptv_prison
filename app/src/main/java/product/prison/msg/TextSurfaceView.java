@@ -20,7 +20,7 @@ import product.prison.msg.IScrollState;
  */
 public class TextSurfaceView extends SurfaceView implements Callback, Runnable {
     /**
-     * 锟角凤拷锟斤拷锟�
+     * 锟角凤拷锟斤拷锟?
      */
     private boolean isMove = true;
     /**
@@ -62,7 +62,7 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable {
      */
     private int fontAlpha = 255;
     /**
-     * 锟斤拷锟斤拷锟叫�锟斤拷默锟较ｏ拷20
+     * 锟斤拷锟斤拷锟叫?锟斤拷默锟较ｏ拷20
      */
     private float fontSize = 25f;
     /**
@@ -74,7 +74,7 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable {
      */
     private boolean loop = true;
     /**
-     * 锟斤拷锟捷癸拷锟斤拷位锟斤拷锟斤拷始锟斤拷锟�
+     * 锟斤拷锟捷癸拷锟斤拷位锟斤拷锟斤拷始锟斤拷锟?
      */
     private float x = 0;
 
@@ -87,7 +87,7 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable {
         super(context);
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
-        // 锟斤拷锟矫伙拷锟斤拷锟斤拷锟斤拷锟斤拷为锟斤拷色锟斤拷锟教筹拷Sureface时锟斤拷锟斤拷锟斤拷锟斤拷锟酵革拷锟�
+        // 锟斤拷锟矫伙拷锟斤拷锟斤拷锟斤拷锟斤拷为锟斤拷色锟斤拷锟教筹拷Sureface时锟斤拷锟斤拷锟斤拷锟斤拷锟酵革拷锟?
         setZOrderOnTop(true);
         mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
         // 锟斤拷锟斤拷色
@@ -100,7 +100,7 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable {
         super(context);
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
-        // 锟斤拷锟矫伙拷锟斤拷锟斤拷锟斤拷锟斤拷为锟斤拷色锟斤拷锟教筹拷Sureface时锟斤拷锟斤拷锟斤拷锟斤拷锟酵革拷锟�
+        // 锟斤拷锟矫伙拷锟斤拷锟斤拷锟斤拷锟斤拷为锟斤拷色锟斤拷锟教筹拷Sureface时锟斤拷锟斤拷锟斤拷锟斤拷锟酵革拷锟?
         setZOrderOnTop(true);
         mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
         // 锟斤拷锟斤拷色
@@ -117,7 +117,7 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable {
 
     /**
      * @param context
-     * @param move    <see>锟角凤拷锟斤拷锟�/see>
+     * @param move    <see>锟角凤拷锟斤拷锟?/see>
      */
     public TextSurfaceView(Context context, boolean move) {
         this(context);
@@ -162,11 +162,11 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable {
             Paint paint = new Paint();
             // 锟斤拷锟斤拷
             canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
-            // 锟斤拷锟�
+            // 锟斤拷锟?
             paint.setAntiAlias(true);
             // 锟斤拷锟斤拷
             paint.setTypeface(Typeface.SANS_SERIF);
-            // 锟斤拷锟斤拷锟叫�
+            // 锟斤拷锟斤拷锟叫?
             paint.setTextSize(fontSize);
             // 锟斤拷锟斤拷锟斤拷色
             paint.setColor(Color.parseColor(fontColor));

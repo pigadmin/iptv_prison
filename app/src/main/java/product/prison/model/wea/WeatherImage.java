@@ -11,14 +11,14 @@ public class WeatherImage {
         if ("晴".equals(strIcon) || "sunny".equals(strIcon))
             return R.drawable.weather_sunny;
         if ("晴转多云".equals(strIcon) || "clear to cloudy".equals(strIcon))
-            return R.drawable.weather_partly;
+            return R.drawable.weather_partly1;
 //		if ("雾".equals(strIcon) || "fog".equals(strIcon))
 //			return R.drawable.weather_mist;
         if ("多云".equals(strIcon) || "cloudy".equals(strIcon)
                 || "partly cloudy".equals(strIcon))
             return R.drawable.weather_partly;
         if ("阴".equals(strIcon) || "overcast".equals(strIcon))
-            return R.drawable.weather_cloudy;
+            return R.drawable.weather_partly;
         if ("小雨".equals(strIcon) || "light rain".equals(strIcon)
                 || "rain".equals(strIcon))
             return R.drawable.weather_chance_of_rain;
@@ -38,9 +38,9 @@ public class WeatherImage {
                 || "大雪".equals(strIcon) || "heavy snow".equals(strIcon))
             return R.drawable.weather_snow;
         if ("雨夹雪".equals(strIcon) || "sleet".equals(strIcon))
-            return R.drawable.weather_sleet;
+            return R.drawable.weather_snow;
         if ("冰雹 ".equals(strIcon) || "hail".equals(strIcon))
-            return R.drawable.weather_sleet;
+            return R.drawable.weather_snow;
 
         return R.drawable.weather_sunny;
     }

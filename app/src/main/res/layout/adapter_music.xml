@@ -3,20 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/vod_bg"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:padding="10dp"
+        android:layout_height="130dp"
         android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/vod_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
         android:ellipsize="marquee"
         android:gravity="center"
         android:marqueeRepeatLimit="marquee_forever"
