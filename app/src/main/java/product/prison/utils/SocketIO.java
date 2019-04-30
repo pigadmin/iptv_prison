@@ -20,6 +20,7 @@ import com.mstar.android.tv.TvPictureManager;
 import org.xutils.ex.DbException;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,7 @@ import product.prison.model.UploadLogVo;
 import product.prison.model.wea.NewWea;
 import product.prison.model.wea.Wea;
 import product.prison.view.ad.NowinsActivity;
+import product.prison.view.msg.TimeSort;
 
 
 public class SocketIO {
@@ -331,8 +333,8 @@ public class SocketIO {
                 if (app.getMings() != null) {
                     if (app.getMings().getId() == id) {
                         Logs.e("sio-msgStop-事件app.getMings().getId() == id");
-                        app.setMings(null);
                         context.sendBroadcast(new Intent(MyAction.msgStop));
+                        app.setMings(null);
                     }
                 }
 
@@ -369,8 +371,18 @@ public class SocketIO {
                     nt.setContent(json);
                     nt.setCtiem(app.getServertime());
                     app.setNt(nt);
-                    context.sendBroadcast(new Intent().setAction(MyAction.NT));
+
                     MyApp.db.save(nt);
+
+//                    List<Nt> list = MyApp.db.findAll(Nt.class);
+//                    TimeSort sort = new TimeSort();
+//                    Collections.sort(list, sort);
+//                    for (Nt n : list) {
+//                        MyApp.db.update(n);
+//                    }
+
+                    context.sendBroadcast(new Intent().setAction(MyAction.NT));
+
                     uploadLog("接受到消息指令" + json);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import it.sephiroth.android.library.picasso.Picasso;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.NoticAdapter;
@@ -67,7 +68,8 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
                 switch (RsType.type.get(temp.toLowerCase())) {
                     case 1:
                         notice_img.setVisibility(View.VISIBLE);
-                        ImageUtils.display(notice_img, url);
+//                        ImageUtils.display(notice_img, url);
+                        Picasso.with(getApplicationContext()).load(url).into(notice_img);
                         break;
                     case 2:
                     case 3:
@@ -82,13 +84,16 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
                 notice_txt.setVisibility(View.VISIBLE);
                 notice_txt.setText(url);
             }
-            Nt nt = MyApp.db.findAll(Nt.class).get(position);
+//            Nt nt = MyApp.db.findAll(Nt.class).get(position);
+            Nt nt = list.get(position);
             nt.setRead(true);
             MyApp.db.update(nt);
 
-            list = MyApp.db.findAll(Nt.class);
-            TimeSort sort = new TimeSort();
-            Collections.sort(list, sort);
+//            list = MyApp.db.findAll(Nt.class);
+//            Collections.reverse(list);
+
+//            TimeSort sort = new TimeSort();
+//            Collections.sort(list, sort);
 
             adapter.update(list);
         } catch (Exception e) {
@@ -161,8 +166,9 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
             }
 
             list = MyApp.db.findAll(Nt.class);
-            TimeSort sort = new TimeSort();
-            Collections.sort(list, sort);
+//            TimeSort sort = new TimeSort();
+//            Collections.sort(list, sort);
+            Collections.reverse(list);
 
             if (list.isEmpty())
                 return;

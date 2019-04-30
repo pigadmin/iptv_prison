@@ -26,8 +26,8 @@ public class NoticAdapter extends BaseAdapter {
         // TODO Auto-generated constructor stub
         this.context = context;
         this.list = list;
-        TimeSort sort = new TimeSort();
-        Collections.sort(this.list, sort);
+//        TimeSort sort = new TimeSort();
+//        Collections.sort(this.list, sort);
     }
 
     @Override
@@ -116,8 +116,8 @@ public class NoticAdapter extends BaseAdapter {
 
     public void update(List<Nt> list) {
         this.list = list;
-        TimeSort sort = new TimeSort();
-        Collections.sort(this.list, sort);
+//        TimeSort sort = new TimeSort();
+//        Collections.sort(this.list, sort);
         notifyDataSetChanged();
     }
 }

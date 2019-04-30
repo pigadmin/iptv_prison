@@ -160,8 +160,6 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
 
             @Override
             public void onCancelled(CancelledException cex) {
-
-
             }
 
             @Override

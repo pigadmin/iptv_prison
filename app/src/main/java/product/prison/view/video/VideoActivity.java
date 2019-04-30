@@ -174,8 +174,12 @@ public class VideoActivity extends BaseActivity implements VideoListAdapter.OnIt
 
     public void teledialog() {
         // TODO Auto-generated method stub
-        if (teleplay_dialog != null & teleplay_dialog.isShowing())
-            return;
+        if (teleplay_dialog != null) {
+            if (teleplay_dialog.isShowing()) {
+                return;
+            }
+        }
+
         teleplay_dialog = new AlertDialog.Builder(this).create();
         teleplay_dialog.show();
 

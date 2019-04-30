@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/shop_dialog_tips"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="23sp" />
 
         <ImageButton
@@ -35,12 +35,12 @@
             android:id="@+id/number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLength="1"
+            android:maxLength="2"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:singleLine="true"
             android:text="@string/one"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="23sp" />
 
         <ImageButton
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/shop_dialog_tips3"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="23sp" />
     </LinearLayout>
 

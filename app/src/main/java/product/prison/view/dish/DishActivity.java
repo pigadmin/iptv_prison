@@ -204,6 +204,8 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
+                    if (count > 98)
+                        return;
                     count = Integer.parseInt(number.getText().toString());
                     count++;
                     number.setText(count + "");
@@ -215,12 +217,11 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
+
+                    if (count < 2)
+                        return;
                     count = Integer.parseInt(number.getText().toString());
-                    if (count > 1) {
-                        count--;
-                    } else {
-                        count = 9;
-                    }
+                    count--;
                     number.setText(count + "");
 
                 }

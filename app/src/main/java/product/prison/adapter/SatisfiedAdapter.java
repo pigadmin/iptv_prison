@@ -36,12 +36,14 @@ import product.prison.utils.Utils;
 public class SatisfiedAdapter extends BaseAdapter {
     private Context context;
     private List<SatisfiedDetails> list = new ArrayList<SatisfiedDetails>();
+    private  HashMap<Integer, String> hashMap;
 
     public SatisfiedAdapter(Context context, List<SatisfiedDetails> list) {
         // TODO Auto-generated constructor stub
         this.context = context;
         this.list = list;
-
+        hashMap = new HashMap<Integer, String>();
+        ispass = false;
     }
 
     @Override
@@ -123,24 +125,34 @@ public class SatisfiedAdapter extends BaseAdapter {
         return view;
     }
 
-    HashMap<Integer, String> hashMap = new HashMap<Integer, String>();
 
+    public static boolean ispass = false;
 
     private void exam_answer(int id) {
-        String answer = "";
+        String answer = null;
+        try {
+            answer = "";
 
-        List<QuetionVo> quetionVos = new ArrayList<>();
-        for (int i = 0; i < hashMap.size(); i++) {
+            List<QuetionVo> quetionVos = new ArrayList<>();
 
-            QuetionVo quetionVo = new QuetionVo();
-            quetionVo.setQuestionId(list.get(i).getId() + "");
-            quetionVo.setAnswer(hashMap.get(i));
-            // answer += list.get(i).getId() + ":" + hashMap.get(i) + ",";
-            //  answer += hashMap.get(i) + ",";
-            quetionVos.add(quetionVo);
+            if (hashMap.isEmpty() || hashMap.size() < list.size()) {
+                ispass = false;
+                Toast.makeText(context, "请您填检查是否写完整", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            ispass = true;
+            for (int i = 0; i < hashMap.size(); i++) {
+                QuetionVo quetionVo = new QuetionVo();
+                quetionVo.setQuestionId(list.get(i).getId() + "");
+                quetionVo.setAnswer(hashMap.get(i));
+                quetionVos.add(quetionVo);
+            }
+            answer = Utils.gson.toJson(quetionVos);
+            Logs.e(answer);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        answer = Utils.gson.toJson(quetionVos);
-        Logs.e(answer);
+
         RequestParams params = new RequestParams(MyApp.apiurl + "exam_answer");
         params.addBodyParameter("mac", MyApp.mac);
         params.addBodyParameter("answer", answer);
@@ -149,7 +161,7 @@ public class SatisfiedAdapter extends BaseAdapter {
             @Override
             public void onSuccess(String result) {
                 try {
-                    Logs.e("exam_answer "+result);
+                    Logs.e("exam_answer " + result);
                     TGson<String> json = Utils.gson.fromJson(result,
                             new TypeToken<TGson<String>>() {
                             }.getType());

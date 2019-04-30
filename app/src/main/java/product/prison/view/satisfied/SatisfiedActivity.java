@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -17,6 +18,7 @@ import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import product.prison.BaseActivity;
@@ -26,6 +28,7 @@ import product.prison.adapter.SatisfiedListAdapter;
 import product.prison.adapter.VideoListAdapter;
 import product.prison.app.MyApp;
 import product.prison.model.Satisfied;
+import product.prison.model.SatisfiedDetails;
 import product.prison.model.TGson;
 import product.prison.utils.Logs;
 import product.prison.utils.Utils;
@@ -43,10 +46,12 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
 
     private SatisfiedListAdapter listAdapter;
     private SatisfiedAdapter gridAdapter;
-    private List<Satisfied> satisfied;
+    private List<Satisfied> satisfied = new ArrayList<>();
     private int id = 0;
     private int timeout = 60;
     //    private CountDownTimer countDownTimer;
+    List<SatisfiedDetails> grid = new ArrayList<>();
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -54,6 +59,9 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
             try {
                 switch (msg.what) {
                     case 0:
+                        Logs.e(gridAdapter.ispass + "@@@");
+                        if (!gridAdapter.ispass)
+                            return;
                         satisfied_submit.setText(getString(R.string.Ok) + "(" + (timeout--) + ")");
                         if (timeout > 0) {
                             handler.sendEmptyMessageDelayed(0, 1000);
@@ -129,7 +137,8 @@ public class SatisfiedActivity extends BaseActivity implements SatisfiedListAdap
             handler.removeMessages(0);
             handler.sendEmptyMessage(1);
             id = satisfied.get(position).getId();
-            gridAdapter = new SatisfiedAdapter(getApplicationContext(), satisfied.get(position).getDetails());
+            grid = satisfied.get(position).getDetails();
+            gridAdapter = new SatisfiedAdapter(getApplicationContext(), grid);
             satisfied_grid.setAdapter(gridAdapter);
         } catch (Exception e) {
             e.printStackTrace();

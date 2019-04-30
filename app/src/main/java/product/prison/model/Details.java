@@ -150,4 +150,13 @@ public class Details implements Serializable {
     private int  inter;
 
 
+    private int display;
+
+    public int getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(int display) {
+        this.display = display;
+    }
 }

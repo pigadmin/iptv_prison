@@ -9,12 +9,15 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
@@ -70,8 +73,25 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                         String url = list.get(index).getPics().get(crrent).getFilePath();
                         if (url.startsWith("h")) {
 //                            ImageUtils.display(right_image, url);
+                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(right_grid_bg.getLayoutParams());
+                            switch ((list.get(index).getDisplay())) {
+                                case 1:
+                                    right_grid_bg.setBackgroundResource(R.drawable.right_grid_bg);
+                                    lp.width = 880;
+                                    lp.height = 533;
+                                    lp.setMargins(30, 107, 0, 80);
+//                                    Picasso.with(getApplicationContext()).load(url).into(right_image);
+                                    break;
+                                case 2:
+                                    right_grid_bg.setBackgroundResource(R.drawable.right_grid_bg2);
+                                    lp.width = 720;
+                                    lp.height = 680;
+                                    lp.setMargins(30, 20, 0, 20);
+//                                    Picasso.with(getApplicationContext()).load(url).rotate(-90f).into(right_image);
+                                    break;
+                            }
+                            right_grid_bg.setLayoutParams(lp);
                             Picasso.with(getApplicationContext()).load(url).into(right_image);
-
 //                            ImageOptions imageOptions = new ImageOptions.Builder().
 //                                    setUseMemCache(true).
 //                                    setConfig(Bitmap.Config.RGB_565).
@@ -102,7 +122,34 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                         String url = infoData.getPics().get(crrent).getFilePath();
                         if (url.startsWith("h")) {
 //                            ImageUtils.display(right_image, url);
+                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(right_grid_bg.getLayoutParams());
+                            switch ((list.get(index).getDisplay())) {
+                                case 1:
+                                    right_grid_bg.setBackgroundResource(R.drawable.right_grid_bg);
+                                    lp.width = 880;
+                                    lp.height = 533;
+                                    lp.setMargins(30, 107, 0, 80);
+//                                    Picasso.with(getApplicationContext()).load(url).into(right_image);
+                                    break;
+                                case 2:
+                                    right_grid_bg.setBackgroundResource(R.drawable.right_grid_bg2);
+                                    lp.width = 720;
+                                    lp.height = 680;
+                                    lp.setMargins(30, 20, 0, 20);
+//                                    Picasso.with(getApplicationContext()).load(url).rotate(-90f).into(right_image);
+                                    break;
+                            }
+                            right_grid_bg.setLayoutParams(lp);
                             Picasso.with(getApplicationContext()).load(url).into(right_image);
+//                            switch ((list.get(index).getDisplay())) {
+//                                case 1:
+//                                    Picasso.with(getApplicationContext()).load(url).into(right_image);
+//                                    break;
+//                                case 2:
+//                                    Picasso.with(getApplicationContext()).load(url).rotate(-90f).into(right_image);
+//                                    break;
+//                            }
+
 
 //                            ImageOptions imageOptions = new ImageOptions.Builder().
 //                                    setUseMemCache(true).
@@ -173,12 +220,15 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
 
     ImageButton left, right;
 
+    RelativeLayout right_grid_bg;
+
     @Override
     public void initView(Bundle savedInstanceState) {
         left_list = f(R.id.left_list);
         right_image = f(R.id.right_image);
         left = f(R.id.left);
         right = f(R.id.right);
+        right_grid_bg = f(R.id.right_grid_bg);
 
         layoutmanager = new LinearLayoutManager(this);
         layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
