@@ -184,7 +184,6 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                     crrent -= 2;
                     handler.removeMessages(0);
                     handler.sendEmptyMessage(0);
-
                 } else {
                     if (infoData.getPics().size() < 2)
                         return false;
@@ -204,7 +203,6 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                     handler.removeMessages(1);
                     handler.sendEmptyMessage(1);
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,9 +216,9 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
         handler.removeMessages(0);
     }
 
-    ImageButton left, right;
+    private ImageButton left, right;
 
-    RelativeLayout right_grid_bg;
+    private RelativeLayout right_grid_bg;
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -229,6 +227,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
         left = f(R.id.left);
         right = f(R.id.right);
         right_grid_bg = f(R.id.right_grid_bg);
+
 
         layoutmanager = new LinearLayoutManager(this);
         layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -335,6 +334,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
 //            view.setBackgroundResource(R.drawable.left_list_c);
 
             index = position;
+
             image();
             listAdapter.update(position);
 
