@@ -42,7 +42,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
     private LinearLayoutManager layoutmanager;
     private DishListAdapter listAdapter;
     private ImageView right_image;
-    private Button shop_order, shop_cat;
+    private ImageButton shop_order, shop_cat;
     private MyApp app;
     private LinearLayout right_l;
 
@@ -72,6 +72,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
     public void initView(Bundle savedInstanceState) {
         app = (MyApp) getApplication();
         left_list = f(R.id.left_list);
+        left_list.requestFocus();
 
         right_image = f(R.id.right_image);
         right_l = f(R.id.right_l);
@@ -159,7 +160,6 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
 
             @Override
             public void onFinished() {
-
             }
         });
     }

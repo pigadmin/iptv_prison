@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.sephiroth.android.library.picasso.Picasso;
+import it.sephiroth.android.library.picasso.Transformation;
 import product.prison.BaseActivity;
 import product.prison.R;
 import product.prison.adapter.InfoListAdapter;
@@ -87,7 +88,9 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                                     lp.width = 720;
                                     lp.height = 680;
                                     lp.setMargins(30, 20, 0, 20);
-//                                    Picasso.with(getApplicationContext()).load(url).rotate(-90f).into(right_image);
+//                                    Picasso.with(getApplicationContext()).load(url).transform(transformation).into(right_image);
+//                                    right_image.setTranslationX(0.5f);
+//                                    right_image.setTranslationY(0.5f);
                                     break;
                             }
                             right_grid_bg.setLayoutParams(lp);
@@ -101,6 +104,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
 //                                    build();
 //
 //                            x.image().bind(right_image, url, imageOptions);
+
                         }
                         Logs.e("下标" + crrent + " url " + url);
                         crrent++;
@@ -136,7 +140,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                                     lp.width = 720;
                                     lp.height = 680;
                                     lp.setMargins(30, 20, 0, 20);
-//                                    Picasso.with(getApplicationContext()).load(url).rotate(-90f).into(right_image);
+//                                    Picasso.with(getApplicationContext()).load(url).transform(transformation).into(right_image);
                                     break;
                             }
                             right_grid_bg.setLayoutParams(lp);
@@ -171,6 +175,48 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                     }
                     break;
             }
+        }
+    };
+
+
+    private Transformation transformation = new Transformation() {
+
+        @Override
+        public Bitmap transform(Bitmap source) {
+
+            int targetWidth = 720;
+            Logs.e("source.getWidth()=" + source.getWidth() + ",source.getHeight()=" + source.getHeight());
+
+            if (source.getWidth() == 0) {
+                return source;
+            }
+
+            //如果图片小于设置的宽度，则返回原图
+            if (source.getWidth() < targetWidth) {
+                return source;
+            } else {
+                //如果图片大小大于等于设置的宽度，则按照设置的宽度比例来缩放
+                double aspectRatio = (double) source.getHeight() / (double) source.getWidth();
+//                int targetHeight = (int) (targetWidth * aspectRatio);
+                int targetHeight = 680;
+                Logs.e("targetWidth=" + targetWidth + ",targetHeight=" + targetHeight);
+                if (targetHeight != 0 && targetWidth != 0) {
+                    Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
+                    if (result != source) {
+                        // Same bitmap is returned if sizes are the same
+                        source.recycle();
+                    }
+                    return result;
+                } else {
+                    return source;
+                }
+            }
+
+        }
+
+        @Override
+        public String key() {
+            return "transformation" + " desiredWidth";
         }
     };
 
