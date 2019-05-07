@@ -56,12 +56,12 @@ public class MyApp extends Application {
 //    public static String port = "42188";
 //    public static String sioport = "55577";
 
-//    public static String ip = "192.168.2.25";
+    public static String ip = "192.168.2.25";
 //    public static String ip = "106.13.5.145";
-//    public static String port = "8089";
-    public static String ip = "192.168.2.4";
+    public static String port = "8089";
+//    public static String ip = "192.168.2.4";
 
-    public static String port = "8080";
+//    public static String port = "8080";
     public static String sioport = "8000";
 //    public static String sioport = "8012";
     public static String apiName = "/wisdom_iptv/remote/";
