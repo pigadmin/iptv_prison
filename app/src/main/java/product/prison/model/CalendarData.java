@@ -2,7 +2,7 @@ package product.prison.model;
 
 import java.util.List;
 
-import product.prison.utils.Calendar;
+import product.prison.model.Calendar;
 
 public class CalendarData {
     private int id;

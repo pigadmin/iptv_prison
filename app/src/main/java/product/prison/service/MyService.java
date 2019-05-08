@@ -62,7 +62,7 @@ import product.prison.model.TGson;
 import product.prison.msg.IScrollState;
 import product.prison.msg.MarqueeToast;
 import product.prison.msg.TextSurfaceView;
-import product.prison.utils.Calendar;
+import product.prison.model.Calendar;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
 import product.prison.utils.LtoDate;
@@ -370,7 +370,7 @@ public class MyService extends Service implements Runnable, IScrollState {
                         Logs.e("一周安排 " + LtoDate.yMdHmE(begin) + "====" + LtoDate.yMdHmE(end));
 
                         if (cur > begin && cur < end && !app.isWeek()) {
-                            SocketIO.uploadLog("开始播放节目单");
+                            SocketIO.uploadLog("开始播放周计划任务");
                             app.setWeek(true);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("key", calendar);

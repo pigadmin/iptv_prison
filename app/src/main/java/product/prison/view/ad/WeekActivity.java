@@ -37,6 +37,7 @@ import product.prison.model.MaterialVO;
 import product.prison.model.ProgramContentVO;
 import product.prison.model.ProgramListVO;
 import product.prison.model.ProgramVO;
+import product.prison.utils.Logs;
 import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 import product.prison.utils.ViewUtil;
@@ -493,7 +494,7 @@ public class WeekActivity extends BaseActivity {
             programTimer.cancel();
             programTimer.purge();
         }
-        SocketIO.uploadLog("结束播放节目单");
+        SocketIO.uploadLog("结束播放周任务");
         super.onStop();
     }
 
@@ -509,6 +510,9 @@ public class WeekActivity extends BaseActivity {
                     + calendar.getTime_end()).getTime();
 
             long cur = System.currentTimeMillis();
+
+            Logs.e((end-cur)+"毫秒后停止周计划任务");
+
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {

@@ -26,6 +26,7 @@ import org.xutils.x;
 
 import java.util.List;
 
+import it.sephiroth.android.library.picasso.Picasso;
 import product.prison.app.MyApp;
 import product.prison.model.LogoData;
 import product.prison.model.TGson;
@@ -353,7 +354,8 @@ public class WelcomeActivity extends BaseActivity implements MediaPlayer.OnError
             if (url.isEmpty() || !url.startsWith("h"))
                 return;
             Logs.e(url);
-            ImageUtils.display(welcome_image, url);
+//            ImageUtils.display(welcome_image, url);
+            Picasso.with(getApplicationContext()).load(url).into(welcome_image);
         } catch (Exception e) {
             e.printStackTrace();
         }
