@@ -10,9 +10,11 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import product.prison.BaseActivity;
 import product.prison.R;
+import product.prison.WelcomeActivity;
 import product.prison.adapter.CommonAdapter;
 import product.prison.adapter.SetAdapter;
 import product.prison.app.MyApp;
@@ -95,7 +97,7 @@ public class SetActivity extends BaseActivity implements SetAdapter.OnItemClickL
             serverip_dialog.setContentView(R.layout.serverip_dialog);
             final EditText serverip = serverip_dialog
                     .findViewById(R.id.serverip);
-            serverip.setText(MyApp.ip);
+            serverip.setText( SpUtils.getString(getApplicationContext(), "ip", MyApp.ip));
             serverip.requestFocus();
             ImageButton serverip_ok = serverip_dialog
                     .findViewById(R.id.serverip_ok);
@@ -106,9 +108,12 @@ public class SetActivity extends BaseActivity implements SetAdapter.OnItemClickL
                     // TODO Auto-generated method stub
                     serverip_dialog.dismiss();
                     SpUtils.putString(getApplicationContext(), "ip", serverip.getText().toString());
-                    Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Toast.makeText(getApplicationContext(), "修改IP", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    android.os.Process.killProcess(android.os.Process.myPid());
                 }
             });
         } catch (Exception e) {

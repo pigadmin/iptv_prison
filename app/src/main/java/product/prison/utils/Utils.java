@@ -146,7 +146,10 @@ public class Utils {
             while ((line = bReader.readLine()) != null) {
                 mac = line.trim();
             }
+//            return "000000000000";
+
             return mac.replaceAll(":", "").toLowerCase();
+
         } catch (Exception e) {
             System.out.println(e.toString());
         }

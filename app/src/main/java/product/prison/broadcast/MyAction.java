@@ -19,4 +19,6 @@ public class MyAction {
     public static final String upgrade = "upgrade";
     public static final String STOPAD = "STOPAD";
 
+    public static final String PAUSEBGMUSIC = "PAUSEBGMUSIC";
+    public static final String GOONBGMUSIC = "GOONBGMUSIC";
 }

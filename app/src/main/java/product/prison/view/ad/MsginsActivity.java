@@ -54,7 +54,7 @@ public class MsginsActivity extends BaseActivity implements MediaPlayer.OnPrepar
     private void OtherRes() {
         try {
             sources = mings.getSources().get(cursource);
-            msgname.setText(getString(R.string.msginsname) + sources.getName());
+            msgname.setText(getString(R.string.msginsname) + mings.getName());
             resurl = sources.getDetails().get(0).getFilePath();
             String temp = resurl.substring(resurl.lastIndexOf(".")).toLowerCase();
             System.out.println(resurl + "*************" + temp);
@@ -231,7 +231,8 @@ public class MsginsActivity extends BaseActivity implements MediaPlayer.OnPrepar
                 AllGonn();
                 msgvideo.setVisibility(View.VISIBLE);
                 msgSgLives = mings.getMsgSgLives().get(0);
-                msgname.setText(getString(R.string.msginsname) + msgSgLives.getLivesingle().getName());
+//                msgname.setText(getString(R.string.msginsname) + msgSgLives.getLivesingle().getName());
+                msgname.setText(getString(R.string.msginsname) + mings.getName());
                 msgvideo.setVideoPath(msgSgLives.getLivesingle().getAddress());
                 System.out.println(msgSgLives.getLivesingle().getAddress() + "*************直播");
             } else if (!mings.getSources().isEmpty()) {

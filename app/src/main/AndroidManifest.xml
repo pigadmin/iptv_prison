@@ -95,8 +95,7 @@
         <activity android:name=".view.ad.NowinsActivity" />
 
         <activity
-            android:name=".WelcomeActivity"
-            android:launchMode="singleTask">
+            android:name=".WelcomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

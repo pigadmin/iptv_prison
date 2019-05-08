@@ -1,6 +1,9 @@
 package product.prison.view.music;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -34,6 +37,7 @@ import product.prison.adapter.MusicListAdapter;
 import product.prison.adapter.SongGridAdapter;
 import product.prison.adapter.SongListAdapter;
 import product.prison.app.MyApp;
+import product.prison.broadcast.MyAction;
 import product.prison.model.MusicData;
 import product.prison.model.SongData;
 import product.prison.model.SongalbumList;
@@ -172,7 +176,37 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
 
 //        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
 //                music_volsebar.getProgress(), 0);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MyAction.PAUSEBGMUSIC);
+        filter.addAction(MyAction.GOONBGMUSIC);
+        registerReceiver(receiver, filter);
+
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (intent.getAction().equals(MyAction.PAUSEBGMUSIC)) {
+                    Logs.e("暂停----");
+
+                    if (mediaPlayer.isPlaying()){
+                        mediaPlayer.pause();
+                    }
+
+                }
+                if (intent.getAction().equals(MyAction.GOONBGMUSIC)) {
+                    Logs.e("继续播放-----");
+                    if (!mediaPlayer.isPlaying()){
+                        mediaPlayer.start();
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     private void getSongType() {
         RequestParams params = new RequestParams(MyApp.apiurl + "getSongType");
@@ -453,10 +487,35 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
 
     };
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        Logs.e("onPause");
+        try {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//        Logs.e("onRestart");
+        try {
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     protected void onDestroy() {
         stopMusic();
         super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

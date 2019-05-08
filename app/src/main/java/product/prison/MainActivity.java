@@ -1,13 +1,17 @@
 /**/
 package product.prison;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,6 +27,7 @@ import java.util.List;
 
 import product.prison.adapter.MainAdapter;
 import product.prison.app.MyApp;
+import product.prison.broadcast.MyAction;
 import product.prison.model.Backs;
 import product.prison.model.Details;
 import product.prison.model.InfoData;
@@ -87,30 +92,43 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             }
         });
 
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(MyAction.upgrade);
-//        registerReceiver(receiver, filter);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MyAction.PAUSEBGMUSIC);
+        filter.addAction(MyAction.GOONBGMUSIC);
+        registerReceiver(receiver, filter);
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        unregisterReceiver(receiver);
+        unregisterReceiver(receiver);
     }
 
-//    private BroadcastReceiver receiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            if (intent.getAction().equals(MyAction.upgrade)) {
-//                String url = intent.getStringExtra("key");
-//                Logs.e("升级" + url);
-////            new Utils().Download(getApplicationContext(), app.getUpdateurl(), true);
-//                new InstallApk(MainActivity.this, url).downloadAndInstall();
-//            }
-//
-//        }
-//    };
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+            if (intent.getAction().equals(MyAction.PAUSEBGMUSIC)) {
+                Logs.e("暂停----");
+
+                       if (mediaPlayer.isPlaying()){
+                           mediaPlayer.pause();
+                       }
+
+            }
+            if (intent.getAction().equals(MyAction.GOONBGMUSIC)) {
+                Logs.e("继续播放-----");
+                if (!mediaPlayer.isPlaying()){
+                    mediaPlayer.start();
+                }
+
+            }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     public void loadData() {
@@ -274,6 +292,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     }
 //                    Logs.e(json.getData().size() + "");
                     info = json.getData();
+
                     if (!info.isEmpty()) {
                         int n = -1;
                         for (int i = 0; i < info.size(); i++) {

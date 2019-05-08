@@ -56,23 +56,27 @@ public class MyApp extends Application {
 //    public static String port = "42188";
 //    public static String sioport = "55577";
 
-    public static String ip = "192.168.2.25";
-//    public static String ip = "106.13.5.145";
-    public static String port = "8089";
-//    public static String ip = "192.168.2.4";
-
-//    public static String port = "8080";
+//    public static String ip = "192.168.2.25";
+//    public static String port = "8089";
     public static String sioport = "8000";
+
+//    public static String ip = "106.13.5.145";
 //    public static String sioport = "8012";
+
+
+    public static String ip = "192.168.2.3";
+    public static String port = "8080";
+
+
     public static String apiName = "/wisdom_iptv/remote/";
     public static String spaceName = "/tv";
     public static String apiurl = head + ip + port + apiName;
     public static String siourl = head + ip + sioport + spaceName;
     public static String mac = "testcode";
 
-    // public static int templateType = 1; //1酒店
-    public static int templateType = 2;//2医院
-//    public static int templateType = 3;//3学校
+//     public static int templateType = 1; //1酒店
+//    public static int templateType = 2;//2医院
+    public static int templateType = 3;//3学校
 //    public static int templateType = 4;//4监狱
 //    public static int templateType = 5;//5水疗
 //    public static String[] info = {"酒店信息", "医院信息", "学校信息", "监狱信息", "水疗信息",};
@@ -132,7 +136,6 @@ public class MyApp extends Application {
 
 
     private void initDb() {
-
 
         daoConfig = new DbManager.DaoConfig()
                 .setDbName("iptv.db")//设置数据库名称

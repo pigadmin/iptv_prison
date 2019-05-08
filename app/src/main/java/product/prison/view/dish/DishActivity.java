@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,29 +45,34 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
     private ImageView right_image;
     private ImageButton shop_order, shop_cat;
     private MyApp app;
-    private LinearLayout right_l;
-
+    private RelativeLayout right_l;
+  private TextView prices;
     private View Fview = null;
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        try {
-            if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-//                Logs.e(left_list.getFocusedChild() + "");
-                if (left_list.getFocusedChild() != null) {
-                    Fview = left_list.getFocusedChild();
-                }
-
-            } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                if (right_l.isFocused()) {
-                    Fview.requestFocus();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        try {
+//            if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+////                Logs.e(left_list.getFocusedChild() + "");
+//                if (left_list.getFocusedChild() != null) {
+//                    Fview = left_list.getFocusedChild();
+//                }
+//                if (right_l.isFocused()) {
+//                    Fview.requestFocus();
+//                }
+//            } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+//                if (left_list.getFocusedChild() != null) {
+//                    Fview = left_list.getFocusedChild();
+//                }
+//                if (right_l.isFocused()) {
+//                    Fview.requestFocus();
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
 
     @Override
     public void initView(Bundle savedInstanceState) {
@@ -76,7 +82,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
 
         right_image = f(R.id.right_image);
         right_l = f(R.id.right_l);
-
+        prices = f(R.id.prices);
 
         layoutmanager = new LinearLayoutManager(this);
         layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -168,6 +174,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
         try {
             String url = list.get(current).getIcon();
             ImageUtils.display(right_image, url);
+            prices.setText("￥ "+list.get(current).getPrice());
 //            info_title.setText(list.get(current).getName());
 //            info_web.setText(list.get(current).getDiscription());
 //            ImageUtils.display(info_img, list.get(current).getIcon());
@@ -182,7 +189,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
     AlertDialog add_dialog;
     ImageButton ok, cancle;
     ImageButton jia, jian;
-    TextView number;
+    TextView number ;
     int count;
 
     public void add() {
@@ -196,6 +203,7 @@ public class DishActivity extends BaseActivity implements DishListAdapter.OnItem
             add_dialog = new AlertDialog.Builder(this).create();
             add_dialog.show();
             add_dialog.setContentView(R.layout.dialog_food);
+
             jia = add_dialog.findViewById(R.id.jia);
             jian = add_dialog.findViewById(R.id.jian);
             number = add_dialog.findViewById(R.id.number);

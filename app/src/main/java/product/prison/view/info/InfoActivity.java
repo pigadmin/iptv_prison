@@ -65,6 +65,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
             switch (msg.what) {
                 case 0:
                     try {
+
                         if (crrent < 0) {
                             crrent = list.get(index).getPics().size() - 1;
                         }
@@ -126,24 +127,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                         String url = infoData.getPics().get(crrent).getFilePath();
                         if (url.startsWith("h")) {
 //                            ImageUtils.display(right_image, url);
-                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(right_grid_bg.getLayoutParams());
-                            switch ((list.get(index).getDisplay())) {
-                                case 1:
-                                    right_grid_bg.setBackgroundResource(R.drawable.right_grid_bg);
-                                    lp.width = 880;
-                                    lp.height = 533;
-                                    lp.setMargins(30, 107, 0, 80);
-//                                    Picasso.with(getApplicationContext()).load(url).into(right_image);
-                                    break;
-                                case 2:
-                                    right_grid_bg.setBackgroundResource(R.drawable.right_grid_bg2);
-                                    lp.width = 720;
-                                    lp.height = 680;
-                                    lp.setMargins(30, 20, 0, 20);
-//                                    Picasso.with(getApplicationContext()).load(url).transform(transformation).into(right_image);
-                                    break;
-                            }
-                            right_grid_bg.setLayoutParams(lp);
+
                             Picasso.with(getApplicationContext()).load(url).into(right_image);
 //                            switch ((list.get(index).getDisplay())) {
 //                                case 1:

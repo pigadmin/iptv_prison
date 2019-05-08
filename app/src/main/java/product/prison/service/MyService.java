@@ -287,8 +287,11 @@ public class MyService extends Service implements Runnable, IScrollState {
                     SpUtils.putString(getApplicationContext(), "port", servermessage.getServerPort() + "");
                     SpUtils.putString(getApplicationContext(), "sioport", servermessage.getSioPort() + "");
 
+
+                    Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                     android.os.Process.killProcess(android.os.Process.myPid());
-                    execLinuxCommand();
                 }
             });
 
@@ -623,7 +626,13 @@ public class MyService extends Service implements Runnable, IScrollState {
                         VideoView welcome_video = view.findViewById(R.id.welcome_video);
                         welcome_video.setVisibility(View.VISIBLE);
                         welcome_video.setVideoPath(nt.getContent());
-                        welcome_video.start();
+                        welcome_video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mediaPlayer) {
+                                mediaPlayer.start();
+                                sendBroadcast(new Intent(MyAction.PAUSEBGMUSIC));
+                            }
+                        });
                         welcome_video.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                             @Override
                             public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -634,6 +643,7 @@ public class MyService extends Service implements Runnable, IScrollState {
                             @Override
                             public void onCompletion(MediaPlayer mp) {
                                 dialog.dismiss();
+                                sendBroadcast(new Intent(MyAction.GOONBGMUSIC));
                             }
                         });
                         break;
@@ -656,10 +666,18 @@ public class MyService extends Service implements Runnable, IScrollState {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+
                 }
             });
             //显示
             dialog = alterDiaglog.show();
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    sendBroadcast(new Intent(MyAction.GOONBGMUSIC));
+                }
+            });
+
 
         } catch (Exception e) {
             e.printStackTrace();
