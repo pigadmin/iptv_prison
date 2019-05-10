@@ -61,7 +61,8 @@ public class NoticeActivity extends BaseActivity implements OnItemClickListener 
         try {
             gone();
             String url = list.get(position).getContent();
-            SocketIO.uploadLog("信息管理预览" + url);
+//            SocketIO.uploadLog("消息通知预览-" + url);
+            SocketIO.uploadLog("消息通知预览");
             Logs.e(url);
             if (url.startsWith("h")) {
                 String temp = url.substring(url.lastIndexOf("."));

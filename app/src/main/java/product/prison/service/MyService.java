@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -338,7 +339,7 @@ public class MyService extends Service implements Runnable, IScrollState {
 //                    Logs.e("计划任务 " + LtoDate.yMdHmE(start) + "====" + LtoDate.yMdHmE(end));
                     Logs.e("计划任务结束时间====" + LtoDate.yMdHmE(end));
 //                    if (cur > start && cur < end && !app.isMing()) {
-                    SocketIO.uploadLog("开始计划播放");
+                    SocketIO.uploadLog("开始计划播放-" + app.getMings().getName());
                     startActivity(new Intent(MyService.this, MsginsActivity.class)
                             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     app.setMing(true);
@@ -370,7 +371,7 @@ public class MyService extends Service implements Runnable, IScrollState {
                         Logs.e("一周安排 " + LtoDate.yMdHmE(begin) + "====" + LtoDate.yMdHmE(end));
 
                         if (cur > begin && cur < end && !app.isWeek()) {
-                            SocketIO.uploadLog("开始播放周计划任务");
+
                             app.setWeek(true);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("key", calendar);
@@ -412,6 +413,16 @@ public class MyService extends Service implements Runnable, IScrollState {
     private void showMessage() {
         try {
             list = app.getMsgData();
+            for (MsgData msgdata : list) {
+                Logs.e((app.getServertime()-msgdata.getEndtime())+"");
+                if (app.getServertime() > msgdata.getEndtime()) {
+                    Logs.e("结束播放滚动字幕-"+msgdata.getTitle());
+                    SocketIO.uploadLog("结束播放滚动字幕-"+msgdata.getTitle());
+                    list.remove(msgdata);
+                    app.getMsgData().remove(msgdata);
+                }
+            }
+
             if (list != null && !list.isEmpty()) {
                 if (list.size() <= currentmsg)
                     currentmsg = 0;
@@ -422,9 +433,9 @@ public class MyService extends Service implements Runnable, IScrollState {
                 Text = new TextSurfaceView(getApplicationContext(), this);
                 toast.setHeight(msgData.getFontSize() + 15);
 
-                Text.setSpeed(101-msgData.getRollSpeed());
+                Text.setSpeed(101 - msgData.getRollSpeed());
 
-//                Text.setBackgroundColor(Color.parseColor("#7E88B9"));
+
 
                 Text.setFocusable(false);
                 Text.setOrientation(1);
@@ -434,7 +445,7 @@ public class MyService extends Service implements Runnable, IScrollState {
 
 //                Logs.e("跑马灯：" + list.get(currentmsg).getContent());
                 Text.setFontSize(msgData.getFontSize());
-                if (!msgData.getFontColor().equals("")){
+                if (!msgData.getFontColor().equals("")) {
                     Text.setFontColor(msgData.getFontColor());
                 }
 
@@ -444,8 +455,8 @@ public class MyService extends Service implements Runnable, IScrollState {
                 toast.show();
                 currentmsg++;
             } else {
-                Logs.e("结束播放滚动字幕");
-                SocketIO.uploadLog("结束播放滚动字幕");
+                Logs.e("结束播放所有滚动字幕");
+//                SocketIO.uploadLog("结束播放所有滚动字幕");
                 if (toast != null) {
                     toast.hid();
                     toast = null;

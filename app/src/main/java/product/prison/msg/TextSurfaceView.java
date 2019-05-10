@@ -46,12 +46,12 @@ public class TextSurfaceView extends SurfaceView implements Callback, Runnable {
     /**
      * 锟斤拷幕锟斤拷锟斤拷色
      */
-    private String bgColor = "#FF0000";
+    private String bgColor = "#80000000";
 
     /**
      * 锟斤拷幕透锟斤拷锟饺★拷默锟较ｏ拷60
      */
-    private int bgalpha = 0;
+    private int bgalpha = 255;
 
     /**
      * 锟斤拷锟斤拷锟斤拷色 锟斤拷默锟较ｏ拷锟斤拷色 (#FFFFFF)

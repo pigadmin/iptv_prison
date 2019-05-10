@@ -452,7 +452,6 @@ public class WeekActivity extends BaseActivity {
             matrailMap.clear();
             matrailMap.putAll(ZipUtil.materailList(fname));
             prolistVO = Utils.gson.fromJson(main, ProgramListVO.class);
-            msgname.setText(getString(R.string.weekname) + prolistVO.getName());
             matrailMap2.putAll(matrailMap);
         } catch (Exception e) {
             e.printStackTrace();
@@ -494,7 +493,7 @@ public class WeekActivity extends BaseActivity {
             programTimer.cancel();
             programTimer.purge();
         }
-        SocketIO.uploadLog("结束播放周任务");
+        SocketIO.uploadLog("结束播放周任务-"+prolistVO.getName());
         super.onStop();
     }
 
@@ -532,7 +531,22 @@ public class WeekActivity extends BaseActivity {
         frame = f(R.id.frame);
         msgname = f(R.id.msgname);
 
+
         stop();
+
+        try{
+            String fname = ZipUtil.gainNewestFileName();
+         if (fname != null) {
+            String main = ZipUtil.readMainFile(fname);
+             prolistVO = Utils.gson.fromJson(main, ProgramListVO.class);
+             msgname.setText(getString(R.string.weekname) + prolistVO.getName());
+             Logs.e(Utils.gson.toJson(prolistVO));
+             SocketIO.uploadLog("开始播放周计划任务-"+prolistVO.getName());
+         }
+
+        }catch(Exception e){
+
+        }
     }
 
     @Override

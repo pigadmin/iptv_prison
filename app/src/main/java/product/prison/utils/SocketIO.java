@@ -61,7 +61,8 @@ public class SocketIO {
                         uploadLog("执行开机");
 //                        app.setPower(true);
                         Toast.makeText(context, "开机", Toast.LENGTH_SHORT).show();
-                        TvPictureManager.getInstance().enableBacklight();
+//                        TvPictureManager.getInstance().enableBacklight();
+                        adb.InputEvent(KeyEvent.KEYCODE_POWER);
                         socket.emit("power", 1);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -77,7 +78,8 @@ public class SocketIO {
                         uploadLog("执行关机");
 //                        app.setPower(false);
                         Toast.makeText(context, "关机", Toast.LENGTH_SHORT).show();
-                        TvPictureManager.getInstance().disableBacklight();
+//                        TvPictureManager.getInstance().disableBacklight();
+                        adb.InputEvent(KeyEvent.KEYCODE_POWER);
                         socket.emit("power", 0);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -91,6 +93,7 @@ public class SocketIO {
     };
 
     public SocketIO(Context context) {
+
 
         try {
             this.context = context;
@@ -157,7 +160,7 @@ public class SocketIO {
                     app.setUpdateurl(json);
                     context.sendBroadcast(new Intent().setAction(MyAction.upgrade).putExtra("key", json));
 
-                    uploadLog("接受到升级指令" + json);
+                    uploadLog("接受升级消息推送-" + json);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -383,7 +386,7 @@ public class SocketIO {
 
                     context.sendBroadcast(new Intent().setAction(MyAction.NT));
 
-                    uploadLog("接受到消息指令" + json);
+                    uploadLog("弹出消息通知窗口-" + json);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -397,7 +400,7 @@ public class SocketIO {
                     String json = arg0[0].toString();
                     Logs.e("sio-vol-事件" + json);
                     MyApp.setStreamVolume(Integer.valueOf(json));
-                    uploadLog("音量更新为" + json + "%");
+                    uploadLog("音量更新为-" + json + "%");
                 } catch (Exception e) {
                     // TODO: handle exception
                 }
@@ -526,7 +529,7 @@ public class SocketIO {
 //            app.setCmmond(cmmond);
             switch (cmmond.getCommand()) {
                 case 1:
-                    uploadLog("实时插播" + cmmond.getPlay().getSname());
+                    uploadLog("实时插播-" + cmmond.getPlay().getSname());
                     NowinsActivity.exit();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("key", cmmond);

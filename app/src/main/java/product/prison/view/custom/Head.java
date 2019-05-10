@@ -56,11 +56,13 @@ public class Head extends LinearLayout {
         }
     };
 
+
     public Head(Context context, AttributeSet attrs) {
         super(context, attrs);
         view = LayoutInflater.from(context).inflate(R.layout.head, this);
         app = (MyApp) context.getApplicationContext();
         initview();
+
 
         setvalue();
 

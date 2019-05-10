@@ -76,8 +76,8 @@ public class MyApp extends Application {
 
 //     public static int templateType = 1; //1酒店
 //    public static int templateType = 2;//2医院
-    public static int templateType = 3;//3学校
-//    public static int templateType = 4;//4监狱
+//    public static int templateType = 3;//3学校
+    public static int templateType = 4;//4监狱
 //    public static int templateType = 5;//5水疗
 //    public static String[] info = {"酒店信息", "医院信息", "学校信息", "监狱信息", "水疗信息",};
 

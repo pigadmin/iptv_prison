@@ -47,6 +47,7 @@ import product.prison.model.VodData;
 import product.prison.model.VodTypeData;
 import product.prison.utils.ImageUtils;
 import product.prison.utils.Logs;
+import product.prison.utils.SocketIO;
 import product.prison.utils.Utils;
 import product.prison.view.video.PlayerActivity;
 
@@ -314,6 +315,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
                 left_list.setVisibility(View.GONE);
                 checksize();
                 handler.sendEmptyMessage(1);
+                SocketIO.uploadLog("查看信息介绍-"+infoData.getName());
             }
 
         } catch (Exception e) {
@@ -327,8 +329,7 @@ public class InfoActivity extends BaseActivity implements InfoListAdapter.OnItem
 //        Logs.e("@@" + list.get(position).getIcon());
         checksize();
         handler.sendEmptyMessage(0);
-
-
+        SocketIO.uploadLog("查看信息介绍-"+list.get(crrent).getName());
     }
 
     private void checksize() {

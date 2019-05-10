@@ -66,7 +66,7 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
                     break;
                 case 1:
                     if (vodData.getAd() != null) {
-                        Logs.e("vod aaad    " + Utils.gson.toJson(vodData.getAd()));
+                        Logs.e("vod aaad" + Utils.gson.toJson(vodData.getAd()));
 
                         String[] s = vodData.getAd().getInter().split(",");
                         for (String t : s) {
@@ -165,7 +165,8 @@ public class PlayerActivity extends BaseActivity implements MediaPlayer.OnPrepar
             res_video_title.setVisibility(View.VISIBLE);
             vodtime = SpUtils.getInt(this, "video" + vodData.getId(), 0);
             url = vodData.getDetails().get(position).getFilePath();
-            vid = vodData.getDetails().get(position).getId();
+//            vid = vodData.getDetails().get(position).getId();
+            vid = vodData.getId();
             Logs.e(url);
             if (vodtime > 0) {
                 crt(vodtime);

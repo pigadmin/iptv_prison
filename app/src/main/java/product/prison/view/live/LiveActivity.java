@@ -74,7 +74,7 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
 //            if (live_player.isPlaying())
 //                live_player.stopPlayback();
                         String name = livelist.get(channel).getName();
-                        SocketIO.uploadLog("播放直播:" + name);
+                        SocketIO.uploadLog("播放直播-" + name);
                         url = livelist.get(channel).getAddress();
                         Logs.e(channel + ". " + name + " " + url);
 
@@ -336,7 +336,7 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
 //            }
 ////            System.out.println("@@@@@@2222");
 //            view = getLayoutInflater().inflate(R.layout.pop_live, null);
-//            popupWindow = new PopupWindow(view, WindowManager.LayoutParams.MATCH_PARENT,
+//            popupWindow = new PopupWindow(view, WindowManager开始计划播放.LayoutParams.MATCH_PARENT,
 //                    WindowManager.LayoutParams.MATCH_PARENT);
 //            popupWindow.setFocusable(true);
 //            popupWindow.setOutsideTouchable(true);
@@ -439,9 +439,14 @@ public class LiveActivity extends BaseActivity implements MediaPlayer.OnErrorLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SocketIO.uploadLog("退出直播");
         handler.removeMessages(5);
         unregisterReceiver(receiver);
+        try {
+            String name = livelist.get(channel).getName();
+            SocketIO.uploadLog("退出直播-"+name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //onStop生命周期

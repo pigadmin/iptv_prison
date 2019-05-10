@@ -394,7 +394,7 @@ public class MusicActivity extends BaseActivity implements MusicListAdapter.OnIt
         mediaPlayer.reset();
         try {
             String name = grid.get(index).getName();
-            SocketIO.uploadLog("播放歌曲" + name);
+            SocketIO.uploadLog("播放歌曲-" + name);
             music_nowname.setText("正在播放：" + name);
             String url = grid.get(index).getSongFile();
             Logs.e(index + "正在播放：" + name + url);

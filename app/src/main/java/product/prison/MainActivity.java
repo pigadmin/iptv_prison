@@ -109,21 +109,21 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-            if (intent.getAction().equals(MyAction.PAUSEBGMUSIC)) {
-                Logs.e("暂停----");
+                if (intent.getAction().equals(MyAction.PAUSEBGMUSIC)) {
+                    Logs.e("暂停----");
 
-                       if (mediaPlayer.isPlaying()){
-                           mediaPlayer.pause();
-                       }
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                    }
 
-            }
-            if (intent.getAction().equals(MyAction.GOONBGMUSIC)) {
-                Logs.e("继续播放-----");
-                if (!mediaPlayer.isPlaying()){
-                    mediaPlayer.start();
                 }
+                if (intent.getAction().equals(MyAction.GOONBGMUSIC)) {
+                    Logs.e("继续播放-----");
+                    if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.start();
+                    }
 
-            }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -213,10 +213,10 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 List<Details> details = info.get(position - menusize).getDetails();
                 InfoData infoData = info.get(position - menusize);
 
-//                if (details.isEmpty()) {
-//                    Toast.makeText(getApplicationContext(), getString(R.string.noneconnent), Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+                if (infoData.getType() == 2 && details.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.noneconnent), Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("key", (Serializable) infoData);
                 startActivity(new Intent(MainActivity.this, InfoActivity.class).putExtras(bundle));
@@ -224,7 +224,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
             }
 
             switch (id) {
-                case 60://首页
+                case -60://首页
                     break;
                 case 25:
                 case 61://直播
@@ -233,10 +233,12 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     break;
                 case 27:
                 case 44://互动游戏
+                case 64:
                     startActivity(new Intent(this, GameActivity.class));
                     break;
                 case 29:
                 case 45://问卷调查
+                case 60:
                     startActivity(new Intent(this, SatisfiedActivity.class));
                     break;
                 case 26:
@@ -244,19 +246,21 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                 case 48:
                     vod();
                     break;
-                case 63://录播
+                case -63://录播
                     getTranscribe();
                     break;
                 case 30:
                 case 51://商品
+                case 68:
                     startActivity(new Intent(this, DishTypeActivity.class));
                     break;
                 case 31:
                 case 59://音乐
+                case 63:
                     startActivity(new Intent(this, MusicActivity.class));
                     break;
                 case 32:
-                case 64://设置
+                case 65: //设置
                 case 46:
                     startActivity(new Intent(this, SetActivity.class));
                     break;
@@ -266,6 +270,7 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     break;
                 case 40:
                 case 58://查询未读消息
+                case 67:
                     startActivity(new Intent(this, NoticeActivity.class));
                     break;
             }
@@ -296,15 +301,17 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                     if (!info.isEmpty()) {
                         int n = -1;
                         for (int i = 0; i < info.size(); i++) {
+//                            Logs.e(info.get(i).getName());
                             if (info.get(i).getName().equals("校内新闻")) {
                                 n = i;
+//                                Logs.e("校内新闻"+n);
                                 app.setInfoData(info.get(i));
                             } else {
                                 TMenu tMenu = new TMenu();
                                 tMenu.setId(info.get(i).getId());
 //                        tMenu.setName(MyApp.info[MyApp.templateType - 1]);
                                 tMenu.setName(info.get(i).getName());
-//                            Logs.e(info.get(i).getName());
+
                                 tMenu.setStatus(1);
                                 tMenu.setIcon(info.get(i).getIcon());
 //                                if (!info.get(i).getPics().isEmpty()) {
@@ -313,7 +320,8 @@ public class MainActivity extends BaseActivity implements MainAdapter.OnItemClic
                                 list.add(tMenu);
                             }
                         }
-                        if (n > 0) {
+                        if (n > -1) {
+                            Logs.e("移除校内新闻-下标" + n);
                             info.remove(n);
                         }
                     }
